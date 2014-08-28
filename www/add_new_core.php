@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <title>Add New Core</title>
+  </head>
+  
+  <body>
+<?php
+  echo "<h2>Add New Core</h2>";
+  
+  echo "<form action='initialize_core.php' method='get'>";
+  echo "<table border=1>";
+  
+  echo "<tr>";
+  echo "<th align=right>Identifying Name:<br/>(Button name on front page)</th>";
+  echo "<td><input type='text' name='name' size=30></td>";
+  echo "</tr>";  
+  
+  echo "<tr>";
+  echo "<th align=right>Name of Core:</th>";
+  echo "<td><input type='text' name='core_id' size=30></td>";
+  echo "</tr>";
+  
+  echo "<tr>";
+  echo "<th align=right>Time Zone:</th>";
+  echo "<td>";
+  echo "<select name='tz'>";
+  echo "<option value=''>Please Select Timezone</option>";
+  foreach(tz_list() as $t) { 
+    echo "<option value='".$t['zone']."'>";
+    echo $t['zone'] . " (".$t['diff_from_GMT'].")";
+    echo "</option>";
+  }
+  echo "</select>";
+  echo "</td>";
+  echo "</tr>";  
+  
+  echo "<tr>";
+  echo "<th align=right>Unit:<br/>(NOT IMPLEMENTED)</th>";
+  echo "<td><input type='radio' name='unit' value='C' checked>Centigrade<br/>";
+  
+  echo"<input type='radio' name='unit' value='F'>Fahrenheit</td>";
+  echo "</tr>";  
+  
+  echo "<tr>";
+  echo "<th align=right></th>";
+  echo "<td><input type='submit' value='Submit'></td>";
+  echo "</tr>";  
+  echo "</table>";
+  echo "</form>";
+  
+function tz_list() {
+  $zones_array = array();
+  $timestamp = time();
+  foreach(timezone_identifiers_list() as $key => $zone) {
+    date_default_timezone_set($zone);
+    $zones_array[$key]['zone'] = $zone;
+    $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+  }
+  return $zones_array;
+}  
+?>
+  </body>  
+</html>    
