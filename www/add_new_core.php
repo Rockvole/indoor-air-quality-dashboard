@@ -16,7 +16,7 @@
   echo "</tr>";  
   
   echo "<tr>";
-  echo "<th align=right>Name of Core:</th>";
+  echo "<th align=right>Core Id:<br/>(e.g. 53ff70065069544807300687)</th>";
   echo "<td><input type='text' name='core_id' size=30></td>";
   echo "</tr>";
   
