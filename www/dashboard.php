@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="html/stylesheet.css">
   </head>
   
   <body>
@@ -50,11 +51,15 @@ if(!isset($row['ts'])) {
 
   echo "<table border=0>";
   echo "<tr>";
-  echo "<td width='200'></td>";
+  echo "<td width='100'></td>";
   echo "<td align='right'><input type='button' value='&lt; Previous' onclick='location.href=\"dashboard.php?id=$id&start_date=$prev_day_str&period=day&direction=prev\"'></td>";
-  echo "<td width='240' align=center ><b>".$date->format('l, F jS Y')."</b></td>";
+  echo "<td width='300' align=center ><b>".$date->format('l, F jS Y')."</b></td>";
   echo "<td><input type='button' value='Next    &gt;' onclick='location.href=\"dashboard.php?id=$id&start_date=$next_day_str&period=day&direction=next\"'></td>";
-  echo "<td width='200'></td>";
+  echo "<td width='100'></td>";
+  echo "</tr>";
+  // ------------------------------------------------------------------- Temperature / Humidity
+  echo "<tr>";
+  echo "<td colspan=2></td><td align=center><h3>Temperature & Humidity</h3></td>";
   echo "</tr>";
   echo "<tr>";
   echo "<td colspan=5>";

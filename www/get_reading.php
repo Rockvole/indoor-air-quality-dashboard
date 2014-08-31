@@ -2,14 +2,14 @@
 include 'globals.php';
 
 if(!isset($_GET["core_id"])) exit("Must specify core_id parameter");
+if(!isset($_GET["unix_time"])) exit("Must specify unix_time parameter");
 if(!isset($_GET["temp"])) exit("Must specify temp parameter");
 if(!isset($_GET["hum"])) exit("Must specify hum parameter");
-if(!isset($_GET["unix_time"])) exit("Must specify unix_time parameter");
- 
+
 $core_id = htmlspecialchars($_GET["core_id"]);
+$unix_time = htmlspecialchars($_GET["unix_time"]);
 $temp = htmlspecialchars($_GET["temp"]);
 $hum = htmlspecialchars($_GET["hum"]);
-$unix_time = htmlspecialchars($_GET["unix_time"]);
 
 $conn=mysqli_connect("", "", "", $db_name);
 
@@ -38,8 +38,6 @@ if (mysqli_connect_errno()) {
   if(!mysqli_query($conn,$sql)) {
 	  exit('Error: '.mysqli_error($conn));
   }
-  
-  
   mysqli_close($conn);
 }
 ?>

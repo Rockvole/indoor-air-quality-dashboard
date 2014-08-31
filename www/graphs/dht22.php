@@ -13,9 +13,10 @@ while($row = mysqli_fetch_array($result)) {
 	$humidity[]=$row['humidity'];
 }
 $temperature_plot=new LinePlot($temperature,$ts);
+$temperature_plot->SetColor('hotpink3');
 $humidity_plot=new LinePlot($humidity,$ts);
+$humidity_plot->SetColor('dodgerblue');
 $graph = new Graph($width,$height);
-$graph->title->Set('Temperature & Humidity');
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
 $graph->SetScale('datlin',0,100);
