@@ -20,6 +20,7 @@ $humidity_plot->SetColor('dodgerblue');
 $humidity_plot->SetWeight(2);
 
 $graph = new Graph($width,$height);
+$graph->SetFrame(false);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
 $graph->SetScale('datlin',0,100);
@@ -30,18 +31,23 @@ $graph->AddY2($temperature_plot);
 $graph->xaxis->SetLabelAngle(90);
 $graph->xaxis->scale->SetDateFormat('g a');
 $graph->xaxis->SetWeight(2);
+$graph->xaxis->SetFont(FF_ARIAL,FS_NORMAL,$font_size-3);
 
-$graph->yaxis->SetColor('dodgerblue');
-$graph->yaxis->title->SetColor('dodgerblue');
 $graph->yaxis->SetWeight(2);
+$graph->yaxis->SetColor('dodgerblue');
+$graph->yaxis->SetFont(FF_ARIAL,FS_NORMAL,$font_size-3);
+$graph->yaxis->title->SetColor('dodgerblue');
 $graph->yaxis->title->Set('%RH');
+$graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
 
-$graph->y2axis->SetColor('hotpink3');
 $graph->y2axis->SetWeight(2);
+$graph->y2axis->SetColor('hotpink3');
+$graph->y2axis->SetFont(FF_ARIAL,FS_NORMAL,$font_size-3);
 $graph->y2axis->title->SetColor('hotpink3'); 
 $graph->y2axis->title->Set('C');
+$graph->y2axis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->y2axis->title->SetAngle(90);
 $graph->y2axis->title->SetMargin(10);
 

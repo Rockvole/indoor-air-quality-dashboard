@@ -1,8 +1,8 @@
 <?php
+include '../globals.php';
 require_once ("jpgraph/jpgraph.php");
 require_once ("jpgraph/jpgraph_line.php");
 require_once ("jpgraph/jpgraph_date.php");
-include '../globals.php';
 
 if(!isset($_GET["id"])) {
 	error_log("Must specify id parameter");
@@ -35,4 +35,6 @@ $conn=mysqli_connect("", "", "", $db_name);
 if (mysqli_connect_errno()) {
   exit('Failed to connect to MySQL: ' . mysqli_connect_error());
 } 
+
+$font_size=11;
 ?>

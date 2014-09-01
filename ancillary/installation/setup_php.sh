@@ -13,4 +13,8 @@ sudo cp -r src /usr/share/php
 sudo mv src jpgraph-3.0.7
 sudo ln -s jpgraph-3.0.7 jpgraph
 
+# install microsoft truetype fonts
+sudo apt-get install ttf-mscorefonts-installer
+
 # download Carbon from git
+
