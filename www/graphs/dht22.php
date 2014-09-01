@@ -14,8 +14,11 @@ while($row = mysqli_fetch_array($result)) {
 }
 $temperature_plot=new LinePlot($temperature,$ts);
 $temperature_plot->SetColor('hotpink3');
+$temperature_plot->SetWeight(2);
 $humidity_plot=new LinePlot($humidity,$ts);
 $humidity_plot->SetColor('dodgerblue');
+$humidity_plot->SetWeight(2);
+
 $graph = new Graph($width,$height);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
@@ -23,14 +26,18 @@ $graph->SetScale('datlin',0,100);
 $graph->Add($humidity_plot);
 $graph->SetY2Scale('lin',-10,35);
 $graph->AddY2($temperature_plot);
+
 $graph->xaxis->SetLabelAngle(90);
 $graph->xaxis->scale->SetDateFormat('g a');
+$graph->xaxis->SetWeight(2);
+
 $graph->yaxis->SetColor('dodgerblue');
 $graph->yaxis->title->SetColor('dodgerblue');
 $graph->yaxis->SetWeight(2);
 $graph->yaxis->title->Set('%RH');
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
+
 $graph->y2axis->SetColor('hotpink3');
 $graph->y2axis->SetWeight(2);
 $graph->y2axis->title->SetColor('hotpink3'); 

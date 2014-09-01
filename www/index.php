@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Welcome Page</title>
+    <link rel="stylesheet" type="text/css" href="html/stylesheet.css">    
   </head>
   
   <body>
