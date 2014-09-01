@@ -5,3 +5,7 @@ h3 {
   color:blueviolet;
   margin:8px 0px 0px 0px;
 }
+.container {
+  padding:10px;
+  float:left;
+}
