@@ -104,9 +104,9 @@ if(!isset($row['ts'])) {
   echo "</tr>";
   echo "<tr>";
   if($size==2) {
-    echo "<td rowspan=2 width=$range_width>";
+    echo "<td rowspan=2 width=$range_width style='height:100%;'>";
     echo "  <div style='height:100%;overflow:auto;'>";  
-    echo "  <table style='width:100%;height:100%' border=0>";
+    echo "  <table style='width:100%;height:100%;' border=0>";
     echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
     echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
     echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
