@@ -10,3 +10,5 @@ LAMP based Temperature and Humidity Web Dashboard for the Spark Core
 
 ### Screenshot
 ![Graph Page](screenshot.png)
+
+![Calendar Page](calendar.png)
