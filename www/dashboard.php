@@ -13,15 +13,21 @@
       document.dash.direction.value=direction;
       document.dash.submit();
     }
+    function go_calendar(sensor) {
+      document.dash.action = "year_cal.php";
+      document.dash.sensor.value=sensor;
+      document.dash.submit();
+    }
   </script>
   <body>
 <?php
 require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
 include 'globals.php';
+$range_width=100;
+$graph_width=1000;
 $width_pix = array(300, 600, 1000);
 $height_pix = array(150, 300, 500);
-$param_date_format='Y-m-d';
 
 if(!isset($_GET["id"])) exit("Must specify id parameter");
 $id = htmlspecialchars($_GET["id"]);
@@ -62,14 +68,23 @@ if(!isset($row['ts'])) {
   $next_day_str = $date->copy()->addDay()->format($param_date_format);
   $end_day_utc = $date->endOfDay()->format('U');
   
-  echo "<table border=0 width='100%'>";
-  echo "<tr><td colspan=4><h2>Temperature/Humidity Dashboard</h2></td>";
+  echo "<div style='padding:10px;'>";
+  echo "<table border=0>";
+  echo "<tr><td width=$range_width></td><td width =$graph_width></td><td width=100></td></tr>";
+  echo "<tr><td colspan=2><h2>Temperature/Humidity Dashboard</h2></td>";
   echo "<td align=right><input type='button' value='Download CSV' onclick='location.href=\"download_csv.php?id=$id\"'></td></tr>";
   echo "<tr>";
-  echo "<td width='100'></td>";
-  echo "<td align='right'><input type='button' value='&lt; Previous' onclick='change_date(\"$prev_day_str\",\"prev\")'></td>";
-  echo "<td width='300' align=center ><b>".$date->format('l, F jS Y')."</b></td>";
-  echo "<td><input type='button' value='Next    &gt;' onclick='change_date(\"$next_day_str\",\"next\")'></td>";
+  echo "<td colspan=2 width=$graph_width align=center>";
+  echo "<table border=0>";
+  echo "<tr>";
+  echo "  <td align='right'><input type='button' value='&lt; Previous' onclick='change_date(\"$prev_day_str\",\"prev\")'></td>";
+  echo "  <td width='300' align=center >";
+  echo "  <input type='button' value='".$date->format('l, F jS Y')."' onclick='go_calendar(0);'>";
+  echo "  </td>";
+  echo "  <td><input type='button' value='Next    &gt;' onclick='change_date(\"$next_day_str\",\"next\")'></td>";
+  echo "</tr>";
+  echo "</table>";
+  echo "</td>";
   echo "<td width='100' align=right>";
   echo "<select name='size' id='size_id' onchange='change_size(document.getElementById(\"size_id\").value);'>";
   echo "<option value=0 $default_size_0>Small</option>";
@@ -79,16 +94,28 @@ if(!isset($row['ts'])) {
   echo "</td>";
   echo "</tr>";
   echo "</table>";
+  echo "</div>";
   
   // ------------------------------------------------------------------- Temperature / Humidity
   echo "<div class='container'>";
   echo "<table border=0>";    
   echo "<tr>";
-  echo "<td align=center><h3>Temperature & Humidity</h3></td>";
+  echo "<td align=center colspan=2><h3>Temperature & Humidity</h3></td>";
   echo "</tr>";
   echo "<tr>";
+  if($size==2) {
+    echo "<td rowspan=2 width=$range_width>";
+    echo "  <div style='height:100%;overflow:auto;'>";  
+    echo "  <table style='width:100%;height:100%' border=0>";
+    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+    echo "  </table>";
+    echo "  </div>";  
+    echo "</td>"; 
+  }
   echo "<td>";
-  echo "<img src='graphs/dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]'>";
+  echo "<img src='graphs/dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(0);'>";
   echo "</td>";
   echo "</tr>";
   echo "</table>";
@@ -100,6 +127,7 @@ if(!isset($row['ts'])) {
   echo "<input type='hidden' name='period' value='day'>";
   echo "<input type='hidden' name='direction' value=''>";
   echo "<input type='hidden' name='size' value='$size'>";
+  echo "<input type='hidden' name='sensor' value=''>";
   echo "</form>";
 }
 mysqli_free_result($result);
