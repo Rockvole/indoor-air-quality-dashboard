@@ -1,4 +1,4 @@
-temperature.ino
+firmware.ino
 HttpClient/HttpClient.cpp
 HttpClient/HttpClient.h
 ReadingSync/ReadingSync.cpp
