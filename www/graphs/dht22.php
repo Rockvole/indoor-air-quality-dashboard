@@ -27,7 +27,7 @@ $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
 $graph->SetScale('datlin',0,100);
 $graph->Add($humidity_plot);
-$graph->SetY2Scale('lin',-10,35);
+$graph->SetY2Scale('lin',5,40);
 $graph->AddY2($temperature_plot);
 
 $graph->xaxis->SetLabelAngle(90);

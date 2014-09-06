@@ -9,7 +9,7 @@
   echo "<h2>Add New Core</h2>";
   
   echo "<form action='initialize_core.php' method='get'>";
-  echo "<table border=1>";
+  echo "<table border=0 class='form_table'>";
   
   echo "<tr>";
   echo "<th align=right>Identifying Name:<br/>(Button name on front page)</th>";

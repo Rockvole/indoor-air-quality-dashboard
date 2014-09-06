@@ -1,4 +1,3 @@
-<html>
 <head>
   <title>Calendar</title>
   <link rel="stylesheet" href="html/stylesheet.css" type="text/css" >
@@ -121,15 +120,14 @@ foreach($currentYear->months() as $month):
     echo "</li>\n";
     endforeach;
   echo "</ul>\n";
+  // ------------------------------------------------------------------- Form
+  echo "<form action='year_cal.php' method='get' name='cal'>";
+  echo "<input type='hidden' name='id' value='$id'>";
+  echo "<input type='hidden' name='year' value='$year'>";
+  echo "<input type='hidden' name='sensor' value='$sensor'>";
+  echo "</form>";
+
 echo "</section>\n";
-
-// ------------------------------------------------------------------- Form
-echo "<form action='year_cal.php' method='get' name='cal'>";
-echo "<input type='hidden' name='id' value='$id'>";
-echo "<input type='hidden' name='year' value='$year'>";
-echo "<input type='hidden' name='sensor' value='$sensor'>";
-echo "</form>";
-
 echo "</body>\n";
 echo "</html>\n";
 

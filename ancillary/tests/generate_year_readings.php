@@ -10,15 +10,15 @@ echo $response."\n";
 echo "now=".Carbon::now()->toDateTimeString()."\n";
 echo "tz=".date_default_timezone_get()."\n";
 $curr_ts = Carbon::create(2013, 1, 1, 0, 0, 0);
-$curr_temp=rand(0, 45)-10;
+$curr_temp=rand(5, 40);
 $curr_hum=rand(0,100);
 
 do {
   $curr_ts_utc = $curr_ts->format('U');
   echo "curr_ts=".$curr_ts."||utc=".$curr_ts_utc."\n";
   $curr_temp=$curr_temp+(rand(0,4)-2);
-  if($curr_temp<-10) $curr_temp=-10;
-  if($curr_temp>35) $curr_temp=35;
+  if($curr_temp<5) $curr_temp=5;
+  if($curr_temp>40) $curr_temp=40;
   $curr_hum=$curr_hum+(rand(0,6)-3);
   if($curr_hum<0) $curr_hum=0;
   if($curr_hum>100) $curr_hum=100;

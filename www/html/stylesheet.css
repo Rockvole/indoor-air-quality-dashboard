@@ -5,10 +5,32 @@ h3 {
   color:blueviolet;
   margin:8px 0px 0px 0px;
 }
+.form_table {
+  border-spacing:10px;
+  border-collapse:separate;
+}
 .container {
   padding:10px;
   float:left;
 }
 img {
   border:none;
+}
+input {
+  line-height:24px;
+  margin:2px;
+}
+.alert, .alerthead {
+    font-weight:bold;
+    color:darkmagenta;
+    font-size:14px;
+    background-color:#FFFFBB;
+    padding:10px 10px;
+    display:block;
+}
+
+.alerthead {
+    font-size:16px;
+    text-align:center;
+    border:#FFED73 1px solid;
 }

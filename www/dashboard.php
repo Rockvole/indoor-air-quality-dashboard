@@ -71,7 +71,24 @@ if(!isset($row['ts'])) {
   echo "<div style='padding:10px;'>";
   echo "<table border=0>";
   echo "<tr><td width=$range_width></td><td width =$graph_width></td><td width=100></td></tr>";
-  echo "<tr><td colspan=2><h2>Temperature/Humidity Dashboard</h2></td>";
+  echo "<tr><td colspan=2>";
+  echo "<table border=0>";
+  echo "<tr><td>";
+  echo "<h2>Temperature/Humidity Dashboard</h2>";
+  echo "</td><td width='400' style='vertical-align:top'>";
+  $loc_result=mysqli_query($conn,"SELECT MAX(ts) as ts from locations WHERE core_id=$id and ts <= $start_day_utc");
+  $loc_row = mysqli_fetch_array($loc_result);
+  $name_result=mysqli_query($conn,"SELECT name from locations WHERE core_id=$id and ts = ".$loc_row['ts']);
+  $name_row = mysqli_fetch_array($name_result);
+  $location=$name_row['name'];
+  echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:blueviolet;vertical-align:top;'>(";
+  if(strlen($location)>0)
+    echo $location;
+  else echo "Unknown location";  
+  echo ")</span>";
+  echo "<img src='html/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."\"' style='cursor:pointer;'>";
+  echo "</td></tr>";
+  echo "</table>";
   echo "<td align=right><input type='button' value='Download CSV' onclick='location.href=\"download_csv.php?id=$id\"'></td></tr>";
   echo "<tr>";
   echo "<td colspan=2 width=$graph_width align=center>";
