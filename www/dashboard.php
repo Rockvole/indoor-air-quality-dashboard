@@ -5,10 +5,12 @@
   </head>
   <script>
     function change_size(size) {
+      document.dash.action = "dashboard.php";
       document.dash.size.value=size;
       document.dash.submit();
     }
     function change_date(date,direction) {
+      document.dash.action = "dashboard.php";
       document.dash.start_date.value=date;
       document.dash.direction.value=direction;
       document.dash.submit();
@@ -132,10 +134,14 @@ if(!isset($row['ts'])) {
     echo "</td>"; 
   }
   echo "<td>";
-  echo "<img src='graphs/dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(0);'>";
+  echo "<img src='graphs/dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(0);' style='cursor:pointer;'>";
+  echo "</td>";
+  echo "<td>";
+  echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' style='cursor:pointer;'>";
   echo "</td>";
   echo "</tr>";
   echo "</table>";
+  echo "</div>";
   // ------------------------------------------------------------------- Form
   echo "<form action='dashboard.php' method='get' name='dash'>";
   echo "<input type='hidden' name='id' value='$id'>";
