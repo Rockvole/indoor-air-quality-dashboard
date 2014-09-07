@@ -12,3 +12,11 @@ LAMP based Temperature and Humidity Web Dashboard for the Spark Core
 ![Graph Page](screenshot.png)
 
 ![Calendar Page](calendar.png)
+
+<p align="center">
+  <img src="schematics-project.png"/>
+  <br/>
+  Reproduced with permission from John-Daniel Trask
+  <br/>
+  <a href="https://raygun.io/blog/2014/09/home-automation-the-easy-way/">Home Automation the easy way: My experience with the Spark Core</a>
+</p>
