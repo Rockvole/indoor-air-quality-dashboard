@@ -1,4 +1,4 @@
 #! /bin/bash
-curl "http://foodaversions.com/dht22/initialize_core.php?core_id=53ff70065067544807400687&name=Live_Home&tz=America/Los_Angeles"
+curl "http://davidlub/iaq/initialize_core.php?core_id=53ff6d065067544846461287&name=rockvole1&tz=America/Los_Angeles"
 
 

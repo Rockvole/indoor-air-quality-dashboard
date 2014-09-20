@@ -76,7 +76,7 @@ if(!isset($row['ts'])) {
   echo "<tr><td colspan=2>";
   echo "<table border=0>";
   echo "<tr><td>";
-  echo "<h2>Temperature/Humidity Dashboard</h2>";
+  echo "<h2>Indoor Air Quality Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
   $loc_result=mysqli_query($conn,"SELECT MAX(ts) as ts from locations WHERE core_id=$id and ts <= $start_day_utc");
   $loc_row = mysqli_fetch_array($loc_result);
@@ -142,6 +142,56 @@ if(!isset($row['ts'])) {
   echo "</tr>";
   echo "</table>";
   echo "</div>";
+  // ------------------------------------------------------------------- Ozone and Chlorine
+  echo "<div class='container'>";  
+  echo "<table border=0>";      
+  echo "<tr>";
+  echo "<td align=center colspan=2><h3>Ozone and Chlorine Gas</h3></td>";
+  echo "</tr>";
+  echo "<tr>";  
+  if($size==2) {  
+    echo "<td rowspan=2 width=$range_width style='height:100%'>";
+    echo "  <div style='height:100%;overflow:auto;'>";  
+    echo "  <table style='width:100%;height:100%' border=0>";
+    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+    echo "  </table>";
+    echo "  </div>";  
+    echo "</td>";
+  }
+  echo "<td>";
+  echo "<img src='graphs/mq131.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
+  echo "</td>";
+  echo "</tr>";
+ 
+  echo "</table>";
+  echo "</div>";  
+  // ------------------------------------------------------------------- Sewer
+  echo "<div class='container'>";  
+  echo "<table border=0>";      
+  echo "<tr>";
+  echo "<td align=center colspan=2><h3>Sewer Gas</h3></td>";
+  echo "</tr>";
+  echo "<tr>";  
+  if($size==2) {  
+    echo "<td rowspan=2 width=$range_width style='height:100%'>";
+    echo "  <div style='height:100%;overflow:auto;'>";  
+    echo "  <table style='width:100%;height:100%' border=0>";
+    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+    echo "  </table>";
+    echo "  </div>";  
+    echo "</td>";
+  }
+  echo "<td>";
+  echo "<img src='graphs/sewer.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
+  echo "</td>";
+  echo "</tr>";
+ 
+  echo "</table>";
+  echo "</div>";  
   // ------------------------------------------------------------------- Form
   echo "<form action='dashboard.php' method='get' name='dash'>";
   echo "<input type='hidden' name='id' value='$id'>";

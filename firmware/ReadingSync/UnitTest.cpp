@@ -4,8 +4,14 @@
 #include <iostream>
 
 #define C_MINS_BETWEEN_READINGS 60
-#define C_TEST_SECS 1409069240
-#define C_TEST_5AM  1409029200
+#define C_SECS_TO_PRE_HEAT 300
+
+#define C_TEST_BEFORE   1409067500 // Tue, 26 Aug 2014 15:38:20 GMT - before pre-heat
+#define C_TEST_PRE_HEAT 1409068500 // Tue, 26 Aug 2014 15:55:00 GMT - pre-heat starting
+#define C_TEST_SAMPLING 1409068800 // Tue, 26 Aug 2014 16:00:00 GMT
+#define C_TEST_AFTER    1409068802 // Tue, 26 Aug 2014 16:00:02 GMT
+
+#define C_TEST_5AM      1409029200 // Tue, 26 Aug 2014 05:00:00 GMT
 
 int basic_tests();
 int loop_tests();
@@ -17,63 +23,72 @@ int main()
 }
 
 int basic_tests() {
-  ReadingSync rs (C_MINS_BETWEEN_READINGS, time(0));
-  std::cout << "start of day =" << rs.mins_between_readings << "\n";
-  std::cout << "start of day =" << rs.getStartOfDayUnixTime(C_TEST_SECS) << "\n";
-  std::cout << "is time to take reading =" << rs.isTimeToTakeReading(C_TEST_SECS) << "\n";
+  ReadingSync rs (C_MINS_BETWEEN_READINGS, C_SECS_TO_PRE_HEAT, time(0));
+  std::cout << "secs between readings =" << rs.secs_between_readings << "\n";
+  std::cout << "start of day =" << rs.getStartOfDayUnixTime(C_TEST_AFTER) << "\n";
+  std::cout << "is time to take samples =" << (rs.getStage(C_TEST_AFTER)==rs.SAMPLING) << "\n";
+  std::cout << "--------------------------------------------------------------------------\n";
 
-  if(rs.getStartOfDayUnixTime(C_TEST_SECS)!=1409011200) {
+  if(rs.getStartOfDayUnixTime(C_TEST_BEFORE)!=1409011200) {
 	  std::cout << "Error start of day calculation incorrect\n";
 	  return(0);
   }
-  if(rs.isTimeToTakeReading(C_TEST_SECS)) {
-	  std::cout << "Not time to take a reading\n";
-	  return(0);	  
+  if(rs.getStage(C_TEST_BEFORE)!=rs.CONTINUE) {
+	  std::cout << "We should be continuing until we reach pre-heat time, stage=" << rs.getStage(C_TEST_BEFORE) << "\n";
+	  return(0);	  	  
   }
-  std::cout << "next send mins =" << rs.next_send_mins << "\n";  
-  if(!rs.isTimeToTakeReading(C_TEST_5AM)) {
-	  std::cout << "Not on time\n";
-	  return(0);	  
-  } 
-  std::cout << "next send mins =" << rs.next_send_mins << "\n";  
-  if(!rs.isTimeToSendReading(C_TEST_5AM + (C_MINS_BETWEEN_READINGS * 60))) {
-	  std::cout << "Too long to send reading\n";
-	  return(0);	  
+ 
+  if(rs.getStage(C_TEST_PRE_HEAT)!=rs.PRE_HEATING) {
+	  std::cout << "We should be in pre-heat stage, stage=" << rs.getStage(C_TEST_PRE_HEAT) << "\n";
+	  return(0);	  	  
+  }  
+  if(rs.getStage(C_TEST_SAMPLING)!=rs.SAMPLING) {
+	  std::cout << "Not time to take samples, stage=" << rs.getStage(C_TEST_SAMPLING) << "\n";
+	  return(0);	  	  
   }
-  rs.setReadingSent();
-  std::cout << "next send mins =" << rs.next_send_mins << "\n\n"; 	
-  
+  rs.setSamplingComplete();
+  if(rs.getStage(C_TEST_AFTER)!=rs.CONTINUE) {
+	  std::cout << "Must be continue, stage=" << rs.getStage(C_TEST_AFTER) << "\n";
+	  return(0);	  	  
+  }  
   return(0);
 }
 
 int loop_tests() {
-  ReadingSync rs (C_MINS_BETWEEN_READINGS, time(0));
+  ReadingSync rs (C_MINS_BETWEEN_READINGS, C_SECS_TO_PRE_HEAT, time(0));
   int send_count=0;	
-  for(int curr_secs=0;curr_secs<7200;curr_secs=curr_secs+30) {
-	bool itttr = rs.isTimeToTakeReading(C_TEST_5AM + curr_secs);
-	if(!itttr) {
-	  if(rs.isTimeToSendReading(C_TEST_5AM + curr_secs)) {
-		rs.setReadingSent();  	  
-	    send_count++;
-	  }
-	}
-    //std::cout << "itttr(" << curr_secs << ")=" << itttr << "\n";
-    if(curr_secs==0) {
-	  if(itttr!=1) {
-		std::cout << "Must be time to take reading at 5am\n";
+  ReadingSync::Stage currStage;
+  for(int curr_secs=0;curr_secs<3600;curr_secs++) {
+	currStage=rs.getStage(C_TEST_5AM + curr_secs);
+
+    std::cout << "curr_secs=" << (C_TEST_5AM + curr_secs) << "||stage=" << currStage << "\n";
+    if(curr_secs>=0 && curr_secs<=100) {
+	  if(currStage!=rs.SAMPLING) {
+		std::cout << "Must be time to take samples at 5am\n";
 	    return(0);		
       }
+      if(curr_secs==100) rs.setSamplingComplete();
 	} else if(curr_secs==3600) {
-	  if(itttr!=1) {
-	    std::cout << "Must be time to take reading at 6am\n";
+	  if(currStage!=rs.SAMPLING) {
+	    std::cout << "Must be time to take samples at 6am\n";
 	    return(0);		
       }
 	} else {
-	  if(itttr!=0) std::cout << "Must not be time to take reading\n";
+	  if(currStage==rs.SAMPLING) std::cout << "Must not be time to take samples\n";
 	}
-  }	
-  if(send_count!=2) {
-	std::cout << "We must have sent reading exactly twice\n";
+    if(currStage==rs.SEND_READING) {
+      send_count++;		
+	  rs.setReadingSent();  	  
+    }	
+    if(curr_secs>=3600 && curr_secs<3600) {
+        if(currStage!=rs.PRE_HEATING) {
+          std::cout << "Must be time to Pre-heat\n";
+          return(0);
+        }    
+    }
+  }	// curr_secs loop
+  if(send_count!=1) {
+	std::cout << "We must have sent reading exactly once: count=" << send_count << "\n";
 	return(0);		
   }
   return(0);	

@@ -5,4 +5,6 @@ ReadingSync/ReadingSync.cpp
 ReadingSync/ReadingSync.h
 DHT22/idDHT22.cpp
 DHT22/idDHT22.h
+MQ131/MQ131.cpp
+MQ131/MQ131.h
 

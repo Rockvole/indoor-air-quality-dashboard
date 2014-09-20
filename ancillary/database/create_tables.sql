@@ -1,11 +1,12 @@
-create database dht22;
-grant all on dht22.* to ''@'localhost';
-use dht22;
+create database iaq;
+grant all on iaq.* to ''@'localhost';
+use iaq;
 
 create table cores (id INT NOT NULL AUTO_INCREMENT, core_name VARCHAR(24), name VARCHAR(20), tz VARCHAR(40), 
 UNIQUE(core_name), UNIQUE(name), PRIMARY KEY (id));
 
 create table readings (id INT NOT NULL AUTO_INCREMENT, temperature INT, humidity INT, 
+sewer INT, ozone INT, chlorine INT,
 core_id INT, ts INT UNSIGNED, PRIMARY KEY (id), UNIQUE(core_id, ts));
 
 create table locations (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(40), core_id INT, ts INT UNSIGNED, 

@@ -10,6 +10,9 @@ $core_id = htmlspecialchars($_GET["core_id"]);
 $unix_time = htmlspecialchars($_GET["unix_time"]);
 $temp = htmlspecialchars($_GET["temp"]);
 $hum = htmlspecialchars($_GET["hum"]);
+$ozone = htmlspecialchars($_GET["ozone"]);
+$chlorine = htmlspecialchars($_GET["chlorine"]);
+$sewer = htmlspecialchars($_GET["sewer"]);
 
 $conn=mysqli_connect("", "", "", $db_name);
 
@@ -34,7 +37,7 @@ if (mysqli_connect_errno()) {
   $id=$row['id'];
   mysqli_free_result($result);
   // ------------------------------------------------------------------- INSERT READING
-  $sql = "INSERT into readings (temperature, humidity, core_id, ts) VALUES ('$temp', '$hum', '$id', '$unix_time')";
+  $sql = "INSERT into readings (temperature, humidity, ozone, chlorine, sewer, core_id, ts) VALUES ('$temp', '$hum', '$ozone', '$chlorine', '$sewer', '$id', '$unix_time')";
   if(!mysqli_query($conn,$sql)) {
 	  exit('Error: '.mysqli_error($conn));
   }

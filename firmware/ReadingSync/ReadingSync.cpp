@@ -7,25 +7,67 @@ int ReadingSync::getStartOfDayUnixTime(int currentTime) {
 	return (daysSinceEpoch * SECS_IN_DAY);
 }
 
-int ReadingSync::getMinsSinceStartOfDay(int currentTime) {
-	return (currentTime - getStartOfDayUnixTime(currentTime)) / 60;
+int ReadingSync::getSecsSinceStartOfDay(int currentTime) {
+	return (currentTime - getStartOfDayUnixTime(currentTime));
 }
 
-bool ReadingSync::isTimeToTakeReading(int currentTime) {
-	int minsSinceStartOfDay = getMinsSinceStartOfDay(currentTime);
-	int remainingMins = minsSinceStartOfDay % mins_between_readings;
-	bool timeToTakeReading = (remainingMins == 0) && (minsSinceStartOfDay!=last_read_mins);
-	if(timeToTakeReading) {
-		last_read_mins = minsSinceStartOfDay;
-		next_send_mins = minsSinceStartOfDay + (rand() % (mins_between_readings-2));
+int ReadingSync::getRemainingSecsUntilSample(int currentTime) {
+    int remainingSecs = 0;
+	int secsSinceStartOfDay = getSecsSinceStartOfDay(currentTime);
+	int secsSinceLastReading = (secsSinceStartOfDay % secs_between_readings);
+	if(secsSinceLastReading!=0)
+	{
+	    remainingSecs = secs_between_readings - secsSinceLastReading;
 	}
-	return timeToTakeReading;
+//std::cout << "sssod=" << secsSinceStartOfDay << "||rs=" << remainingSecs << "||sbr=" << secs_between_readings << "||sslr=" << secsSinceLastReading << "\n";	
+	return remainingSecs;	
+}
+
+bool ReadingSync::isTimeToSample(int currentTime) {
+	int secsSinceStartOfDay = getSecsSinceStartOfDay(currentTime);	
+    int remainingSecs = getRemainingSecsUntilSample(currentTime);
+	bool timeToSample = (remainingSecs == 0) && (secsSinceStartOfDay!=last_read_secs);
+//std::cout << "tts=" << timeToSample << "||sssod=" << secsSinceStartOfDay << "|rs=" << remainingSecs << "\n\n";		
+	if(timeToSample) {
+	    last_read_secs = secsSinceStartOfDay;	
+	}
+	return timeToSample;
+}
+
+bool ReadingSync::isTimeToPreHeat(int currentTime) {
+//std::cout << "grsus.ct=" << getRemainingSecsUntilSample(currentTime) << "\n\n";
+    int remainingSecs = getRemainingSecsUntilSample(currentTime);
+//std::cout << "grsus.ph=" << remainingSecs << "||ct=" << currentTime << "||phs=" << pre_heat_secs << "|rs=" << remainingSecs << "\n\n";	
+    bool timeToPreHeat=false;
+    if((remainingSecs >0) && (remainingSecs<=pre_heat_secs))
+      timeToPreHeat=true;
+	return timeToPreHeat;
 }
 
 bool ReadingSync::isTimeToSendReading(int currentTime) {
-    return getMinsSinceStartOfDay(currentTime) >= next_send_mins;
+    return getSecsSinceStartOfDay(currentTime) >= next_send_secs;
+}
+
+void ReadingSync::setSamplingComplete() {
+	next_send_secs = last_read_secs + (rand() % (secs_between_readings-120));	
+	_stage=CONTINUE;
 }
 
 void ReadingSync::setReadingSent() {
-	next_send_mins = C_MAX_INT;
+	next_send_secs = C_MAX_INT;
+	_stage=CONTINUE;
+}
+
+ReadingSync::Stage ReadingSync::getStage(int currentTime) {
+    if(isTimeToSample(currentTime) || _stage==SAMPLING) {
+	    _stage=SAMPLING;
+		return _stage;	
+	} else if(isTimeToPreHeat(currentTime)) {
+		_stage=PRE_HEATING;
+		return _stage;
+	} else if(isTimeToSendReading(currentTime)) {
+		_stage=SEND_READING;
+		return _stage;
+	}
+	return CONTINUE;
 }
