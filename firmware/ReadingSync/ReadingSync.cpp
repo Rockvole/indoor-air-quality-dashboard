@@ -48,6 +48,14 @@ bool ReadingSync::isTimeToSendReading(int currentTime) {
     return getSecsSinceStartOfDay(currentTime) >= next_send_secs;
 }
 
+void ReadingSync::startCalibrating() {
+	_stage=CALIBRATING;
+}
+
+void ReadingSync::setCalibratingComplete() {
+	_stage=CONTINUE;
+}
+
 void ReadingSync::setSamplingComplete() {
 	next_send_secs = last_read_secs + (rand() % (secs_between_readings-120));	
 	_stage=CONTINUE;
@@ -59,7 +67,9 @@ void ReadingSync::setReadingSent() {
 }
 
 ReadingSync::Stage ReadingSync::getStage(int currentTime) {
-    if(isTimeToSample(currentTime) || _stage==SAMPLING) {
+	if(_stage==CALIBRATING) {
+		return _stage;
+    } else if(isTimeToSample(currentTime) || _stage==SAMPLING) {
 	    _stage=SAMPLING;
 		return _stage;	
 	} else if(isTimeToPreHeat(currentTime)) {
