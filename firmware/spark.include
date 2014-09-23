@@ -3,6 +3,8 @@ HttpClient/HttpClient.cpp
 HttpClient/HttpClient.h
 ReadingSync/ReadingSync.cpp
 ReadingSync/ReadingSync.h
+RgbLedControl/RgbLedControl.cpp
+RgbLedControl/RgbLedControl.h
 DHT22/idDHT22.cpp
 DHT22/idDHT22.h
 MQ131/MQ131.cpp

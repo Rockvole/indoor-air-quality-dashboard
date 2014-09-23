@@ -1,4 +1,5 @@
 #include "ReadingSync.h"
+#include "RgbLedControl.h"
 #include "HttpClient.h"
 #include "idDHT22.h"
 #include "MQ131.h"
@@ -6,8 +7,12 @@
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
 #define SAMPLING_FREQUENCY 5   // Number of times to sample sensor
+#define RED_LED A5
+#define GREEN_LED A6
+#define BLUE_LED A7
 
 ReadingSync rs (INTERVAL_MINS, PRE_HEAT_SECS, Time.now());
+RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
 HttpClient http;
 void dht22_wrapper();
 // DHT instantiate
@@ -32,6 +37,7 @@ int   mq131_chlorine = 0;
 int sewer = 0;
 char url[200];
 
+RgbLedControl::Color color;
 http_request_t request;
 http_response_t response;
 
@@ -45,9 +51,8 @@ void setup()
 
   // Connect the temperature sensor to A7 and configure it to be an input
   pinMode(A7, INPUT);
-  request.hostname = "davidlub";
   //request.hostname = "foodaversions.com";
-  //request.ip = {192,168,1,130};
+  request.ip = {192,168,1,130}; // davidlub
   request.port = 80;
 }
 
@@ -57,6 +62,7 @@ void dht22_wrapper() {
 
 void loop()
 {
+  color=rgbLed.OFF;
   unix_time=Time.now();
   delay_ms=1000;
   switch(rs.getStage(unix_time)) {  
@@ -82,11 +88,13 @@ void loop()
       http.get(request, response);	
 	  rs.setReadingSent();
 	  break;	    
-	case rs.CALIBRATE:
+	case rs.CALIBRATING:
+	  color=rgbLed.BLUE;
 	  break;	  	  
 	case rs.BUTTON_SAMPLING:
 	  break;	  	  	  
 	case rs.PRE_HEATING:
+	  color=rgbLed.ORANGE;
 	  if(heating_count==0) {  // Take ambient temperature before pre-heating
 	    read_dht22();
 	  }
@@ -101,6 +109,7 @@ void loop()
 	default:  
 	  delay(1);
   }  
+  rgbLed.setLedColor(delay_ms, 100, 3000, color);
   delay(delay_ms);  
 }
 
