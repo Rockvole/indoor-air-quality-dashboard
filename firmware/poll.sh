@@ -11,8 +11,11 @@ do
   echo humidity
   spark get rockvole4 humidity
 
-  echo sewer
-  spark get rockvole4 sewer
+  echo unix_time
+  spark get rockvole4 unix_time
+
+  echo stage
+  spark get rockvole4 stage
 
   echo url
   spark get rockvole4 url

@@ -6,7 +6,12 @@
 
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
+#define CALIBRATION_SAMPLE_FREQUENCY 50
+#define CALIBRATION_SAMPLE_INTERVAL 500
 #define SAMPLING_FREQUENCY 5   // Number of times to sample sensor
+#define BUZZER_PIN A4
+#define CALIBRATE_BTN D4
+#define READING_BTN D3
 #define RED_LED A5
 #define GREEN_LED A6
 #define BLUE_LED A7
@@ -24,6 +29,8 @@ int delay_ms = 0;
 int reading_time = 0;
 int sampling_count=0;
 int heating_count=0;
+int calibration_count=0;
+int stage=0;
 
 double temperature = 0;
 double humidity = 0;
@@ -46,14 +53,16 @@ void setup()
   // Register a Spark variable here
   Spark.variable("temperature", &temperature, DOUBLE);
   Spark.variable("humidity", &humidity, DOUBLE);
-  Spark.variable("sewer", &sewer, INT);
+  Spark.variable("unix_time", &unix_time, INT);
+  Spark.variable("stage", &stage, INT);
   Spark.variable("url", &url, STRING);
 
-  // Connect the temperature sensor to A7 and configure it to be an input
-  pinMode(A7, INPUT);
+  pinMode(CALIBRATE_BTN, INPUT_PULLUP);
+  pinMode(BUZZER_PIN, OUTPUT);  
   //request.hostname = "foodaversions.com";
   request.ip = {192,168,1,130}; // davidlub
   request.port = 80;
+  //Serial.begin(9600);
 }
 
 void dht22_wrapper() {
@@ -64,8 +73,9 @@ void loop()
 {
   color=rgbLed.OFF;
   unix_time=Time.now();
-  delay_ms=1000;
-  switch(rs.getStage(unix_time)) {  
+  delay_ms=200;
+  stage=rs.getStage(unix_time);
+  switch(stage) {  
 	case rs.SAMPLING:
 	  if(sampling_count==0) {
         sewer = analogRead(A0);		  
@@ -89,27 +99,35 @@ void loop()
 	  rs.setReadingSent();
 	  break;	    
 	case rs.CALIBRATING:
+	  calibration_count++;
+	  if(calibration_count==CALIBRATION_SAMPLE_TIMES) { // Calibration Complete
+		  beep(200);
+		  rs.setCalibratingComplete();
+	  }
 	  color=rgbLed.BLUE;
 	  break;	  	  
-	case rs.BUTTON_SAMPLING:
-	  break;	  	  	  
+	case rs.PRE_HEAT_CALIBRATING:
+	  calibration_count=0;
 	case rs.PRE_HEATING:
 	  color=rgbLed.ORANGE;
 	  if(heating_count==0) {  // Take ambient temperature before pre-heating
 	    read_dht22();
 	  }
 	  heating_count++;
-	  delay_ms=1000;
 	  break;
+	case rs.BUTTON_SAMPLING:
+	  break;	  
 	case rs.CONTINUE:
 	  sampling_count=0;
 	  heating_count=0;
-	  delay_ms=1000;
 	  break;		    
 	default:  
 	  delay(1);
   }  
   rgbLed.setLedColor(delay_ms, 100, 3000, color);
+  if(digitalRead(CALIBRATE_BTN)==LOW) {
+	  rs.startCalibrating(unix_time);
+  }
   delay(delay_ms);  
 }
 
@@ -119,4 +137,10 @@ void read_dht22() {
 	
   humidity = DHT22.getHumidity();
   temperature = DHT22.getCelsius();	
+}
+
+void beep(int delay_ms) {
+	analogWrite(BUZZER_PIN, 255);
+	delay(delay_ms);
+	analogWrite(BUZZER_PIN, 0);
 }

@@ -4,10 +4,10 @@ class RgbLedControl {
 	public:
 	  enum Color 
 	  {
-		OFF,
-		YELLOW,
-		ORANGE,
-		BLUE
+		OFF,     // 0
+		YELLOW,  // 1
+		ORANGE,  // 2
+		BLUE     // 3
 	  };
 	  RgbLedControl(int red_pin, int green_pin, int blue_pin) {
 		  pinMode(red_pin, OUTPUT);

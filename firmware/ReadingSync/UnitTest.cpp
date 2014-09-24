@@ -59,8 +59,8 @@ int loop_tests() {
   int send_count=0;	
   ReadingSync::Stage currStage;
   for(int curr_secs=0;curr_secs<3600;curr_secs++) {
-    if(curr_secs==2000) rs.startCalibrating();
-    if(curr_secs==2400) rs.setCalibratingComplete();	  
+    if(curr_secs==2000) rs.startCalibrating(C_TEST_5AM + curr_secs);
+    if(curr_secs==2600) rs.setCalibratingComplete();	  
 	currStage=rs.getStage(C_TEST_5AM + curr_secs);
 
     std::cout << "time=" << (C_TEST_5AM + curr_secs) << "||curr_secs=" << curr_secs << "||stage=" << currStage << "\n";
@@ -88,12 +88,18 @@ int loop_tests() {
           return(0);
         }    
     }
-    if(curr_secs>=2000 && curr_secs<2400) {
+    if(curr_secs>=2000 && curr_secs<2300) {
+        if(currStage!=rs.PRE_HEAT_CALIBRATING) {
+            std::cout << "Must be time to Pre-Heat Calibrate " << curr_secs << "||stage=" << currStage;
+            return(0);
+        }    
+    }    
+    if(curr_secs>=2300 && curr_secs<2600) {
         if(currStage!=rs.CALIBRATING) {
             std::cout << "Must be time to Calibrate " << curr_secs << "||stage=" << currStage;
             return(0);
         }    
-    }    
+    }     
   }	// curr_secs loop
   if(send_count!=1) {
 	std::cout << "We must have sent reading exactly once: count=" << send_count << "\n";

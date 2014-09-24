@@ -21,7 +21,8 @@ class ReadingSync {
         SAMPLING,                // 2 We are currently sampling from sensors
         SEND_READING,            // 3 Send sensor readings to remote
         CALIBRATING,             // 4 User has pressed the calibrate button - so calibrate in clean air
-        BUTTON_SAMPLING          // 5 User has pressed the take reading button - so start sampling now
+        PRE_HEAT_CALIBRATING,    // 5 User has pressed the calibrate button so now we need to pre-heat first
+        BUTTON_SAMPLING          // 6 User has pressed the take reading button - so start sampling now
 	  };	   
 	  int secs_between_readings; // seconds between taking a reading
 	  int pre_heat_secs; 	     // total number of seconds we want to pre-heat for
@@ -39,14 +40,15 @@ class ReadingSync {
 	    srand(currentTime);		   
       }
 	  int getStartOfDayUnixTime(int currentTime);
-	  void startCalibrating();
+	  void startCalibrating(int currentTime);
 	  void setReadingSent();
 	  void setSamplingComplete();
 	  void setCalibratingComplete();
 	  Stage getStage(int currentTime);
 	private:
       ReadingSync() { }	
-	  Stage _stage;	 	      
+	  Stage _stage;	 
+	  int calibration_start_time;	      
 	  int getSecsSinceStartOfDay(int currentTime);
 	  bool isTimeToPreHeat(int currentTime);
 	  bool isTimeToSample(int currentTime); 
