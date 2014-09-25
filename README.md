@@ -13,4 +13,5 @@ LAMP based Indoor Air Quality Web Dashboard for the Spark Core
 
 ![Calendar Page](calendar.png)
 
-
+### History
+<a href="http://community.spark.io/t/custom-shield-indoor-air-quality-monitor/121" title="Development evolution of the hardware"><img src="spark.jpg"/></a>
