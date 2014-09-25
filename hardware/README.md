@@ -6,3 +6,7 @@ hardware
   <br/>
   Image of the Indoor Air Quality shield.
 </p>
+
+Open Source Schematics
+======================
+<a href="https://github.com/spark/custom-shields/tree/master/indoor-air-quality-shield">schematics</a>
