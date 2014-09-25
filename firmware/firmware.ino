@@ -16,6 +16,8 @@
 #define GREEN_LED A6
 #define BLUE_LED A7
 
+#define SENSOR_MQ131            A3
+
 ReadingSync rs (INTERVAL_MINS, PRE_HEAT_SECS, Time.now());
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
 HttpClient http;
@@ -55,6 +57,7 @@ void setup()
   Spark.variable("humidity", &humidity, DOUBLE);
   Spark.variable("unix_time", &unix_time, INT);
   Spark.variable("stage", &stage, INT);
+  Spark.variable("mq131", &mq131_Ro, DOUBLE);
   Spark.variable("url", &url, STRING);
 
   pinMode(CALIBRATE_BTN, INPUT_PULLUP);
@@ -99,7 +102,11 @@ void loop()
 	  rs.setReadingSent();
 	  break;	    
 	case rs.CALIBRATING:
-	  calibration_count++;
+      calibration_count++;
+	  if(calibration_count<=1) {
+		mq131.startCalibrating();
+	  }
+	  mq131_Ro = mq131.calibrateInCleanAir(SENSOR_MQ131);
 	  if(calibration_count==CALIBRATION_SAMPLE_TIMES) { // Calibration Complete
 		  beep(200);
 		  rs.setCalibratingComplete();

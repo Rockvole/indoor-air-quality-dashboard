@@ -18,7 +18,7 @@
 #include <cmath>
 #include "spark_wiring_tcpclient.h"
 
-#define RL_VALUE                     5     //define the load resistance on the board, in kilo ohms
+#define RL_VALUE                     50    //define the load resistance on the board, in kilo ohms
 #define RO_CLEAN_AIR_FACTOR          9.83  //RO_CLEAR_AIR_FACTOR=(Sensor resistance in clean air)/RO,
 
 #define CALIBRATION_SAMPLE_TIMES     50    //define how many samples you are going to take in the calibration phase
@@ -31,8 +31,10 @@ class MQ131 {
     float getResistanceCalculation(int raw_adc);    
     int getOzoneGasPercentage(float rs_ro_ratio, float ro);
     int getChlorineGasPercentage(float rs_ro_ratio, float ro);
-  
+    void startCalibrating();
   private:	
+  	int calibration_count;
+	float calibration_total;
     float CL2Curve[2] =  {56.01727602, -1.359048399}; 
     float O3Curve[2]  =  {42.84561841, -1.043297135}; 
 	int getPercentage(float rs_ro_ratio, float ro, float *pcurve);

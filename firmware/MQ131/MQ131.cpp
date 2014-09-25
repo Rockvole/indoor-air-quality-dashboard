@@ -13,6 +13,11 @@ float MQ131::getResistanceCalculation(int raw_adc)
   return ( ((float)RL_VALUE*(1023-raw_adc)/raw_adc));
 }
 
+void MQ131::startCalibrating() {
+	calibration_count=0;
+	calibration_total=0;
+}
+
 /***************************** calibrateInCleanAir ****************************************
 Input:   mq_pin - analog channel
 Output:  Ro of the sensor
@@ -22,19 +27,13 @@ Remarks: This function assumes that the sensor is in clean air. It use
          10, which differs slightly between different sensors.
 ************************************************************************************/ 
 float MQ131::calibrateInCleanAir(int mq_pin) {
-  int i;
-  float val=0;
+  float calibration_avg;
+  
+  calibration_count++; 
+  calibration_total += getResistanceCalculation(analogRead(mq_pin));
+  calibration_avg = calibration_total/calibration_count;
  
-  for (i=0;i<CALIBRATION_SAMPLE_TIMES;i++) {            //take multiple samples
-    val += getResistanceCalculation(analogRead(mq_pin));
-    delay(CALIBRATION_SAMPLE_INTERVAL);
-  }
-  val = val/CALIBRATION_SAMPLE_TIMES;                   //calculate the average value
- 
-  val = val/RO_CLEAN_AIR_FACTOR;                        //divided by RO_CLEAN_AIR_FACTOR yields the Ro 
-                                                        //according to the chart in the datasheet 
- 
-  return val;	
+  return (long)calibration_avg * exp((log(O3Curve[0]/10)/O3Curve[1]));	
 }
 
 /*****************************  getChlorineGasPercentage **********************************
