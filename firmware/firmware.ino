@@ -3,6 +3,7 @@
 #include "HttpClient.h"
 #include "idDHT22.h"
 #include "MQ131.h"
+#include "SimpleEeprom.h"
 
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
@@ -25,7 +26,9 @@ void dht22_wrapper();
 // DHT instantiate
 idDHT22 DHT22(D2, dht22_wrapper);
 MQ131 mq131;
+SimpleEeprom flash;
 
+union float2bytes {float f; char b[sizeof(float)]; };
 int unix_time = 0;
 int delay_ms = 0;
 int reading_time = 0;
@@ -52,6 +55,7 @@ http_response_t response;
 
 void setup()
 {
+  mq131_Ro = flash.readFloat(0);
   // Register a Spark variable here
   Spark.variable("temperature", &temperature, DOUBLE);
   Spark.variable("humidity", &humidity, DOUBLE);
@@ -102,6 +106,7 @@ void loop()
 	  rs.setReadingSent();
 	  break;	    
 	case rs.CALIBRATING:
+	  delay_ms=CALIBRATION_SAMPLE_INTERVAL;
       calibration_count++;
 	  if(calibration_count<=1) {
 		mq131.startCalibrating();
@@ -110,6 +115,7 @@ void loop()
 	  if(calibration_count==CALIBRATION_SAMPLE_TIMES) { // Calibration Complete
 		  beep(200);
 		  rs.setCalibratingComplete();
+		  flash.writeFloat(mq131_Ro, 0);
 	  }
 	  color=rgbLed.BLUE;
 	  break;	  	  
@@ -151,3 +157,4 @@ void beep(int delay_ms) {
 	delay(delay_ms);
 	analogWrite(BUZZER_PIN, 0);
 }
+

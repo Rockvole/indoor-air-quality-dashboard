@@ -9,4 +9,5 @@ DHT22/idDHT22.cpp
 DHT22/idDHT22.h
 MQ131/MQ131.cpp
 MQ131/MQ131.h
-
+SimpleEeprom/SimpleEeprom.cpp
+SimpleEeprom/SimpleEeprom.h
