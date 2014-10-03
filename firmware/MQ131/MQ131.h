@@ -26,16 +26,30 @@
 
 class MQ131 {
   public:
-    MQ131() {};
-    float calibrateInCleanAir(int mq_pin);
-    float getResistanceCalculation(int raw_adc);    
+    MQ131(int sampling_frequency, int sampling_interval_ms) {
+	  _sampling_frequency = sampling_frequency;
+	  _sampling_interval_ms = sampling_interval_ms;
+	  _is_sampling_complete = true;
+	}  
+    void startSampling(unsigned long start_time_ms);
+    bool isSamplingComplete();
+    float getResistanceCalculation(int raw_adc);
+    float getResistanceCalculationAverage(int raw_adc, unsigned long current_time_ms);
     int getOzoneGasPercentage(float rs_ro_ratio, float ro);
     int getChlorineGasPercentage(float rs_ro_ratio, float ro);
     void startCalibrating();
+    float calibrateInCleanAir(int mq_pin);    
   private:	
+    bool _is_sampling_complete;
+    int _sampling_count;
+    int _sampling_frequency;
+    int _sampling_interval_ms;
   	int calibration_count;
 	float calibration_total;
+	unsigned long _start_time_ms;
+	float _sample_sum;
     float CL2Curve[2] =  {56.01727602, -1.359048399}; 
     float O3Curve[2]  =  {42.84561841, -1.043297135}; 
+    MQ131() {};    
 	int getPercentage(float rs_ro_ratio, float ro, float *pcurve);
 };

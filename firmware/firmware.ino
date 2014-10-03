@@ -9,7 +9,8 @@
 #define PRE_HEAT_SECS 100
 #define CALIBRATION_SAMPLE_FREQUENCY 50
 #define CALIBRATION_SAMPLE_INTERVAL 500
-#define SAMPLING_FREQUENCY 5   // Number of times to sample sensor
+#define SAMPLING_FREQUENCY 5      // Number of times to sample sensor
+#define SAMPLING_INTERVAL_MS 50   // Number of ms between samples
 #define BUZZER_PIN A4
 #define CALIBRATE_BTN D4
 #define READING_BTN D3
@@ -25,23 +26,22 @@ HttpClient http;
 void dht22_wrapper();
 // DHT instantiate
 idDHT22 DHT22(D2, dht22_wrapper);
-MQ131 mq131;
+MQ131 mq131(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
 SimpleEeprom flash;
 
 union float2bytes {float f; char b[sizeof(float)]; };
 int unix_time = 0;
 int delay_ms = 0;
 int reading_time = 0;
-int sampling_count=0;
 int heating_count=0;
 int calibration_count=0;
 int stage=0;
+bool first_sample=true;
 
 double temperature = 0;
 double humidity = 0;
 
 float mq131_Ro = 2.501;
-float mq131_sample_sum = 0;
 int   mq131_sample_avg = 0;
 int   mq131_ozone = 0;
 int   mq131_chlorine = 0;
@@ -84,55 +84,65 @@ void loop()
   stage=rs.getStage(unix_time);
   switch(stage) {  
 	case rs.SAMPLING:
-	  if(sampling_count==0) {
-        sewer = analogRead(A0);		  
-	  }
-	  mq131_sample_sum  += mq131.getResistanceCalculation(analogRead(A3));
-	  
-	  sampling_count++;	  
-	  mq131_sample_avg = mq131_sample_sum/sampling_count;
-
-	  if(sampling_count>=SAMPLING_FREQUENCY) { // End of sampling - do final calculations
+	  {
+	    unsigned long current_ms = millis();	
+	    if(first_sample) {
+		  first_sample=false;  
+          sewer = analogRead(A0);
+          mq131.startSampling(current_ms);	
+          reading_time = unix_time;  
+	    }
+	    mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(A3), current_ms);
+	    if(mq131.isSamplingComplete()) { // End of sampling - do final calculations
 		  mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
 		  mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);
 		  rs.setSamplingComplete();
-	  }
-	  delay_ms=50;
+	    }
+	    delay_ms=0;
+      }
 	  break;
 	case rs.SEND_READING:
-	  sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&unix_time=%i", Spark.deviceID().c_str(), temperature, humidity, mq131_ozone, mq131_chlorine, sewer, reading_time);  
-      request.path = url;
-      http.get(request, response);	
-	  rs.setReadingSent();
+	  {
+	    sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&unix_time=%i", Spark.deviceID().c_str(), temperature, humidity, mq131_ozone, mq131_chlorine, sewer, reading_time);  
+        request.path = url;
+        http.get(request, response);	
+	    rs.setReadingSent();
+      }
 	  break;	    
 	case rs.CALIBRATING:
-	  delay_ms=CALIBRATION_SAMPLE_INTERVAL;
-      calibration_count++;
-	  if(calibration_count<=1) {
-		mq131.startCalibrating();
-	  }
-	  mq131_Ro = mq131.calibrateInCleanAir(SENSOR_MQ131);
-	  if(calibration_count==CALIBRATION_SAMPLE_TIMES) { // Calibration Complete
+	  {
+	    delay_ms=CALIBRATION_SAMPLE_INTERVAL;
+        calibration_count++;
+	    if(calibration_count<=1) {
+		  mq131.startCalibrating();
+	    }
+	    mq131_Ro = mq131.calibrateInCleanAir(SENSOR_MQ131);
+	    if(calibration_count==CALIBRATION_SAMPLE_TIMES) { // Calibration Complete
 		  beep(200);
 		  rs.setCalibratingComplete();
 		  flash.writeFloat(mq131_Ro, 0);
-	  }
-	  color=rgbLed.BLUE;
+	    }
+	    color=rgbLed.BLUE;
+      }
 	  break;	  	  
 	case rs.PRE_HEAT_CALIBRATING:
 	  calibration_count=0;
 	case rs.PRE_HEATING:
-	  color=rgbLed.ORANGE;
-	  if(heating_count==0) {  // Take ambient temperature before pre-heating
-	    read_dht22();
-	  }
-	  heating_count++;
+	  {
+	    color=rgbLed.ORANGE;
+	    if(heating_count==0) {  // Take ambient temperature before pre-heating
+	      read_dht22();
+	    }
+	    heating_count++;
+      }
 	  break;
 	case rs.BUTTON_SAMPLING:
 	  break;	  
 	case rs.CONTINUE:
-	  sampling_count=0;
-	  heating_count=0;
+	  {
+	    first_sample=true;
+	    heating_count=0;
+      }
 	  break;		    
 	default:  
 	  delay(1);
