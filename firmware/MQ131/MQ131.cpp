@@ -1,6 +1,5 @@
 #include "MQ131.h"
 
-
 void MQ131::startSampling(unsigned long start_time_ms) 
 {
   _start_time_ms = start_time_ms;
