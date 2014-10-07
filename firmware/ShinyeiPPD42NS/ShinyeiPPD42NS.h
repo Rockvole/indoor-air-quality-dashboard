@@ -2,7 +2,7 @@
 
 class ShinyeiPPD42NS {
   public:
-    ShinyeiPPD42NS(unsigned long sampling_interval_ms) {
+    ShinyeiPPD42NS(float sampling_interval_ms) {
 	  _sampling_interval_ms = sampling_interval_ms;
 	  _is_sampling_complete = false;
 	}
@@ -13,7 +13,7 @@ class ShinyeiPPD42NS {
     ShinyeiPPD42NS() { }
     unsigned long _start_time_ms;
     unsigned long _low_pulse_occupancy;	
-    unsigned long _sampling_interval_ms;
+    float _sampling_interval_ms;
     float _concentration;
     bool _is_sampling_complete;
 };
