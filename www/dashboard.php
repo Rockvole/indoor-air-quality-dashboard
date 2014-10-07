@@ -144,6 +144,36 @@ if(!isset($row['ts'])) {
   echo "</tr>";
   echo "</table>";
   echo "</div>";
+  // ------------------------------------------------------------------- Dust
+  echo "<div class='container'>";  
+  echo "<table border=0>";      
+  echo "<tr>";
+  if($size==2) {
+    echo "<td></td>";
+  }  
+  echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
+  echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";    
+  echo "</td>";  
+  echo "</tr>";
+  echo "<tr>";  
+  if($size==2) {  
+    echo "<td rowspan=2 width=$range_width style='height:100%'>";
+    echo "  <div style='height:100%;overflow:auto;'>";  
+    echo "  <table style='width:100%;height:100%' border=0>";
+    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+    echo "  </table>";
+    echo "  </div>";  
+    echo "</td>";
+  }
+  echo "<td>";
+  echo "<img src='graphs/dust.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
+  echo "</td>";
+  echo "</tr>";
+ 
+  echo "</table>";
+  echo "</div>";  
   // ------------------------------------------------------------------- Ozone and Chlorine
   echo "<div class='container'>";  
   echo "<table border=0>";      
