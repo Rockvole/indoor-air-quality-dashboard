@@ -23,7 +23,6 @@
 #define BLUE_LED A7
 
 #define SENSOR_MQ131            A3
-#define SENSOR_TGS2602          A0
 
 ReadingSync rs (INTERVAL_MINS, PRE_HEAT_SECS, Time.now());
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
@@ -96,13 +95,13 @@ void loop()
 	    unsigned long current_ms = millis();	
 	    if(first_sample) {
 		  first_sample=false;  
-          sewer = analogRead(SENSOR_TGS2602);
+          sewer = analogRead(A0);
           mq131.startSampling(current_ms);
           dust.startSampling(current_ms);
           reading_time = unix_time;
 	    }
 	    if(!mq131.isSamplingComplete()) {
-	      mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(SENSOR_MQ131), current_ms);
+	      mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(A3), current_ms);
 	    }
 	    if(!dust.isSamplingComplete()) {
           unsigned long duration = pulseIn(DUST_PIN, LOW);

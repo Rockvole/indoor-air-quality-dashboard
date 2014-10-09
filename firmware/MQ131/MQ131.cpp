@@ -38,7 +38,7 @@ Remarks: The sensor and the load resistor forms a voltage divider. Given the vol
 ************************************************************************************/ 
 float MQ131::getResistanceCalculation(int raw_adc)
 {
-  return ( ((float)RL_VALUE*(1023-raw_adc)/raw_adc));
+  return (1024*1000*RL_VALUE) / (raw_adc - RL_VALUE);
 }
 
 void MQ131::startCalibrating() {
