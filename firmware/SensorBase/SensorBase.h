@@ -8,6 +8,7 @@
   License: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
  
 */
+#include <cmath>
 
 class SensorBase {
   public:
@@ -20,7 +21,9 @@ class SensorBase {
     void startSampling(unsigned long start_time_ms);
     bool isSamplingComplete();
     float getResistanceCalculation(int raw_adc);
-    float getResistanceCalculationAverage(int raw_adc, unsigned long current_time_ms);    
+    float getResistanceCalculationAverage(int raw_adc, unsigned long current_time_ms); 
+    void startCalibrating();
+    float calibrateInCleanAir(int raw_adc, int ppm, float *pcurve);       
   protected:
     bool _is_sampling_complete;
     int _sampling_interval_ms;    
@@ -28,6 +31,9 @@ class SensorBase {
     int _sampling_count;    
     int _rl_value;
 	float _sample_sum;  
-	unsigned long _start_time_ms;	
+	unsigned long _start_time_ms;
+  	int calibration_count;	
+	float calibration_total;  		
     SensorBase() {};
+	int getPercentage(float rs_ro_ratio, float ro, float *pcurve);    
 };

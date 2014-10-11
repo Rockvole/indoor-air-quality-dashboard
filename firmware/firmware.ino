@@ -131,8 +131,8 @@ void loop()
 	    if(calibration_count<=1) {
 		  mq131.startCalibrating();
 	    }
-	    mq131_Ro = mq131.calibrateInCleanAir(SENSOR_MQ131);
-	    if(calibration_count==CALIBRATION_SAMPLE_TIMES) { // Calibration Complete
+	    mq131_Ro = mq131.calibrateInCleanAir(analogRead(SENSOR_MQ131));
+	    if(calibration_count==CALIBRATION_SAMPLE_FREQUENCY) { // Calibration Complete
 		  beep(200);
 		  rs.setCalibratingComplete();
 		  flash.writeFloat(mq131_Ro, 0);

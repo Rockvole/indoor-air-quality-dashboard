@@ -40,3 +40,40 @@ float SensorBase::getResistanceCalculation(int raw_adc)
 {
   return (1024 * 1000 * _rl_value) / (raw_adc - _rl_value);
 }
+
+/*****************************  getPercentage **********************************
+Input:   rs_ro_ratio - Rs divided by Ro
+         pcurve      - pointer to the curve of the target gas
+Output:  ppm of the target gas
+Remarks: By using the slope and a point of the line. The x(logarithmic value of ppm) 
+         of the line could be derived if y(rs_ro_ratio) is provided. As it is a 
+         logarithmic coordinate, power of 10 is used to convert the result to non-logarithmic 
+         value.
+************************************************************************************/
+int SensorBase::getPercentage(float rs_ro_ratio, float ro, float *pcurve)
+{
+  return (double)(pcurve[0] * pow(((double)rs_ro_ratio/ro), pcurve[1]));
+}
+
+void SensorBase::startCalibrating() {
+	calibration_count=0;
+	calibration_total=0;
+}
+
+/***************************** calibrateInCleanAir ****************************************
+Input:   mq_pin - analog channel
+Output:  Ro of the sensor
+Remarks: This function assumes that the sensor is in clean air. It use  
+         MQResistanceCalculation to calculates the sensor resistance in clean air 
+         and then divides it with RO_CLEAN_AIR_FACTOR. RO_CLEAN_AIR_FACTOR is about 
+         10, which differs slightly between different sensors.
+************************************************************************************/ 
+float SensorBase::calibrateInCleanAir(int raw_adc, int ppm, float *pcurve) {
+  float calibration_avg;
+  
+  calibration_count++; 
+  calibration_total += getResistanceCalculation(raw_adc);
+  calibration_avg = calibration_total/calibration_count;
+ 
+  return (long)calibration_avg * exp((log(pcurve[0]/ppm)/pcurve[1]));	
+}
