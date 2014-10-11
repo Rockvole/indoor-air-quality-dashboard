@@ -7,10 +7,13 @@ RgbLedControl/RgbLedControl.cpp
 RgbLedControl/RgbLedControl.h
 DHT22/idDHT22.cpp
 DHT22/idDHT22.h
-MQ131/MQ131.cpp
-MQ131/MQ131.h
 SimpleEeprom/SimpleEeprom.cpp
 SimpleEeprom/SimpleEeprom.h
 ShinyeiPPD42NS/ShinyeiPPD42NS.cpp
 ShinyeiPPD42NS/ShinyeiPPD42NS.h
 ShinyeiPPD42NS/function_pulseIn.h
+SensorBase/SensorBase.cpp
+SensorBase/SensorBase.h
+MQ131/MQ131.cpp
+MQ131/MQ131.h
+

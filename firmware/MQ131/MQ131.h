@@ -15,6 +15,7 @@
   License: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
  
 */
+#include "SensorBase.h"
 #include <cmath>
 #include "spark_wiring_tcpclient.h"
 
@@ -24,30 +25,19 @@
 #define CALIBRATION_SAMPLE_TIMES     50    //define how many samples you are going to take in the calibration phase
 #define CALIBRATION_SAMPLE_INTERVAL  500   //define the time interval(in milliseconds) between each sample in the calibration phase
 
-class MQ131 {
+class MQ131: public SensorBase {
   public:
-    MQ131(int sampling_frequency, int sampling_interval_ms) {
-	  _sampling_frequency = sampling_frequency;
-	  _sampling_interval_ms = sampling_interval_ms;
-	  _is_sampling_complete = true;
+    MQ131(int sampling_frequency, int sampling_interval_ms)
+    : SensorBase(sampling_frequency, sampling_interval_ms, RL_VALUE)
+    {
 	}  
-    void startSampling(unsigned long start_time_ms);
-    bool isSamplingComplete();
-    float getResistanceCalculation(int raw_adc);
-    float getResistanceCalculationAverage(int raw_adc, unsigned long current_time_ms);
     int getOzoneGasPercentage(float rs_ro_ratio, float ro);
     int getChlorineGasPercentage(float rs_ro_ratio, float ro);
     void startCalibrating();
     float calibrateInCleanAir(int mq_pin);    
   private:	
-    bool _is_sampling_complete;
-    int _sampling_count;
-    int _sampling_frequency;
-    int _sampling_interval_ms;
   	int calibration_count;
 	float calibration_total;
-	unsigned long _start_time_ms;
-	float _sample_sum;
     float CL2Curve[2] =  {56.01727602, -1.359048399}; 
     float O3Curve[2]  =  {42.84561841, -1.043297135}; 
     MQ131() {};    
