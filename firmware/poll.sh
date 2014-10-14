@@ -17,10 +17,16 @@ do
   echo stage
   spark get rockvole4 stage
 
+  echo tgs2602
+  spark get rockvole4 tgs2602
+
+  echo mq131
+  spark get rockvole4 mq131
+
   echo url
   spark get rockvole4 url
   
-  sleep 30
+  sleep 60
 done
 
 

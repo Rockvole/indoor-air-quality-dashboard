@@ -17,19 +17,17 @@
 */
 #include "SensorBase.h"
 
-#define RL_VALUE                     50    //define the load resistance on the board, in kilo ohms
-
-class MQ131: public SensorBase {
-  public:
+class MQ131: public SensorBase { 	
+  public:  	  
     MQ131(int sampling_frequency, int sampling_interval_ms)
-    : SensorBase(sampling_frequency, sampling_interval_ms, RL_VALUE)
+    : SensorBase(sampling_frequency, sampling_interval_ms, 51)
     {
 	}  
     int getOzoneGasPercentage(float rs_ro_ratio, float ro);
     int getChlorineGasPercentage(float rs_ro_ratio, float ro);
-    float calibrateInCleanAir(int raw_adc);    
-  private:	
+    float calibrateInCleanAir(int raw_adc);
+  private:
     float CL2Curve[2] =  {56.01727602, -1.359048399}; 
     float O3Curve[2]  =  {42.84561841, -1.043297135}; 
-    MQ131() {};    
+    MQ131() {};     
 };
