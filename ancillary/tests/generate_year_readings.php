@@ -15,7 +15,7 @@ $curr_hum=rand(0,100);
 $curr_dust=rand(0,40000);
 $curr_ozone=rand(0,10);
 $curr_chlorine=rand(0,10);
-$curr_sewer=rand(0,1500);
+$curr_sewer=rand(0,100);
 
 do {
   $curr_ts_utc = $curr_ts->format('U');
@@ -41,9 +41,9 @@ do {
   if($curr_chlorine<0) $curr_chlorine=0;
   if($curr_chlorine>10) $curr_chlorine=10;    
   // Sewer
-  $curr_sewer=$curr_sewer+(rand(0,150)-75);
+  $curr_sewer=$curr_sewer+(rand(0,6)-3);
   if($curr_sewer<0) $curr_sewer=0;
-  if($curr_sewer>1500) $curr_sewer=1500;
+  if($curr_sewer>100) $curr_sewer=100;
 
   $response = file_get_contents("http://$ip/get_reading.php?core_id=68e07a&temp=$curr_temp&hum=$curr_hum&dust=$curr_dust&ozone=$curr_ozone&chlorine=$curr_chlorine&sewer=$curr_sewer&unix_time=$curr_ts_utc");  
   echo $response."\n";

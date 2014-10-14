@@ -103,7 +103,7 @@ void setup()
 }
 
 void dht22_wrapper() {
-	DHT22.isrCallback();
+    DHT22.isrCallback();
 }
 
 void loop()
@@ -113,103 +113,103 @@ void loop()
   delay_ms=200;
   stage=rs.getStage(unix_time);
   switch(stage) {  
-	case rs.SAMPLING:
-	  {
-	    unsigned long current_ms = millis();	
-	    if(first_sample) {
-		  first_sample=false;  
+    case rs.SAMPLING:
+      {
+        unsigned long current_ms = millis();    
+        if(first_sample) {
+          first_sample=false;  
           tgs2602.startSampling(current_ms);
           mq131.startSampling(current_ms);
           dust.startSampling(current_ms);
           reading_time = unix_time;
-	    }
+        }
         if(!tgs2602.isSamplingComplete()) {
-		  tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
-        }	    
-	    if(!mq131.isSamplingComplete()) {
-	      mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(SENSOR_MQ131), current_ms);
-	    }
-	    if(!dust.isSamplingComplete()) {
+          tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
+        }       
+        if(!mq131.isSamplingComplete()) {
+          mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(SENSOR_MQ131), current_ms);
+        }
+        if(!dust.isSamplingComplete()) {
           unsigned long duration = pulseIn(DUST_PIN, LOW);
           dust_concentration = dust.getConcentration(duration, current_ms);          
-		}
-	    if(mq131.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
-	      tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);			
-		  mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
-		  mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);			
-		  rs.setSamplingComplete();			
-		}
-	    delay_ms=0;
+        }
+        if(mq131.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
+          tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
+          mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
+          mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);          
+          rs.setSamplingComplete();         
+        }
+        delay_ms=0;
       }
-	  break;
-	case rs.SEND_READING:
-	  {
-	    sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", Spark.deviceID().c_str(), temperature, humidity, mq131_ozone, mq131_chlorine, tgs2602_sewer, dust_concentration, reading_time);  
+      break;
+    case rs.SEND_READING:
+      {
+        sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", Spark.deviceID().c_str(), temperature, humidity, mq131_ozone, mq131_chlorine, tgs2602_sewer, dust_concentration, reading_time);  
         request.path = url;
-        http.get(request, response);	
-	    rs.setReadingSent();
+        http.get(request, response);    
+        rs.setReadingSent();
       }
-	  break;	    
-	case rs.CALIBRATING:
-	  {
-	    delay_ms=CALIBRATION_SAMPLE_INTERVAL;
+      break;        
+    case rs.CALIBRATING:
+      {
+        delay_ms=CALIBRATION_SAMPLE_INTERVAL;
         calibration_count++;
-	    if(calibration_count<=1) {
-		  tgs2602.startCalibrating();			
-		  mq131.startCalibrating();
-	    }
-	    tgs2602_Ro = tgs2602.calibrateInCleanAir(analogRead(SENSOR_TGS2602));
-	    mq131_Ro = mq131.calibrateInCleanAir(analogRead(SENSOR_MQ131));
-	    if(calibration_count==CALIBRATION_SAMPLE_FREQUENCY) { // Calibration Complete
-		  beep(200);
-		  rs.setCalibratingComplete();
-	      sprintf(mq131_display,"%.3f",mq131_Ro);		  
-		  flash.writeFloat(mq131_Ro, 0);
-		  flash.writeFloat(tgs2602_Ro, 4);
-	    }
-	    color=rgbLed.BLUE;
+        if(calibration_count<=1) {
+          tgs2602.startCalibrating();           
+          mq131.startCalibrating();
+        }
+        tgs2602_Ro = tgs2602.calibrateInCleanAir(analogRead(SENSOR_TGS2602));
+        mq131_Ro = mq131.calibrateInCleanAir(analogRead(SENSOR_MQ131));
+        if(calibration_count==CALIBRATION_SAMPLE_FREQUENCY) { // Calibration Complete
+          beep(200);
+          rs.setCalibratingComplete();
+          sprintf(mq131_display,"%.3f",mq131_Ro);         
+          flash.writeFloat(mq131_Ro, 0);
+          flash.writeFloat(tgs2602_Ro, 4);
+        }
+        color=rgbLed.BLUE;
       }
-	  break;	  	  
-	case rs.PRE_HEAT_CALIBRATING:
-	  calibration_count=0;
-	case rs.PRE_HEATING:
-	  {
-	    color=rgbLed.ORANGE;
-	    if(heating_count==0) {  // Take ambient temperature before pre-heating
-	      read_dht22();
-	    }
-	    heating_count++;
+      break;          
+    case rs.PRE_HEAT_CALIBRATING:
+      calibration_count=0;
+    case rs.PRE_HEATING:
+      {
+        color=rgbLed.ORANGE;
+        if(heating_count==0) {  // Take ambient temperature before pre-heating
+          read_dht22();
+        }
+        heating_count++;
       }
-	  break;
-	case rs.BUTTON_SAMPLING:
-	  break;	  
-	case rs.CONTINUE:
-	  {
-	    first_sample=true;
-	    heating_count=0;
+      break;
+    case rs.BUTTON_SAMPLING:
+      break;      
+    case rs.CONTINUE:
+      {
+        first_sample=true;
+        heating_count=0;
       }
-	  break;		    
-	default:  
-	  delay(1);
+      break;            
+    default:  
+      delay(1);
   }  
   rgbLed.setLedColor(delay_ms, 100, 3000, color);
   if(digitalRead(CALIBRATE_BTN)==LOW) {
-	  rs.startCalibrating(unix_time);
+      rs.startCalibrating(unix_time);
   }
   delay(delay_ms);  
 }
 
 void read_dht22() {
   DHT22.acquire();
-  while (DHT22.acquiring());	
-	
+  while (DHT22.acquiring());    
+    
   humidity = DHT22.getHumidity();
-  temperature = DHT22.getCelsius();	
+  temperature = DHT22.getCelsius(); 
 }
 
 void beep(int delay_ms) {
-	analogWrite(BUZZER_PIN, 255);
-	delay(delay_ms);
-	analogWrite(BUZZER_PIN, 0);
+    analogWrite(BUZZER_PIN, 255);
+    delay(delay_ms);
+    analogWrite(BUZZER_PIN, 0);
 }
 

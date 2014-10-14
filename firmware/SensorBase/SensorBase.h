@@ -16,11 +16,11 @@
 class SensorBase {
   public:
     SensorBase(int sampling_frequency, int sampling_interval_ms, int rl_value) {
-	  _sampling_frequency = sampling_frequency;
-	  _sampling_interval_ms = sampling_interval_ms;
-	  _rl_value = rl_value;
-	  _is_sampling_complete = true;
-	}  
+      _sampling_frequency = sampling_frequency;
+      _sampling_interval_ms = sampling_interval_ms;
+      _rl_value = rl_value;
+      _is_sampling_complete = true;
+    }  
     void startSampling(unsigned long start_time_ms);
     bool isSamplingComplete();
     float getResistanceCalculation(int raw_adc);
@@ -32,13 +32,13 @@ class SensorBase {
     int _sampling_frequency;      
     int _sampling_count;    
     int _rl_value;
-	float _sample_sum;  
-	unsigned long _start_time_ms;
-  	int calibration_count;	
-	float calibration_total;  		
+    float _sample_sum;  
+    unsigned long _start_time_ms;
+    int calibration_count;  
+    float calibration_total;        
     SensorBase() {};
-	int getPercentage(float rs_ro_ratio, float ro, float *pcurve);    
-    float calibrateInCleanAir(int raw_adc, int ppm, float *pcurve); 	
+    int getPercentage(float rs_ro_ratio, float ro, float *pcurve);    
+    float calibrateInCleanAir(int raw_adc, int ppm, float *pcurve);     
 };
 
 #endif //Included_SensorBase_H

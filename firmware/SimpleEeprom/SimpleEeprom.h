@@ -5,9 +5,9 @@
  */
 
 class SimpleEeprom {
-	public:
-	  void writeFloat(float value, int offset);
-	  float readFloat(int offset);
-	private:
-	  union float2bytes {float f; char b[sizeof(float)]; };
+    public:
+      void writeFloat(float value, int offset);
+      float readFloat(int offset);
+    private:
+      union float2bytes {float f; char b[sizeof(float)]; };
 };

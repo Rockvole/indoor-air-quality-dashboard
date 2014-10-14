@@ -13,13 +13,13 @@ float SensorBase::getResistanceCalculationAverage(int raw_adc, unsigned long cur
   float sampling_average = 0;
   if(!_is_sampling_complete) 
   {
-	if((current_time_ms - _start_time_ms) > _sampling_interval_ms)
-	{
-	  _sample_sum += getResistanceCalculation(raw_adc);
-	  _start_time_ms = current_time_ms;
-	  _sampling_count++;	  
-	  sampling_average = _sample_sum / _sampling_count;
-	  if(_sampling_count >= _sampling_frequency) _is_sampling_complete = true;
+    if((current_time_ms - _start_time_ms) > _sampling_interval_ms)
+    {
+      _sample_sum += getResistanceCalculation(raw_adc);
+      _start_time_ms = current_time_ms;
+      _sampling_count++;      
+      sampling_average = _sample_sum / _sampling_count;
+      if(_sampling_count >= _sampling_frequency) _is_sampling_complete = true;
     }
   }
   return sampling_average;
@@ -56,8 +56,8 @@ int SensorBase::getPercentage(float rs_ro_ratio, float ro, float *pcurve)
 }
 
 void SensorBase::startCalibrating() {
-	calibration_count=0;
-	calibration_total=0;
+    calibration_count=0;
+    calibration_total=0;
 }
 
 /***************************** calibrateInCleanAir ****************************************
@@ -75,5 +75,5 @@ float SensorBase::calibrateInCleanAir(int raw_adc, int ppm, float *pcurve) {
   calibration_total += getResistanceCalculation(raw_adc);
   calibration_avg = calibration_total/calibration_count;
  
-  return (long)calibration_avg * exp((log(pcurve[0]/ppm)/pcurve[1]));	
+  return (long)calibration_avg * exp((log(pcurve[0]/ppm)/pcurve[1]));   
 }

@@ -4,7 +4,7 @@
   connect the sensor as follows :
 
   A H A   >>> 5V
-  B	  >>> A0
+  B   >>> A0
   H       >>> GND
   B       >>> 10K ohm >>> GND
   
@@ -17,12 +17,12 @@
 */
 #include "SensorBase.h"
 
-class MQ131: public SensorBase { 	
-  public:  	  
+class MQ131: public SensorBase {    
+  public:     
     MQ131(int sampling_frequency, int sampling_interval_ms)
     : SensorBase(sampling_frequency, sampling_interval_ms, 51)
     {
-	}  
+    }  
     int getOzoneGasPercentage(float rs_ro_ratio, float ro);
     int getChlorineGasPercentage(float rs_ro_ratio, float ro);
     float calibrateInCleanAir(int raw_adc);

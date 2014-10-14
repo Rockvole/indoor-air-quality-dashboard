@@ -4,7 +4,7 @@
   connect the sensor as follows :
 
   A H A   >>> 5V
-  B	  >>> A0
+  B   >>> A0
   H       >>> GND
   B       >>> 10K ohm >>> GND
   
@@ -22,7 +22,7 @@ class TGS2602: public SensorBase {
     TGS2602(int sampling_frequency, int sampling_interval_ms)
     : SensorBase(sampling_frequency, sampling_interval_ms, 1)
     {
-	}
+    }
     int getSewerGasPercentage(float rs_ro_ratio, float ro);
     int getTolueneGasPercentage(float rs_ro_ratio, float ro);
     int getEthanolGasPercentage(float rs_ro_ratio, float ro); 

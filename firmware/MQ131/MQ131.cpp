@@ -23,5 +23,5 @@ int MQ131::getOzoneGasPercentage(float rs_ro_ratio, float ro)
 }
 
 float MQ131::calibrateInCleanAir(int raw_adc) {
-	SensorBase::calibrateInCleanAir(raw_adc, 10, O3Curve);
+  SensorBase::calibrateInCleanAir(raw_adc, 10, O3Curve);
 }
