@@ -30,64 +30,83 @@ int basic_tests() {
   std::cout << "--------------------------------------------------------------------------\n";
 
   if(rs.getStartOfDayUnixTime(C_TEST_BEFORE)!=1409011200) {
-	  std::cout << "Error start of day calculation incorrect\n";
-	  return(0);
+      std::cout << "Error start of day calculation incorrect\n";
+      return(0);
   }
   if(rs.getStage(C_TEST_BEFORE)!=rs.CONTINUE) {
-	  std::cout << "We should be continuing until we reach pre-heat time, stage=" << rs.getStage(C_TEST_BEFORE) << "\n";
-	  return(0);	  	  
+      std::cout << "We should be continuing until we reach pre-heat time, stage=" << rs.getStage(C_TEST_BEFORE) << "\n";
+      return(0);          
   }
  
   if(rs.getStage(C_TEST_PRE_HEAT)!=rs.PRE_HEATING) {
-	  std::cout << "We should be in pre-heat stage, stage=" << rs.getStage(C_TEST_PRE_HEAT) << "\n";
-	  return(0);	  	  
+      std::cout << "We should be in pre-heat stage, stage=" << rs.getStage(C_TEST_PRE_HEAT) << "\n";
+      return(0);          
   }  
   if(rs.getStage(C_TEST_SAMPLING)!=rs.SAMPLING) {
-	  std::cout << "Not time to take samples, stage=" << rs.getStage(C_TEST_SAMPLING) << "\n";
-	  return(0);	  	  
+      std::cout << "Not time to take samples, stage=" << rs.getStage(C_TEST_SAMPLING) << "\n";
+      return(0);          
   }
   rs.setSamplingComplete();
   if(rs.getStage(C_TEST_AFTER)!=rs.CONTINUE) {
-	  std::cout << "Must be continue, stage=" << rs.getStage(C_TEST_AFTER) << "\n";
-	  return(0);	  	  
+      std::cout << "Must be continue, stage=" << rs.getStage(C_TEST_AFTER) << "\n";
+      return(0);          
   }  
   return(0);
 }
 
 int loop_tests() {
   ReadingSync rs (C_MINS_BETWEEN_READINGS, C_SECS_TO_PRE_HEAT, time(0));
-  int send_count=0;	
+  int send_count=0; 
   ReadingSync::Stage currStage;
   for(int curr_secs=0;curr_secs<3600;curr_secs++) {
+    if(curr_secs==1000) rs.startUserSampling(C_TEST_5AM + curr_secs);
+    if(curr_secs==1600) rs.setUserSamplingComplete();            
     if(curr_secs==2000) rs.startCalibrating(C_TEST_5AM + curr_secs);
-    if(curr_secs==2600) rs.setCalibratingComplete();	  
-	currStage=rs.getStage(C_TEST_5AM + curr_secs);
+    if(curr_secs==2600) rs.setCalibratingComplete();      
+    currStage=rs.getStage(C_TEST_5AM + curr_secs);
 
     std::cout << "time=" << (C_TEST_5AM + curr_secs) << "||curr_secs=" << curr_secs << "||stage=" << currStage << "\n";
+    // ----------------------------------------------------------------- SCHEDULED SAMPLING    
     if(curr_secs>=0 && curr_secs<=100) {
-	  if(currStage!=rs.SAMPLING) {
-		std::cout << "Must be time to take samples at 5am\n";
-	    return(0);		
+      if(currStage!=rs.SAMPLING) {
+        std::cout << "Must be time to take samples at 5am\n";
+        return(0);      
       }
       if(curr_secs==100) rs.setSamplingComplete();
-	} else if(curr_secs==3600) {
-	  if(currStage!=rs.SAMPLING) {
-	    std::cout << "Must be time to take samples at 6am\n";
-	    return(0);		
+    } else if(curr_secs==3600) {
+      if(currStage!=rs.SAMPLING) {
+        std::cout << "Must be time to take samples at 6am\n";
+        return(0);      
       }
-	} else {
-	  if(currStage==rs.SAMPLING) std::cout << "Must not be time to take samples\n";
-	}
+    } else {
+      if(currStage==rs.SAMPLING) std::cout << "Must not be time to take samples\n";
+    }
+    // ----------------------------------------------------------------- SEND READING    
     if(currStage==rs.SEND_READING) {
-      send_count++;		
-	  rs.setReadingSent();  	  
-    }	
+      send_count++;     
+      rs.setReadingSent();        
+    }   
+    // ----------------------------------------------------------------- PRE-HEATING    
     if(curr_secs>=3600 && curr_secs<3600) {
         if(currStage!=rs.PRE_HEATING) {
           std::cout << "Must be time to Pre-heat\n";
           return(0);
         }    
     }
+    // ----------------------------------------------------------------- USER SAMPLING
+    if(curr_secs>=1000 && curr_secs<1300) {
+        if(currStage!=rs.PRE_HEAT_USER_SAMPLING) {
+            std::cout << "Must be time to Pre-Heat User Sampling " << curr_secs << "||stage=" << currStage;
+            return(0);
+        }    
+    }    
+    if(curr_secs>=1300 && curr_secs<1600) {
+        if(currStage!=rs.USER_SAMPLING) {
+            std::cout << "Must be time to User Sample " << curr_secs << "||stage=" << currStage;
+            return(0);
+        }    
+    }         
+    // ----------------------------------------------------------------- CALIBRATING    
     if(curr_secs>=2000 && curr_secs<2300) {
         if(currStage!=rs.PRE_HEAT_CALIBRATING) {
             std::cout << "Must be time to Pre-Heat Calibrate " << curr_secs << "||stage=" << currStage;
@@ -100,10 +119,10 @@ int loop_tests() {
             return(0);
         }    
     }     
-  }	// curr_secs loop
+  } // curr_secs loop
   if(send_count!=1) {
-	std::cout << "We must have sent reading exactly once: count=" << send_count << "\n";
-	return(0);		
+    std::cout << "We must have sent reading exactly once: count=" << send_count << "\n";
+    return(0);      
   }
-  return(0);	
+  return(0);    
 }

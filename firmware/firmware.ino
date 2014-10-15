@@ -23,7 +23,7 @@
 #define BLUE_LED                A7
 
 #define DUST_PIN                D1
-#define READING_BTN             D3
+#define USER_SAMPLING_BTN       D3
 #define CALIBRATE_BTN           D4
 
 ReadingSync rs (INTERVAL_MINS, PRE_HEAT_SECS, Time.now());
@@ -94,6 +94,7 @@ void setup()
   Spark.variable("url", &url, STRING);
 
   pinMode(CALIBRATE_BTN, INPUT_PULLUP);
+  pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
   pinMode(BUZZER_PIN, OUTPUT); 
   pinMode(DUST_PIN, INPUT);   
   //request.hostname = "foodaversions.com";
@@ -112,7 +113,8 @@ void loop()
   unix_time=Time.now();
   delay_ms=200;
   stage=rs.getStage(unix_time);
-  switch(stage) {  
+  switch(stage) {
+    case rs.USER_SAMPLING:
     case rs.SAMPLING:
       {
         unsigned long current_ms = millis();    
@@ -169,9 +171,10 @@ void loop()
         }
         color=rgbLed.BLUE;
       }
-      break;          
+      break;
     case rs.PRE_HEAT_CALIBRATING:
       calibration_count=0;
+    case rs.PRE_HEAT_USER_SAMPLING:
     case rs.PRE_HEATING:
       {
         color=rgbLed.ORANGE;
@@ -181,8 +184,6 @@ void loop()
         heating_count++;
       }
       break;
-    case rs.BUTTON_SAMPLING:
-      break;      
     case rs.CONTINUE:
       {
         first_sample=true;
@@ -196,6 +197,9 @@ void loop()
   if(digitalRead(CALIBRATE_BTN)==LOW) {
       rs.startCalibrating(unix_time);
   }
+  if(digitalRead(USER_SAMPLING_BTN)==LOW) {
+      rs.startUserSampling(unix_time);
+  }  
   delay(delay_ms);  
 }
 

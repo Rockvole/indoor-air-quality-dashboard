@@ -2,6 +2,7 @@
 // Determine if its time to take a reading 
 // Determine if its time to send a reading
 
+// --------------------------------------------------------------------- TIMING
 int ReadingSync::getStartOfDayUnixTime(int currentTime) {
     int daysSinceEpoch=currentTime / (SECS_IN_DAY);
     return (daysSinceEpoch * SECS_IN_DAY);
@@ -48,6 +49,7 @@ bool ReadingSync::isTimeToSendReading(int currentTime) {
     return getSecsSinceStartOfDay(currentTime) >= next_send_secs;
 }
 
+// --------------------------------------------------------------------- CALIBRATION
 void ReadingSync::startCalibrating(int currentTime) {
     calibration_start_time=currentTime;
     _stage=PRE_HEAT_CALIBRATING;
@@ -57,6 +59,17 @@ void ReadingSync::setCalibratingComplete() {
     _stage=CONTINUE;
 }
 
+// --------------------------------------------------------------------- USER SAMPLING
+void ReadingSync::startUserSampling(int currentTime) {
+    user_sampling_start_time=currentTime;
+    _stage=PRE_HEAT_USER_SAMPLING;
+}
+
+void ReadingSync::setUserSamplingComplete() {
+    _stage=CONTINUE;
+}
+
+// --------------------------------------------------------------------- SCHEDULED SAMPLING
 void ReadingSync::setSamplingComplete() {
     next_send_secs = last_read_secs + (rand() % (secs_between_readings-120));   
     _stage=CONTINUE;
@@ -67,8 +80,16 @@ void ReadingSync::setReadingSent() {
     _stage=CONTINUE;
 }
 
+// --------------------------------------------------------------------- STAGE
 ReadingSync::Stage ReadingSync::getStage(int currentTime) {
-    if(_stage==PRE_HEAT_CALIBRATING) {
+    if(_stage==PRE_HEAT_USER_SAMPLING) {
+        if(currentTime>=(user_sampling_start_time+pre_heat_secs)) {
+            _stage=USER_SAMPLING;
+        }
+        return _stage;
+    } else if(_stage==USER_SAMPLING) {
+        return _stage;
+    } else if(_stage==PRE_HEAT_CALIBRATING) {
         if(currentTime>=(calibration_start_time+pre_heat_secs)) {
             _stage=CALIBRATING;
         }

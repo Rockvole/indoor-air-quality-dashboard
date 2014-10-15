@@ -16,13 +16,14 @@ class ReadingSync {
     public:
       enum Stage                 // What Stage are we currently at
       {
-        CONTINUE,                // 0 Continue looping - no action required
-        PRE_HEATING,             // 1 Turn on heaters to pre-heat sensors
-        SAMPLING,                // 2 We are currently sampling from sensors
-        SEND_READING,            // 3 Send sensor readings to remote
-        CALIBRATING,             // 4 User has pressed the calibrate button - so calibrate in clean air
-        PRE_HEAT_CALIBRATING,    // 5 User has pressed the calibrate button so now we need to pre-heat first
-        BUTTON_SAMPLING          // 6 User has pressed the take reading button - so start sampling now
+        CONTINUE,                  // 0 Continue looping - no action required
+        PRE_HEATING,               // 1 Turn on heaters to pre-heat sensors
+        SAMPLING,                  // 2 We are currently sampling from sensors
+        SEND_READING,              // 3 Send sensor readings to remote
+        CALIBRATING,               // 4 User has pressed the calibrate button - so calibrate in clean air
+        PRE_HEAT_CALIBRATING,      // 5 User has pressed the calibrate button so now we need to pre-heat first
+        PRE_HEAT_USER_SAMPLING,    // 6 User has pressed the take sample button - so pre-heat first
+        USER_SAMPLING              // 7 User has pressed the take sample button - so start sampling
       };       
       int secs_between_readings; // seconds between taking a reading
       int pre_heat_secs;         // total number of seconds we want to pre-heat for
@@ -41,14 +42,17 @@ class ReadingSync {
       }
       int getStartOfDayUnixTime(int currentTime);
       void startCalibrating(int currentTime);
+      void startUserSampling(int currentTime);
       void setReadingSent();
       void setSamplingComplete();
       void setCalibratingComplete();
+      void setUserSamplingComplete();
       Stage getStage(int currentTime);
     private:
       ReadingSync() { } 
       Stage _stage;  
-      int calibration_start_time;         
+      int calibration_start_time;   
+      int user_sampling_start_time;      
       int getSecsSinceStartOfDay(int currentTime);
       bool isTimeToPreHeat(int currentTime);
       bool isTimeToSample(int currentTime); 
