@@ -27,13 +27,22 @@
 #define CALIBRATE_BTN           D4
 
 ReadingSync rs (INTERVAL_MINS, PRE_HEAT_SECS, Time.now());
-
 SimpleEeprom flash;
 
+struct reading {
+    int    reading_time = 0;    
+    double temperature = 0;
+    double humidity = 0;
+    int    tgs2602_sewer = 0; 
+    int    mq131_ozone = 0;
+    int    mq131_chlorine = 0;
+    float  dust_concentration = 0;    
+};
+
+reading sample;
 union float2bytes {float f; char b[sizeof(float)]; };
 int unix_time = 0;
 int delay_ms = 0;
-int reading_time = 0;
 int heating_count=0;
 int calibration_count=0;
 int stage=0;
@@ -47,26 +56,20 @@ RgbLedControl::Color color;
 #define DUST_SAMPLE_INTERVAL_MS 30000
 void dht22_wrapper();
 idDHT22 DHT22(D2, dht22_wrapper);
-double temperature = 0;
-double humidity = 0;
 
 // --------------------------------------------------------------------- Shinyei PPD42NS
 ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
-float dust_concentration = 0;
 
 // --------------------------------------------------------------------- TGS2602
 TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
 float tgs2602_Ro = 2.511;
 int   tgs2602_sample_avg = 0;
-int   tgs2602_sewer = 0;
 char  tgs2602_display[10];
 
 // --------------------------------------------------------------------- MQ131
 MQ131 mq131(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
 float mq131_Ro = 2.501;
 int   mq131_sample_avg = 0;
-int   mq131_ozone = 0;
-int   mq131_chlorine = 0;
 char  mq131_display[10];
 
 // --------------------------------------------------------------------- HTTP
@@ -81,8 +84,8 @@ void setup()
   mq131_Ro = flash.readFloat(0);
   tgs2602_Ro = flash.readFloat(4);
   // Register a Spark variable here
-  Spark.variable("temperature", &temperature, DOUBLE);
-  Spark.variable("humidity", &humidity, DOUBLE);
+  Spark.variable("temperature", &sample.temperature, DOUBLE);
+  Spark.variable("humidity", &sample.humidity, DOUBLE);
   Spark.variable("unix_time", &unix_time, INT);
   Spark.variable("stage", &stage, INT);
   //Spark.variable("tgs2602", &tgs2602_sample_avg, INT);
@@ -123,7 +126,7 @@ void loop()
           tgs2602.startSampling(current_ms);
           mq131.startSampling(current_ms);
           dust.startSampling(current_ms);
-          reading_time = unix_time;
+          sample.reading_time = unix_time;
         }
         if(!tgs2602.isSamplingComplete()) {
           tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
@@ -133,12 +136,12 @@ void loop()
         }
         if(!dust.isSamplingComplete()) {
           unsigned long duration = pulseIn(DUST_PIN, LOW);
-          dust_concentration = dust.getConcentration(duration, current_ms);          
+          sample.dust_concentration = dust.getConcentration(duration, current_ms);          
         }
         if(mq131.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
-          tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
-          mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
-          mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);          
+          sample.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
+          sample.mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
+          sample.mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);          
           rs.setSamplingComplete();         
         }
         delay_ms=0;
@@ -146,7 +149,7 @@ void loop()
       break;
     case rs.SEND_READING:
       {
-        sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", Spark.deviceID().c_str(), temperature, humidity, mq131_ozone, mq131_chlorine, tgs2602_sewer, dust_concentration, reading_time);  
+        sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", Spark.deviceID().c_str(), sample.temperature, sample.humidity, sample.mq131_ozone, sample.mq131_chlorine, sample.tgs2602_sewer, sample.dust_concentration, sample.reading_time);  
         request.path = url;
         http.get(request, response);    
         rs.setReadingSent();
@@ -207,8 +210,8 @@ void read_dht22() {
   DHT22.acquire();
   while (DHT22.acquiring());    
     
-  humidity = DHT22.getHumidity();
-  temperature = DHT22.getCelsius(); 
+  sample.humidity = DHT22.getHumidity();
+  sample.temperature = DHT22.getCelsius(); 
 }
 
 void beep(int delay_ms) {
