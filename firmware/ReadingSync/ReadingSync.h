@@ -46,7 +46,6 @@ class ReadingSync {
       void setReadingSent();
       void setSamplingComplete();
       void setCalibratingComplete();
-      void setUserSamplingComplete();
       Stage getStage(int currentTime);
     private:
       ReadingSync() { } 

@@ -1,3 +1,4 @@
+#include <queue>
 #include "ReadingSync.h"
 #include "RgbLedControl.h"
 #include "HttpClient.h"
@@ -39,6 +40,7 @@ struct reading {
     float  dust_concentration = 0;    
 };
 
+std::queue<reading> q;
 reading sample;
 union float2bytes {float f; char b[sizeof(float)]; };
 int unix_time = 0;
@@ -142,16 +144,24 @@ void loop()
           sample.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
           sample.mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
           sample.mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);          
-          rs.setSamplingComplete();         
+          rs.setSamplingComplete();
+          q.push(sample);
         }
         delay_ms=0;
       }
       break;
     case rs.SEND_READING:
       {
-        sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", Spark.deviceID().c_str(), sample.temperature, sample.humidity, sample.mq131_ozone, sample.mq131_chlorine, sample.tgs2602_sewer, sample.dust_concentration, sample.reading_time);  
-        request.path = url;
-        http.get(request, response);    
+        reading curr_sample;
+        while(!q.empty()) {
+          curr_sample = q.front();
+          sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", 
+                       Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.mq131_ozone, 
+                       curr_sample.mq131_chlorine, curr_sample.tgs2602_sewer, curr_sample.dust_concentration, curr_sample.reading_time);  
+          request.path = url;
+          http.get(request, response);              
+          q.pop();
+        }
         rs.setReadingSent();
       }
       break;        
@@ -201,6 +211,8 @@ void loop()
       rs.startCalibrating(unix_time);
   }
   if(digitalRead(USER_SAMPLING_BTN)==LOW) {
+      first_sample=true;
+      heating_count=0;
       rs.startUserSampling(unix_time);
   }  
   delay(delay_ms);  

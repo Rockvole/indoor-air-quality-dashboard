@@ -65,13 +65,9 @@ void ReadingSync::startUserSampling(int currentTime) {
     _stage=PRE_HEAT_USER_SAMPLING;
 }
 
-void ReadingSync::setUserSamplingComplete() {
-    _stage=CONTINUE;
-}
-
 // --------------------------------------------------------------------- SCHEDULED SAMPLING
 void ReadingSync::setSamplingComplete() {
-    next_send_secs = last_read_secs + (rand() % (secs_between_readings-120));   
+    if(_stage==SAMPLING) next_send_secs = last_read_secs + (rand() % (secs_between_readings-120));   
     _stage=CONTINUE;
 }
 
