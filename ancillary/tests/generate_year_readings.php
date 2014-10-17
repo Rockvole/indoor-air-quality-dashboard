@@ -1,8 +1,8 @@
 <?php
 require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
-//$ip="foodaversions.com/iaq";
-$ip="davidlub/iaq";
+$ip="foodaversions.com/iaq";
+//$ip="davidlub/iaq";
 
 $response = file_get_contents("http://$ip/initialize_core.php?core_id=68e07a&name=fake_data_2013&tz=America/Los_Angeles");
 echo $response."\n";

@@ -9,7 +9,7 @@
 #include "ShinyeiPPD42NS.h"
 #include "function_pulseIn.h"
 
-#define INTERVAL_MINS 10
+#define INTERVAL_MINS 60
 #define PRE_HEAT_SECS 100
 #define CALIBRATION_SAMPLE_FREQUENCY 50
 #define CALIBRATION_SAMPLE_INTERVAL 500
@@ -79,7 +79,7 @@ HttpClient http;
 char url[200];
 http_request_t request;
 http_response_t response;
-
+char hostname[] = "foodaversions.com";
 
 void setup()
 {
@@ -102,8 +102,12 @@ void setup()
   pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
   pinMode(BUZZER_PIN, OUTPUT); 
   pinMode(DUST_PIN, INPUT);   
+  
+  uint32_t ip_addr = 0;
+  gethostbyname(hostname, strlen(hostname), &ip_addr); // Resolve to ip address so we can just use ip for each http request
+  request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};
   //request.hostname = "foodaversions.com";
-  request.ip = {192,168,1,130}; // davidlub
+  //request.ip = {192,168,1,130}; // davidlub
   request.port = 80;
   //Serial.begin(9600);
 }
