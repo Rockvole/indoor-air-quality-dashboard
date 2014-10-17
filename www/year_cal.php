@@ -24,20 +24,27 @@ if(!isset($_GET["id"])) exit("Must specify id parameter");
 $id = htmlspecialchars($_GET["id"]);
 $sensor = htmlspecialchars($_GET["sensor"]);
 switch($sensor) {
-  case 1: // Sewer
+  case 1: // Dust
+    $title_name="Dust";
+    $sensor_column="dust";
+    $default_sensor_1="checked='checked'";
+    $min_orange=1000;
+    $min_red=2000;
+    break;       
+  case 2: // Sewer
     $title_name="Sewer";
     $sensor_column="sewer";
-    $default_sensor_1="checked='checked'";
+    $default_sensor_2="checked='checked'";
     $min_orange=500;
     $min_red=1000;
     break;  
-  case 2: // Ozone
+  case 3: // Ozone
     $title_name="Ozone";
     $sensor_column="ozone";
-    $default_sensor_2="checked='checked'";
+    $default_sensor_3="checked='checked'";
     $min_orange=5;
     $min_red=10;
-    break;    
+    break;   
   default: // Humidity
     $title_name="Humidity";
     $sensor_column="humidity";
@@ -79,10 +86,13 @@ $currentYear = $calendar->year($year);
   echo "<input type='radio' onclick='change_sensor(0);' $default_sensor_0>Humidity";
   echo "</td>";
   echo "<td>";
-  echo "<input type='radio' onclick='change_sensor(1);' $default_sensor_1>Sewer";
+  echo "<input type='radio' onclick='change_sensor(1);' $default_sensor_1>Dust";
+  echo "</td>";  
+  echo "<td>";
+  echo "<input type='radio' onclick='change_sensor(2);' $default_sensor_2>Sewer";
   echo "</td>";
   echo "<td>";
-  echo "<input type='radio' onclick='change_sensor(2);' $default_sensor_2>Ozone";
+  echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Ozone";
   echo "</td>";  
   echo "</table>";
   echo "</td><tr>";
