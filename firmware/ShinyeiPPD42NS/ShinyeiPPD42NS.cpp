@@ -1,3 +1,10 @@
+/*
+  Shinyei PPD42NS dust sensor class
+  
+  Code from Chris Nafis :
+  http://www.howmuchsnow.com/arduino/airquality/grovedust/
+ 
+*/
 #include "ShinyeiPPD42NS.h"
 
 float ShinyeiPPD42NS::getConcentration(unsigned long duration, unsigned long current_time_ms) {
