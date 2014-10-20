@@ -23,7 +23,7 @@ $graph->SetBackgroundImage('traffic33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,40000);
+$graph->SetScale('datlin',0,4000);
 $graph->Add($dust_plot);
 
 $graph->xaxis->SetLabelAngle(90);
