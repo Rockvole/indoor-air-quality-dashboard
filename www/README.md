@@ -10,3 +10,9 @@ Website Features
 4. Download csv so user can use raw sensor data in excel etc.
 
 5. Basic information about the particles/gases to tell the user about sources and symptoms  
+
+### Screenshots
+![Graph Page](screenshot.png)
+
+![Calendar Page](calendar.png)
+
