@@ -163,8 +163,11 @@ void loop()
                        Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.mq131_ozone, 
                        curr_sample.mq131_chlorine, curr_sample.tgs2602_sewer, curr_sample.dust_concentration, curr_sample.reading_time);  
           request.path = url;
-          http.get(request, response);              
-          q.pop();
+          http.get(request, response);
+          char read_time_chars[12];
+          sprintf(read_time_chars, "%d", curr_sample.reading_time);
+          String read_time_str(read_time_chars);
+          if(read_time_str.equals(response.body)) q.pop();
         }
         rs.setReadingSent();
       }

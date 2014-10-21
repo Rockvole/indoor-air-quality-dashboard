@@ -14,34 +14,37 @@ $hum = htmlspecialchars($_GET["hum"]);
 $ozone = htmlspecialchars($_GET["ozone"]);
 $chlorine = htmlspecialchars($_GET["chlorine"]);
 $sewer = htmlspecialchars($_GET["sewer"]);
-
+$error=false;
 $conn=mysqli_connect("", "", "", $db_name);
 
 // Check connection
 if (mysqli_connect_errno()) {
   echo 'Failed to connect to MySQL: ' . mysqli_connect_error();
+  $error=true;
 } else {
   // ------------------------------------------------------------------- RETRIEVE CORE INFO
   $result=mysqli_query($conn,"SELECT * from cores where core_name='".$core_id."'");	
   if(mysql_errno()) {
-	 exit('Error: '.mysqli_error($conn));
+    exit('Error: '.mysqli_error($conn));
+    $error=true;
   }
   $num_rows = mysqli_num_rows($result);
   if($num_rows<=0) {
-	  exit("core '$core_id' not found");
+    exit("core '$core_id' not found");
+    $error=true;
   }
-  echo 'hello ' . $core_id . '!';
-  echo "returned:".$num_rows;
-  
   $row = mysqli_fetch_array($result);
-  echo 'Retrieved : '.$row['name'];
   $id=$row['id'];
   mysqli_free_result($result);
   // ------------------------------------------------------------------- INSERT READING
   $sql = "INSERT into readings (temperature, humidity, dust, ozone, chlorine, sewer, core_id, ts) VALUES ('$temp', '$hum', '$dust', '$ozone', '$chlorine', '$sewer', '$id', '$unix_time')";
   if(!mysqli_query($conn,$sql)) {
-	  exit('Error: '.mysqli_error($conn));
+      exit('Error: '.mysqli_error($conn));
+      $error=true;
   }
   mysqli_close($conn);
+  if($error!=true) {
+      echo $unix_time;
+  }
 }
 ?>
