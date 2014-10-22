@@ -3,7 +3,7 @@
 #include "RgbLedControl.h"
 #include "HttpClient.h"
 #include "SimpleEeprom.h"
-#include "idDHT22.h"
+#include "PietteTech_DHT.h"
 #include "TGS2602.h"
 #include "MQ131.h"
 #include "ShinyeiPPD42NS.h"
@@ -56,8 +56,8 @@ RgbLedControl::Color color;
 
 // --------------------------------------------------------------------- DHT22
 #define DUST_SAMPLE_INTERVAL_MS 30000
-void dht22_wrapper();
-idDHT22 DHT22(D2, dht22_wrapper);
+void dht_wrapper();
+PietteTech_DHT DHT(D2, DHT22, dht_wrapper);
 
 // --------------------------------------------------------------------- Shinyei PPD42NS
 ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
@@ -112,8 +112,8 @@ void setup()
   //Serial.begin(9600);
 }
 
-void dht22_wrapper() {
-    DHT22.isrCallback();
+void dht_wrapper() {
+    DHT.isrCallback();
 }
 
 void loop()
@@ -157,7 +157,9 @@ void loop()
     case rs.SEND_READING:
       {
         reading curr_sample;
-        while(!q.empty()) {
+        bool reading_sent;
+        do {
+          reading_sent=false;
           curr_sample = q.front();
           sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", 
                        Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.mq131_ozone, 
@@ -167,8 +169,11 @@ void loop()
           char read_time_chars[12];
           sprintf(read_time_chars, "%d", curr_sample.reading_time);
           String read_time_str(read_time_chars);
-          if(read_time_str.equals(response.body)) q.pop();
-        }
+          if(read_time_str.equals(response.body)) {
+            q.pop();
+            reading_sent=true;
+          }
+        } while(reading_sent && !q.empty());
         rs.setReadingSent();
       }
       break;        
@@ -226,11 +231,11 @@ void loop()
 }
 
 void read_dht22() {
-  DHT22.acquire();
-  while (DHT22.acquiring());    
+  DHT.acquire();
+  while (DHT.acquiring());
     
-  sample.humidity = DHT22.getHumidity();
-  sample.temperature = DHT22.getCelsius(); 
+  sample.humidity = DHT.getHumidity();
+  sample.temperature = DHT.getCelsius(); 
 }
 
 void beep(int delay_ms) {
