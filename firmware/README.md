@@ -20,3 +20,6 @@ If there is a failure during send the reading will be saved until the next send 
 
 8. Calibration button - Calibrates sensors when user presses BTN2<br/>
 Waits for pre-heat time, then calibrates sensors and stores calibration results in eeprom. Orange LED flash means pre-heating. Blue LED flash means calibrating. Buzzes when calibration finished. This is so the user can take the shield to a field for clean air calibration.
+
+### History
+<a href="https://community.spark.io/t/custom-shield-indoor-air-quality-monitor-open-source-software/7552" title="Development evolution of the software"><img src="../spark.jpg"/></a>
