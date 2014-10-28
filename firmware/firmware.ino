@@ -49,8 +49,9 @@ int heating_count=0;
 int calibration_count=0;
 int stage=0;
 bool first_sample=true;
+bool acquired_ip=true;
 
-// --------------------------------------------------------------------- RGD LED
+// --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
 RgbLedControl::Color color;
 
@@ -80,12 +81,33 @@ char url[200];
 http_request_t request;
 http_response_t response;
 char hostname[] = "foodaversions.com";
+char ip_display[16];
 
 void setup()
 {
   mq131_Ro = flash.readFloat(0);
   tgs2602_Ro = flash.readFloat(4);
-  // Register a Spark variable here
+  
+  pinMode(CALIBRATE_BTN, INPUT_PULLUP);
+  pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
+  pinMode(BUZZER_PIN, OUTPUT); 
+  pinMode(DUST_PIN, INPUT);   
+  
+  uint32_t ip_addr = 0;
+  gethostbyname(hostname, strlen(hostname), &ip_addr); // Resolve to ip address once only
+  int ip0=BYTE_N(ip_addr, 0);  
+  int ip1=BYTE_N(ip_addr, 1);
+  int ip2=BYTE_N(ip_addr, 2);
+  int ip3=BYTE_N(ip_addr, 3);
+  if((ip0==0)&&(ip1==0)&&(ip2==0)&&(ip3==0)) acquired_ip=false;
+  request.ip = {ip3,ip2,ip1,ip0};
+  //request.hostname = "foodaversions.com";
+  //request.ip = {192,168,1,130}; // davidlub
+  request.port = 80;  
+  
+  // Register Spark variables
+  sprintf(ip_display,"%d.%d.%d.%d",ip3,ip2,ip1,ip0);
+  Spark.variable("ip", &ip_display, STRING);  
   Spark.variable("temperature", &sample.temperature, DOUBLE);
   Spark.variable("humidity", &sample.humidity, DOUBLE);
   Spark.variable("unix_time", &unix_time, INT);
@@ -98,17 +120,6 @@ void setup()
   Spark.variable("mq131", &mq131_display, STRING);  
   Spark.variable("url", &url, STRING);
 
-  pinMode(CALIBRATE_BTN, INPUT_PULLUP);
-  pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
-  pinMode(BUZZER_PIN, OUTPUT); 
-  pinMode(DUST_PIN, INPUT);   
-  
-  uint32_t ip_addr = 0;
-  gethostbyname(hostname, strlen(hostname), &ip_addr); // Resolve to ip address so we can just use ip for each http request
-  request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};
-  //request.hostname = "foodaversions.com";
-  //request.ip = {192,168,1,130}; // davidlub
-  request.port = 80;
   //Serial.begin(9600);
 }
 
@@ -122,111 +133,116 @@ void loop()
   unix_time=Time.now();
   delay_ms=200;
   stage=rs.getStage(unix_time);
-  switch(stage) {
-    case rs.USER_SAMPLING:
-    case rs.SAMPLING:
-      {
-        unsigned long current_ms = millis();    
-        if(first_sample) {
-          first_sample=false;  
-          tgs2602.startSampling(current_ms);
-          mq131.startSampling(current_ms);
-          dust.startSampling(current_ms);
-          sample.reading_time = unix_time;
-        }
-        if(!tgs2602.isSamplingComplete()) {
-          tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
-        }       
-        if(!mq131.isSamplingComplete()) {
-          mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(SENSOR_MQ131), current_ms);
-        }
-        if(!dust.isSamplingComplete()) {
-          unsigned long duration = pulseIn(DUST_PIN, LOW);
-          sample.dust_concentration = dust.getConcentration(duration, current_ms);          
-        }
-        if(mq131.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
-          sample.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
-          sample.mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
-          sample.mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);          
-          rs.setSamplingComplete();
-          q.push(sample);
-        }
-        delay_ms=0;
-      }
-      break;
-    case rs.SEND_READING:
-      {
-        reading curr_sample;
-        bool reading_sent;
-        do {
-          reading_sent=false;
-          curr_sample = q.front();
-          sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", 
-                       Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.mq131_ozone, 
-                       curr_sample.mq131_chlorine, curr_sample.tgs2602_sewer, curr_sample.dust_concentration, curr_sample.reading_time);  
-          request.path = url;
-          http.get(request, response);
-          char read_time_chars[12];
-          sprintf(read_time_chars, "%d", curr_sample.reading_time);
-          String read_time_str(read_time_chars);
-          if(read_time_str.equals(response.body)) {
-            q.pop();
-            reading_sent=true;
+  if(acquired_ip) {
+    switch(stage) {
+      case rs.USER_SAMPLING:
+      case rs.SAMPLING:
+        {
+          unsigned long current_ms = millis();    
+          if(first_sample) {
+            first_sample=false;  
+            tgs2602.startSampling(current_ms);
+            mq131.startSampling(current_ms);
+            dust.startSampling(current_ms);
+            sample.reading_time = unix_time;
           }
-        } while(reading_sent && !q.empty());
-        rs.setReadingSent();
-      }
-      break;        
-    case rs.CALIBRATING:
-      {
-        delay_ms=CALIBRATION_SAMPLE_INTERVAL;
-        calibration_count++;
-        if(calibration_count<=1) {
-          tgs2602.startCalibrating();           
-          mq131.startCalibrating();
+          if(!tgs2602.isSamplingComplete()) {
+            tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
+          }       
+          if(!mq131.isSamplingComplete()) {
+            mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(SENSOR_MQ131), current_ms);
+          }
+          if(!dust.isSamplingComplete()) {
+            unsigned long duration = pulseIn(DUST_PIN, LOW);
+            sample.dust_concentration = dust.getConcentration(duration, current_ms);          
+          }
+          if(mq131.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
+            sample.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
+            sample.mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
+            sample.mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);          
+            rs.setSamplingComplete();
+            q.push(sample);
+          }
+          delay_ms=0;
         }
-        tgs2602_Ro = tgs2602.calibrateInCleanAir(analogRead(SENSOR_TGS2602));
-        mq131_Ro = mq131.calibrateInCleanAir(analogRead(SENSOR_MQ131));
-        if(calibration_count==CALIBRATION_SAMPLE_FREQUENCY) { // Calibration Complete
-          beep(200);
-          rs.setCalibratingComplete();
-          sprintf(mq131_display,"%.3f",mq131_Ro);         
-          flash.writeFloat(mq131_Ro, 0);
-          flash.writeFloat(tgs2602_Ro, 4);
+        break;
+      case rs.SEND_READING:
+        {
+          reading curr_sample;
+          bool reading_sent;
+          do {
+            reading_sent=false;
+            curr_sample = q.front();
+            sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", 
+                         Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.mq131_ozone, 
+                         curr_sample.mq131_chlorine, curr_sample.tgs2602_sewer, curr_sample.dust_concentration, curr_sample.reading_time);  
+            request.path = url;
+            http.get(request, response);
+            char read_time_chars[12];
+            sprintf(read_time_chars, "%d", curr_sample.reading_time);
+            String read_time_str(read_time_chars);
+            if(read_time_str.equals(response.body)) {
+              q.pop();
+              reading_sent=true;
+            }
+          } while(reading_sent && !q.empty());
+          rs.setReadingSent();
         }
-        color=rgbLed.BLUE;
-      }
-      break;
-    case rs.PRE_HEAT_CALIBRATING:
-      calibration_count=0;
-    case rs.PRE_HEAT_USER_SAMPLING:
-    case rs.PRE_HEATING:
-      {
-        color=rgbLed.ORANGE;
-        if(heating_count==0) {  // Take ambient temperature before pre-heating
-          read_dht22();
+        break;        
+      case rs.CALIBRATING:
+        {
+          delay_ms=CALIBRATION_SAMPLE_INTERVAL;
+          calibration_count++;
+          if(calibration_count<=1) {
+            tgs2602.startCalibrating();           
+            mq131.startCalibrating();
+          }
+          tgs2602_Ro = tgs2602.calibrateInCleanAir(analogRead(SENSOR_TGS2602));
+          mq131_Ro = mq131.calibrateInCleanAir(analogRead(SENSOR_MQ131));
+          if(calibration_count==CALIBRATION_SAMPLE_FREQUENCY) { // Calibration Complete
+            beep(200);
+            rs.setCalibratingComplete();
+            sprintf(mq131_display,"%.3f",mq131_Ro);         
+            flash.writeFloat(mq131_Ro, 0);
+            flash.writeFloat(tgs2602_Ro, 4);
+          }
+          color=rgbLed.BLUE;
         }
-        heating_count++;
-      }
-      break;
-    case rs.CONTINUE:
-      {
-        first_sample=true;
-        heating_count=0;
-      }
-      break;            
-    default:  
-      delay(1);
-  }  
-  rgbLed.setLedColor(delay_ms, 100, 3000, color);
-  if(digitalRead(CALIBRATE_BTN)==LOW) {
+        break;
+      case rs.PRE_HEAT_CALIBRATING:
+        calibration_count=0;
+      case rs.PRE_HEAT_USER_SAMPLING:
+      case rs.PRE_HEATING:
+        {
+          color=rgbLed.ORANGE;
+          if(heating_count==0) {  // Take ambient temperature before pre-heating
+            read_dht22();
+          }
+          heating_count++;
+        }
+        break;
+      case rs.CONTINUE:
+        {
+          first_sample=true;
+          heating_count=0;
+        }
+        break;            
+      default:  
+        delay(1);
+    }  
+
+    if(digitalRead(CALIBRATE_BTN)==LOW) {
       rs.startCalibrating(unix_time);
-  }
-  if(digitalRead(USER_SAMPLING_BTN)==LOW) {
+    }
+    if(digitalRead(USER_SAMPLING_BTN)==LOW) {
       first_sample=true;
       heating_count=0;
       rs.startUserSampling(unix_time);
-  }  
+    }  
+  } else { // !acquired_ip
+      color=rgbLed.RED;
+  }
+  rgbLed.setLedColor(delay_ms, 100, 3000, color);  
   delay(delay_ms);  
 }
 

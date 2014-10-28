@@ -37,6 +37,10 @@ void RgbLedControl::setLedColor(int delay_ms, int led_ms_on, int led_ms_off, Col
             blue_rgb=255;
             //Serial.println("blue");
             break;        
+          case RED:
+            red_rgb=255;
+            //Serial.println("red");
+            break;               
         }
       }
     }
