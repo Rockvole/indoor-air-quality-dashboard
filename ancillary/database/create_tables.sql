@@ -9,7 +9,11 @@ create table readings (id INT NOT NULL AUTO_INCREMENT, temperature INT, humidity
 dust INT, sewer INT, ozone INT, chlorine INT,
 core_id INT, ts INT UNSIGNED, PRIMARY KEY (id), UNIQUE(core_id, ts));
 
-create table locations (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(40), core_id INT, ts INT UNSIGNED, 
+create table locations (id INT NOT NULL AUTO_INCREMENT, 
+location_name VARCHAR(40), 
+room_name VARCHAR(60) NOT NULL,
+core_id INT NOT NULL, 
+ts INT UNSIGNED NOT NULL, 
 UNIQUE(core_id, ts), PRIMARY KEY (id));
 
 # ---------------------------- change time zone to UTC

@@ -8,12 +8,16 @@
     function change_month(year,month) {
       document.cal.year.value=year;
       document.cal.month.value=month;
-      document.cal.name.value=document.getElementById('loc_name').value;
+      document.cal.hour.value=document.getElementById('hour').value;      
+      document.cal.location_name.value=document.getElementById('location_name').value;
+      document.cal.room_name.value=document.getElementById('room_name').value;
       document.cal.submit();
     }
     function add_location(start_date) {
       document.cal.start_date.value=start_date;
-      document.cal.name.value=document.getElementById('loc_name').value;
+      document.cal.hour.value=document.getElementById('hour').value;
+      document.cal.location_name.value=document.getElementById('location_name').value;
+      document.cal.room_name.value=document.getElementById('room_name').value;
       document.cal.submit();      
     }
     function delete_location(ts) {
@@ -40,7 +44,9 @@ $id = htmlspecialchars($_GET["id"]);
 $ts = htmlspecialchars($_GET["ts"]);
 $year  = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
 $month = filter_input(INPUT_GET, 'month', FILTER_VALIDATE_INT);
-$name = htmlspecialchars($_GET["name"]);
+$hour = htmlspecialchars($_GET["hour"]);
+$loc_name = htmlspecialchars($_GET["location_name"]);
+$room_name = htmlspecialchars($_GET["room_name"]);
 $start_date_param = htmlspecialchars($_GET["start_date"]);
 if(strlen($ts)>0) {
   
@@ -50,17 +56,18 @@ if(strlen($ts)>0) {
   }
   echo "<div class='alerthead'>Item deleted</div>";
 } else if(strlen($start_date_param)>0) {
-  if(strlen($name)<=0) {
-    exit("Name must be specified");
+  if(strlen($room_name)<=0) {
+    exit("Room must be specified");
   }
   $dt = Carbon::createFromFormat($param_date_format, $start_date_param);
-  $dt_utc = $dt->startOfDay()->format('U');
-  
-  $sql = "INSERT into locations (name, core_id, ts) VALUES ('$name', '$id', '$dt_utc')";
+  $dt->startOfDay()->addHours($hour);
+  $dt_utc = $dt->format('U');
+  $sql_loc = !empty($loc_name) ? "'$loc_name'" : "NULL";
+  $sql = "INSERT into locations (location_name, room_name, core_id, ts) VALUES ($sql_loc, '$room_name', '$id', '$dt_utc')";
   if(!mysqli_query($conn,$sql)) {
      exit('Error: '.mysqli_error($conn));
   }
-  echo "<div class='alerthead'>".$name." added</div>";
+  echo "<div class='alerthead'>".$room_name." added</div>";
 }
 
 // initialize the calendar object
@@ -76,13 +83,38 @@ $nextMonth = $currentMonth->next();
 echo "<table border=0 class='form_table'>";
 echo "<tr>";
 echo "<td></td>";
-echo "<td><b>Please choose the location of your sensor.<br/>Examples : Living Room, Basement Bathroom</b></td>";
+echo "<td><b>Please choose the location of your sensor :</b></td>";
+echo "<td width=100%></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<th align=right>Name:</th>";
-echo "<td><input type='text' name='name' size=40 id='loc_name' value='$name'></td>";
+echo "<th align=right>Location:</th>";
+echo "<td><input type='text' name='location_name' maxlength=40 size=40 id='location_name' value='$location_name'></td>";
+echo "<td style='font-size:110%;font-style:italic;'>e.g. Bob's House<br/>(Leave blank if sensor will not change location)</td>";
 echo "</tr>";
-echo "<tr><td>&nbsp;</td><td>";
+echo "<tr>";
+echo "<th align=right style='vertical-align:top'>Room:</th>";
+echo "<td style='vertical-align:top'><input type='text' name='room_name' maxlength=60 size=40 id='room_name' value='$room_name'></td>";
+echo "<td style='font-size:110%;font-style:italic;'>e.g. Living Room<br/><br/>";
+echo "Include more detailed info if needed.<br/>";
+echo "e.g. Master Bedroom (Bathroom door sealed)";
+echo "</td>";
+echo "</tr>";
+echo "<tr>";
+echo "<th align=right>Hour:</th>";
+echo "<td>";
+echo "<select name='hour' id='hour'>";
+for($i=0;$i<24;$i++) {
+  $sel="";
+  if($i==$hour) $sel="selected='selected'";
+  echo "<option value='$i' $sel>$i</option>";
+}
+echo "</select>";
+echo "</td>";
+echo "<td style='font-size:110%;font-style:italic;'>The hour when the sensor was moved</td>";
+echo "</tr>";
+echo "<tr><td>&nbsp;</td>";
+
+echo "<td colspan=2>";
 echo "<table border=0 style='width:240px'>";
 echo "<tr>";
 echo "<td><input type='button' value='&lt; Previous' style='padding:2px;' onclick='change_month(\"".$prevMonth->year()->int()."\",\"".$prevMonth->int()."\")'></td>";
@@ -91,7 +123,7 @@ echo "<td align=right><input type='button' value='Next    &gt;' style='padding:2
 echo "</tr>";
 echo "</table>";
 
-echo "<section class='year'>\n";
+echo "<section class='year' style='background:white;'>\n";
 
 echo "<ul>\n";
 echo "<li>\n";
@@ -123,16 +155,23 @@ echo "</ul>";
 echo "</section>\n";
 echo "</td>";
 echo "</tr>";
-
-$result=mysqli_query($conn,"SELECT * from locations where core_id=$id order by ts desc");
+echo "<tr><td></td><td colspan=2>";
+echo "<table border=0 style='border-spacing:6px;'>";
+echo "<tr><th style='text-align:left;'>Location</th><th style='text-align:left;'>Room</th>";
+echo "<th style='text-align:left;'>Date</th><th style='text-align:left;'>Delete</th></td>";
+$result=mysqli_query($conn,"SELECT * from locations where core_id=$id order by ts asc");
 while($row = mysqli_fetch_array($result)) {
-  echo "<tr><td></td>";
+  if(strlen($row['location_name'])>0) $location=$row['location_name'];
+  echo "<tr>";
   $date = Carbon::createFromTimeStamp($row['ts']);
-  echo "<td style='vertical-align:middle'>" . $row['name'] . " @ ".$date->format($param_date_format);
-  echo "&nbsp;&nbsp;<img src='html/delete.gif' onclick='delete_location(".$row['ts'].");' style='cursor:pointer;'>";
-  echo "</td>\n";
+  echo "<td nowrap>$location</td>\n";
+  echo "<td nowrap>" . $row['room_name'] . "</td>";
+  echo "<td nowrap>".$date->format('Y-m-d H:i')."</td>\n";
+  echo "<td width=100%>&nbsp;&nbsp;<img src='html/delete.gif' onclick='delete_location(".$row['ts'].");' style='cursor:pointer;'></td>\n";
   echo "</tr>";
 }
+echo "</table>";
+echo "</td></tr>";
 echo "</table>";  
 
 // ------------------------------------------------------------------- Form
@@ -140,7 +179,9 @@ echo "<form action='add_location.php' method='get' name='cal'>";
 echo "<input type='hidden' name='id' value='$id'>";
 echo "<input type='hidden' name='year' value='$year'>";
 echo "<input type='hidden' name='month' value='$month'>";
-echo "<input type='hidden' name='name' value='$name'>";
+echo "<input type='hidden' name='hour' value='$hour'>";
+echo "<input type='hidden' name='location_name' value='$location_name'>";
+echo "<input type='hidden' name='room_name' value='$room_name'>";
 echo "<input type='hidden' name='start_date' value=''>";
 echo "<input type='hidden' name='ts' value=''>";
 echo "</form>";
