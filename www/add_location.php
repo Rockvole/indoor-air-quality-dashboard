@@ -88,7 +88,7 @@ echo "<td width=100%></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<th align=right>Location:</th>";
-echo "<td><input type='text' name='location_name' maxlength=40 size=40 id='location_name' value='$location_name'></td>";
+echo "<td><input type='text' name='location_name' maxlength=40 size=40 id='location_name' value='$loc_name'></td>";
 echo "<td style='font-size:110%;font-style:italic;'>e.g. Bob's House<br/>(Leave blank if sensor will not change location)</td>";
 echo "</tr>";
 echo "<tr>";
