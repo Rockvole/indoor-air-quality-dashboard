@@ -16,6 +16,12 @@ core_id INT NOT NULL,
 ts INT UNSIGNED NOT NULL, 
 UNIQUE(core_id, ts), PRIMARY KEY (id));
 
+create table events (id INT NOT NULL AUTO_INCREMENT, 
+name VARCHAR(40), 
+core_id INT NOT NULL, 
+ts INT UNSIGNED NOT NULL, 
+UNIQUE(core_id, ts), PRIMARY KEY (id));
+
 # ---------------------------- change time zone to UTC
 # in /etc/mysql/my.cnf [mysqld] section
 # add :

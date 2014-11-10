@@ -73,8 +73,8 @@ if(!isset($row['ts'])) {
   echo "<div style='padding:10px;'>";
   echo "<table border=0>";
   echo "<tr><td width=$range_width></td><td width =$graph_width></td><td width=100></td></tr>";
-  echo "<tr><td colspan=2>";
-  echo "<table border=0>";
+  echo "<tr><td colspan=3>";
+  echo "<table border=0 width=100%>";
   echo "<tr><td>";
   echo "<h2>Indoor Air Quality Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
@@ -94,9 +94,10 @@ if(!isset($row['ts'])) {
   else echo "Unknown location";  
   echo "</span>";
   echo "<img src='html/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."\"' style='cursor:pointer;'>";
-  echo "</td></tr>";
-  echo "</table>";
+  echo "</td>";
   echo "<td align=right><input type='button' value='Download CSV' onclick='location.href=\"download_csv.php?id=$id\"'></td></tr>";
+  echo "</table>";  
+  include 'events/event_timeline.php';  
   echo "<tr>";
   echo "<td colspan=2 width=$graph_width align=center>";
   echo "<table border=0>";
@@ -209,6 +210,7 @@ if(!isset($row['ts'])) {
  
   echo "</table>";
   echo "</div>"; 
+  /*
   // ------------------------------------------------------------------- Ozone and Chlorine
   echo "<div class='container'>";  
   echo "<table border=0>";      
@@ -239,6 +241,7 @@ if(!isset($row['ts'])) {
  
   echo "</table>";
   echo "</div>";    
+  */
   // ------------------------------------------------------------------- Form
   echo "<form action='dashboard.php' method='get' name='dash'>";
   echo "<input type='hidden' name='id' value='$id'>";

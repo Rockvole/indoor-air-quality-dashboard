@@ -96,7 +96,7 @@ echo "<th align=right style='vertical-align:top'>Room:</th>";
 echo "<td style='vertical-align:top'><input type='text' name='room_name' maxlength=60 size=40 id='room_name' value='$room_name'></td>";
 echo "<td style='font-size:110%;font-style:italic;'>e.g. Living Room<br/><br/>";
 echo "Include more detailed info if needed.<br/>";
-echo "e.g. Master Bedroom (Bathroom door sealed)";
+echo "e.g. Master Bedroom (On window-sill)";
 echo "</td>";
 echo "</tr>";
 echo "<tr>";
@@ -166,7 +166,7 @@ while($row = mysqli_fetch_array($result)) {
   $date = Carbon::createFromTimeStamp($row['ts']);
   echo "<td nowrap>$location</td>\n";
   echo "<td nowrap>" . $row['room_name'] . "</td>";
-  echo "<td nowrap>".$date->format('Y-m-d H:i')."</td>\n";
+  echo "<td nowrap>".$date->format($user_date_format)."</td>\n";
   echo "<td width=100%>&nbsp;&nbsp;<img src='html/delete.gif' onclick='delete_location(".$row['ts'].");' style='cursor:pointer;'></td>\n";
   echo "</tr>";
 }

@@ -15,8 +15,8 @@ if (mysqli_connect_errno()) {
 $result=mysqli_query($conn,"SELECT * from cores");
 
 echo "<table border=0 width='100%'><tr>";
-echo "<td><h2>Choose Core</h2></td>";
-echo "<td><input type='button' value='Add New Core' onclick='location.href=\"add_new_core.php\"'></td></tr>";
+echo "<td><h2>Choose Sensor</h2></td>";
+echo "<td><input type='button' value='Add New Sensor' onclick='location.href=\"add_new_sensor.php\"'></td></tr>";
 echo "</tr></table>\n";
 echo "<br/>";
 
