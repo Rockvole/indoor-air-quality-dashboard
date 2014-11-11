@@ -37,8 +37,9 @@ for($i=0;$i<24;$i++) {
   } else if($background_state==2) {
     $background='background-color:#3399CC;';
   }  
+  $curr_ts_utc=$date->copy()->startOfDay()->addHours($i)->format('U');
   echo "<td style='text-align:center;font-size:11px;cursor:pointer;border:1px solid purple;$background' ";
-  echo "onclick='location.href=\"events/manage_event.php?id=$id&start_date=$start_date_param&hour=$i\"'>";
+  echo "onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc\"'>";
   echo sprintf("%1$02d",$i);
   echo "</td>";
   
