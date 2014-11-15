@@ -5,7 +5,7 @@
 #include "SimpleEeprom.h"
 #include "PietteTech_DHT.h"
 #include "TGS2602.h"
-#include "MQ131.h"
+#include "WSP2110.h"
 #include "ShinyeiPPD42NS.h"
 #include "function_pulseIn.h"
 
@@ -17,7 +17,7 @@
 #define SAMPLING_INTERVAL_MS 50   // Number of ms between samples
 
 #define SENSOR_TGS2602          A0
-#define SENSOR_MQ131            A3
+#define SENSOR_WSP2110          A3
 #define BUZZER_PIN              A4
 #define RED_LED                 A5
 #define GREEN_LED               A6
@@ -35,8 +35,7 @@ struct reading {
     double temperature = 0;
     double humidity = 0;
     int    tgs2602_sewer = 0; 
-    int    mq131_ozone = 0;
-    int    mq131_chlorine = 0;
+    int    wsp2110_hcho = 0;
     float  dust_concentration = 0;    
 };
 
@@ -69,11 +68,11 @@ float tgs2602_Ro = 2.511;
 int   tgs2602_sample_avg = 0;
 char  tgs2602_display[10];
 
-// --------------------------------------------------------------------- MQ131
-MQ131 mq131(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
-float mq131_Ro = 2.501;
-int   mq131_sample_avg = 0;
-char  mq131_display[10];
+// --------------------------------------------------------------------- WSP2110
+WSP2110 wsp2110(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
+float wsp2110_Ro = 2.501;
+int   wsp2110_sample_avg = 0;
+char  wsp2110_display[10];
 
 // --------------------------------------------------------------------- HTTP
 HttpClient http;
@@ -85,7 +84,7 @@ char ip_display[16];
 
 void setup()
 {
-  mq131_Ro = flash.readFloat(0);
+  wsp2110_Ro = flash.readFloat(0);
   tgs2602_Ro = flash.readFloat(4);
   
   pinMode(CALIBRATE_BTN, INPUT_PULLUP);
@@ -108,8 +107,8 @@ void setup()
   sprintf(tgs2602_display,"%.3f",tgs2602_Ro);
   Spark.variable("tgs2602", &tgs2602_display, STRING);  
   //Spark.variable("mq131", &mq131_sample_avg, INT);
-  sprintf(mq131_display,"%.3f",mq131_Ro);
-  Spark.variable("mq131", &mq131_display, STRING);  
+  sprintf(wsp2110_display,"%.3f",wsp2110_Ro);
+  Spark.variable("wsp2110", &wsp2110_display, STRING);  
   Spark.variable("url", &url, STRING);
 
   //Serial.begin(9600);
@@ -134,24 +133,23 @@ void loop()
         if(first_sample) {
           first_sample=false;  
           tgs2602.startSampling(current_ms);
-          mq131.startSampling(current_ms);
+          wsp2110.startSampling(current_ms);
           dust.startSampling(current_ms);
           sample.reading_time = unix_time;
         }
         if(!tgs2602.isSamplingComplete()) {
           tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
         }       
-        if(!mq131.isSamplingComplete()) {
-          mq131_sample_avg = mq131.getResistanceCalculationAverage(analogRead(SENSOR_MQ131), current_ms);
+        if(!wsp2110.isSamplingComplete()) {
+          wsp2110_sample_avg = wsp2110.getResistanceCalculationAverage(analogRead(SENSOR_WSP2110), current_ms);
         }
         if(!dust.isSamplingComplete()) {
           unsigned long duration = pulseIn(DUST_PIN, LOW);
           sample.dust_concentration = dust.getConcentration(duration, current_ms);          
         }
-        if(mq131.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
+        if(wsp2110.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
           sample.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
-          sample.mq131_ozone = mq131.getOzoneGasPercentage(mq131_sample_avg, mq131_Ro);
-          sample.mq131_chlorine = mq131.getChlorineGasPercentage(mq131_sample_avg, mq131_Ro);          
+          sample.wsp2110_hcho = wsp2110.getFormaldehydeGasPercentage(wsp2110_sample_avg, wsp2110_Ro);
           rs.setSamplingComplete();
           q.push(sample);
         }
@@ -166,9 +164,9 @@ void loop()
           do {
             reading_sent=false;
             curr_sample = q.front();
-            sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&ozone=%i&chlorine=%i&sewer=%i&dust=%2f&unix_time=%i", 
-                         Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.mq131_ozone, 
-                         curr_sample.mq131_chlorine, curr_sample.tgs2602_sewer, curr_sample.dust_concentration, curr_sample.reading_time);  
+            sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&hcho=%i&sewer=%i&dust=%2f&unix_time=%i", 
+                         Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.wsp2110_hcho, 
+                         curr_sample.tgs2602_sewer, curr_sample.dust_concentration, curr_sample.reading_time);  
             request.path = url;
             http.get(request, response);
             char read_time_chars[12];
@@ -191,15 +189,16 @@ void loop()
         calibration_count++;
         if(calibration_count<=1) {
           tgs2602.startCalibrating();           
-          mq131.startCalibrating();
+          wsp2110.startCalibrating();
         }
         tgs2602_Ro = tgs2602.calibrateInCleanAir(analogRead(SENSOR_TGS2602));
-        mq131_Ro = mq131.calibrateInCleanAir(analogRead(SENSOR_MQ131));
+        wsp2110_Ro = wsp2110.calibrateInCleanAir(analogRead(SENSOR_WSP2110));
         if(calibration_count==CALIBRATION_SAMPLE_FREQUENCY) { // Calibration Complete
           beep(200);
           rs.setCalibratingComplete();
-          sprintf(mq131_display,"%.3f",mq131_Ro);         
-          flash.writeFloat(mq131_Ro, 0);
+          sprintf(wsp2110_display,"%.3f",wsp2110_Ro);         
+          flash.writeFloat(wsp2110_Ro, 0);
+          sprintf(tgs2602_display,"%.3f",tgs2602_Ro);         
           flash.writeFloat(tgs2602_Ro, 4);
         }
         color=rgbLed.BLUE;

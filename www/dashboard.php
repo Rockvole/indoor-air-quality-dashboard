@@ -210,15 +210,15 @@ if(!isset($row['ts'])) {
  
   echo "</table>";
   echo "</div>"; 
-  /*
-  // ------------------------------------------------------------------- Ozone and Chlorine
+
+  // ------------------------------------------------------------------- Formaldehyde
   echo "<div class='container'>";  
   echo "<table border=0>";      
   echo "<tr>";
   if($size==2) {
     echo "<td></td>";
   }  
-  echo "<td align=center colspan=2><h3 style='display:inline;'>Ozone and Chlorine Gas</h3>&nbsp;";
+  echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
   echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";    
   echo "</td>";  
   echo "</tr>";
@@ -235,13 +235,13 @@ if(!isset($row['ts'])) {
     echo "</td>";
   }
   echo "<td>";
-  echo "<img src='graphs/mq131.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(3);' style='cursor:pointer;'>";
+  echo "<img src='graphs/wsp2110.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(3);' style='cursor:pointer;'>";
   echo "</td>";
   echo "</tr>";
  
   echo "</table>";
   echo "</div>";    
-  */
+
   // ------------------------------------------------------------------- Form
   echo "<form action='dashboard.php' method='get' name='dash'>";
   echo "<input type='hidden' name='id' value='$id'>";

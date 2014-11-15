@@ -20,8 +20,8 @@ do
   echo tgs2602
   spark get rockvole5 tgs2602
 
-  echo mq131
-  spark get rockvole5 mq131
+  echo wsp2110
+  spark get rockvole5 wsp2110
 
   echo url
   spark get rockvole5 url

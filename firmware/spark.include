@@ -16,6 +16,6 @@ SensorBase/SensorBase.cpp
 SensorBase/SensorBase.h
 TGS2602/TGS2602.cpp
 TGS2602/TGS2602.h
-MQ131/MQ131.cpp
-MQ131/MQ131.h
+WSP2110/WSP2110.cpp
+WSP2110/WSP2110.h
 

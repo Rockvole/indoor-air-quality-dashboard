@@ -38,9 +38,9 @@ switch($sensor) {
     $min_orange=500;
     $min_red=1000;
     break;  
-  case 3: // Ozone
-    $title_name="Ozone";
-    $sensor_column="ozone";
+  case 3: // Formaldehyde
+    $title_name="Formaldehyde";
+    $sensor_column="hcho";
     $default_sensor_3="checked='checked'";
     $min_orange=5;
     $min_red=10;
@@ -92,7 +92,7 @@ $currentYear = $calendar->year($year);
   echo "<input type='radio' onclick='change_sensor(2);' $default_sensor_2>Sewer";
   echo "</td>";
   echo "<td>";
-  echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Ozone";
+  echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Formaldehyde";
   echo "</td>";  
   echo "</table>";
   echo "</td><tr>";
