@@ -64,13 +64,13 @@ ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
 
 // --------------------------------------------------------------------- TGS2602
 TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
-float tgs2602_Ro = 2.511;
+float tgs2602_Ro = 10152.715;
 int   tgs2602_sample_avg = 0;
 char  tgs2602_display[10];
 
 // --------------------------------------------------------------------- WSP2110
 WSP2110 wsp2110(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
-float wsp2110_Ro = 2.501;
+float wsp2110_Ro = 97073.305;
 int   wsp2110_sample_avg = 0;
 char  wsp2110_display[10];
 

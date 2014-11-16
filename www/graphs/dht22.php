@@ -12,12 +12,13 @@ while($row = mysqli_fetch_array($result)) {
 	$temperature[]=$row['temperature'];
 	$humidity[]=$row['humidity'];
 }
-$temperature_plot=new LinePlot($temperature,$ts);
-$temperature_plot->SetColor('hotpink3');
-$temperature_plot->SetWeight(2);
 $humidity_plot=new LinePlot($humidity,$ts);
 $humidity_plot->SetColor('dodgerblue');
 $humidity_plot->SetWeight(2);
+$humidity_plot->SetFillColor($line_fill_color);
+$temperature_plot=new LinePlot($temperature,$ts);
+$temperature_plot->SetColor('hotpink3');
+$temperature_plot->SetWeight(2);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);

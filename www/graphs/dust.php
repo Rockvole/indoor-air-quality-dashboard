@@ -15,6 +15,7 @@ while($row = mysqli_fetch_array($result)) {
 $dust_plot=new LinePlot($dust,$ts);
 $dust_plot->SetColor('darkgray');
 $dust_plot->SetWeight(2);
+$dust_plot->SetFillColor($line_fill_color);
 $level_plot=new LinePlot($level,$ts);
 
 $graph = new Graph($width,$height);

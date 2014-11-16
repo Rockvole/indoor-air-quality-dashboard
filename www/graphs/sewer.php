@@ -13,6 +13,7 @@ while($row = mysqli_fetch_array($result)) {
 $sewer_plot=new LinePlot($sewer,$ts);
 $sewer_plot->SetColor('darkgoldenrod');
 $sewer_plot->SetWeight(2);
+$sewer_plot->SetFillColor($line_fill_color);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);

@@ -37,4 +37,5 @@ if (mysqli_connect_errno()) {
 } 
 
 $font_size=11;
+$line_fill_color='white@0.65';
 ?>

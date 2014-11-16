@@ -15,6 +15,7 @@ while($row = mysqli_fetch_array($result)) {
 $hcho_plot=new LinePlot($hcho,$ts);
 $hcho_plot->SetColor('firebrick4');
 $hcho_plot->SetWeight(2);
+$hcho_plot->SetFillColor($line_fill_color);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
