@@ -4,9 +4,19 @@ use Carbon\Carbon;
 $clear_location='clear:left';
 
 // --------------------------------------------------------------------- EVENTS
-$result=mysqli_query($conn,"SELECT * from events where ts>=$start_day_utc and ts<$end_day_utc and core_id=$id order by ts");
 $name_arr = array();
 $ts_arr = array();
+// Get the last open event before today
+$result=mysqli_query($conn,"SELECT * from events where ts=".
+                           "   (SELECT max(ts) from events where ts<$start_day_utc and core_id=$id)"
+		    );
+$row = mysqli_fetch_array($result);
+if(isset($row['name'])) {
+  $name_arr[] = $row['name'];
+  $ts_arr[]='';
+}
+// Get all the events for today
+$result=mysqli_query($conn,"SELECT * from events where ts>=$start_day_utc and ts<$end_day_utc and core_id=$id order by ts");
 while($row = mysqli_fetch_array($result)) {
   $name_arr[] = $row['name'];
   $ts_arr[]=$row['ts'];
@@ -25,12 +35,16 @@ if($arr_count>0) {
       echo "<td>";
       echo $name_arr[$i];
       echo "</td>";
-      echo "<td>";
-      $event_ts = Carbon::createFromTimeStamp($ts_arr[$i]);
-      echo $event_ts->format('H:i');
-      if(($i+1)<$arr_count) {
-        $event_ts = Carbon::createFromTimeStamp($ts_arr[$i+1]);
-        echo "-".$event_ts->format('H:i');
+      echo "<td>"; 
+      if(empty($ts_arr[$i])) {
+	echo "(previous)";
+      } else {
+        $event_ts = Carbon::createFromTimeStamp($ts_arr[$i]);
+        echo $event_ts->format('H:i');
+        if(($i+1)<$arr_count) {
+          $event_ts = Carbon::createFromTimeStamp($ts_arr[$i+1]);
+          echo "-".$event_ts->format('H:i');
+        }
       }
       echo "</td>";  
       echo "</tr>";

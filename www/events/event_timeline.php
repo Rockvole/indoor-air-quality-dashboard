@@ -7,7 +7,7 @@ $ts_arr = array_fill(0, 24, NULL);
 $name_arr = array_fill(0, 24, NULL);
 
 $result=mysqli_query($conn,"SELECT name from events where ts=".
-                            "(SELECT max(ts) from events where ts<$start_day_utc)");
+                            "(SELECT max(ts) from events where ts<$start_day_utc and core_id=$id)");
 $row = mysqli_fetch_array($result);
 if(isset($row['name'])) $background_state=1;
 
