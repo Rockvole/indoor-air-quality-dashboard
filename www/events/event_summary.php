@@ -55,9 +55,18 @@ if($arr_count>0) {
 }
 
 // --------------------------------------------------------------------- LOCATIONS
-$result=mysqli_query($conn,"SELECT * from locations where ts>=$start_day_utc and ts<$end_day_utc and core_id=$id order by ts");
 $name_arr = array();
 $ts_arr = array();
+// Get the previous location before today
+$result=mysqli_query($conn,"SELECT * from locations where ts=".
+                           "   (SELECT max(ts) from locations where ts<$start_day_utc and core_id=$id)"
+		    );
+if(mysqli_num_rows($result)>0) {		    
+  $row = mysqli_fetch_array($result);
+  $name_arr[] = $row['room_name'];
+  $ts_arr[]='';
+}
+$result=mysqli_query($conn,"SELECT * from locations where ts>=$start_day_utc and ts<$end_day_utc and core_id=$id order by ts");
 while($row = mysqli_fetch_array($result)) {
   $name_arr[] = $row['room_name'];
   $ts_arr[]=$row['ts'];
@@ -76,8 +85,10 @@ if($arr_count>0) {
       echo $name_arr[$i];
       echo "</td>";
       echo "<td>";
-      $event_ts = Carbon::createFromTimeStamp($ts_arr[$i]);
-      echo $event_ts->format('H:i');
+      if(!empty($ts_arr[$i])) {
+        $event_ts = Carbon::createFromTimeStamp($ts_arr[$i]);
+        echo $event_ts->format('H:i');
+      } else echo "(previous)";
       echo "</td>";  
       echo "</tr>";
     }
