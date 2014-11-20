@@ -10,6 +10,9 @@
         document.event.name.value=document.getElementById('name').value;
       document.event.submit();      
     }
+    function back_button() {
+      document.back.submit();
+    }    
   </script>
 <body>
 <?php
@@ -29,6 +32,8 @@ $ts = htmlspecialchars($_GET["ts"]);
 $op = filter_input(INPUT_GET, 'op', FILTER_VALIDATE_INT);
 $name = htmlspecialchars($_GET["name"]);
 $event_ts = Carbon::createFromTimeStamp($ts);
+$start_date_param = htmlspecialchars($_GET["start_date"]);
+$size_param = htmlspecialchars($_GET["size"]);
 $finish_event=false;
 
 if(strlen($op)>0) {
@@ -62,7 +67,12 @@ if(strlen($op)>0) {
     if(!isset($row['name'])) $finish_event=true;
   }
 }
-echo "<h2>Manage Event (".$event_ts->format($user_date_format).")</h2>";
+echo "<table border=0 width=100%>";
+echo "<tr>";
+echo "<td><h2>Manage Event (".$event_ts->format($user_date_format).")</h2></td>";
+echo "<td align=right><input type='button' value='Back' style='padding:2px;' onclick='back_button()'></td>";
+echo "</tr>";
+echo "</table>";
 echo "<table border=0 class='form_table'>";
 
 echo "<tr>";
@@ -98,6 +108,14 @@ echo "<input type='hidden' name='id' value='$id'>";
 echo "<input type='hidden' name='name' value=''>";
 echo "<input type='hidden' name='op' value=''>";
 echo "<input type='hidden' name='ts' value='$ts'>";
+echo "<input type='hidden' name='size' value='$size_param'>";
+echo "<input type='hidden' name='start_date' value='$start_date_param'>";
+echo "</form>";
+// ------------------------------------------------------------------- Back
+echo "<form action='../dashboard.php' method='get' name='back'>";
+echo "<input type='hidden' name='id' value='$id'>";
+echo "<input type='hidden' name='size' value='$size_param'>";
+echo "<input type='hidden' name='start_date' value='$start_date_param'>";
 echo "</form>";
 
 echo "</body>\n";

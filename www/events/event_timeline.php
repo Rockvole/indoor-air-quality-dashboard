@@ -39,7 +39,7 @@ for($i=0;$i<24;$i++) {
   }  
   $curr_ts_utc=$date->copy()->startOfDay()->addHours($i)->format('U');
   echo "<td style='text-align:center;font-size:11px;cursor:pointer;border:1px solid purple;$background' ";
-  echo "onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc\"'>";
+  echo "onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";
   echo sprintf("%1$02d",$i);
   echo "</td>";
   
