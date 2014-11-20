@@ -21,7 +21,7 @@ $graph->SetBackgroundImage('traffic33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,100);
+$graph->SetScale('datlin',0,200);
 $graph->Add($sewer_plot);
 
 $graph->xaxis->SetLabelAngle(90);
@@ -33,7 +33,7 @@ $graph->yaxis->SetWeight(2);
 $graph->yaxis->SetColor('darkgoldenrod');
 $graph->yaxis->SetFont(FF_ARIAL,FS_NORMAL,$font_size-3);
 $graph->yaxis->title->SetColor('darkgoldenrod');
-$graph->yaxis->title->Set('% Sewer');
+$graph->yaxis->title->Set('Sewer');
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);

@@ -14,6 +14,7 @@
       document.cal.submit();
     }
     function add_location(start_date) {
+      document.cal.add.value='true';
       document.cal.start_date.value=start_date;
       document.cal.hour.value=document.getElementById('hour').value;
       document.cal.location_name.value=document.getElementById('location_name').value;
@@ -24,9 +25,11 @@
       document.cal.ts.value=ts;
       document.cal.submit();      
     }    
+    function back_button() {
+      document.back.submit();
+    }
   </script>
 <body>
-  <h2>Add Location</h2>
 <?php
 require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
@@ -41,6 +44,7 @@ if (mysqli_connect_errno()) {
 } 
 if(!isset($_GET["id"])) exit("Must specify id parameter");
 $id = htmlspecialchars($_GET["id"]);
+$add_param = htmlspecialchars($_GET["add"]);
 $ts = htmlspecialchars($_GET["ts"]);
 $year  = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
 $month = filter_input(INPUT_GET, 'month', FILTER_VALIDATE_INT);
@@ -48,6 +52,7 @@ $hour = htmlspecialchars($_GET["hour"]);
 $loc_name = htmlspecialchars($_GET["location_name"]);
 $room_name = htmlspecialchars($_GET["room_name"]);
 $start_date_param = htmlspecialchars($_GET["start_date"]);
+$size_param = htmlspecialchars($_GET["size"]);
 if(strlen($ts)>0) {
   
   $sql = "DELETE from locations where ts=$ts";
@@ -55,7 +60,7 @@ if(strlen($ts)>0) {
      exit('Error: '.mysqli_error($conn));
   }
   echo "<div class='alerthead'>Item deleted</div>";
-} else if(strlen($start_date_param)>0) {
+} else if(strlen($add_param)>0) {
   if(strlen($room_name)<=0) {
     exit("Room must be specified");
   }
@@ -81,6 +86,10 @@ $prevMonth = $currentMonth->prev();
 $nextMonth = $currentMonth->next();
   
 echo "<table border=0 class='form_table'>";
+echo "<tr>";
+echo "<td colspan=2><h2>Add Location</h2></td>";
+echo "<td align=right><input type='button' value='Back' style='padding:2px;' onclick='back_button()'></td>";
+echo "</tr>";
 echo "<tr>";
 echo "<td></td>";
 echo "<td><b>Please choose the location of your sensor :</b></td>";
@@ -177,13 +186,21 @@ echo "</table>";
 // ------------------------------------------------------------------- Form
 echo "<form action='add_location.php' method='get' name='cal'>";
 echo "<input type='hidden' name='id' value='$id'>";
+echo "<input type='hidden' name='add' value=''>";
 echo "<input type='hidden' name='year' value='$year'>";
 echo "<input type='hidden' name='month' value='$month'>";
 echo "<input type='hidden' name='hour' value='$hour'>";
 echo "<input type='hidden' name='location_name' value='$location_name'>";
 echo "<input type='hidden' name='room_name' value='$room_name'>";
-echo "<input type='hidden' name='start_date' value=''>";
+echo "<input type='hidden' name='size' value='$size_param'>";
+echo "<input type='hidden' name='start_date' value='$start_date_param'>";
 echo "<input type='hidden' name='ts' value=''>";
+echo "</form>";
+// ------------------------------------------------------------------- Back
+echo "<form action='dashboard.php' method='get' name='back'>";
+echo "<input type='hidden' name='id' value='$id'>";
+echo "<input type='hidden' name='size' value='$size_param'>";
+echo "<input type='hidden' name='start_date' value='$start_date_param'>";
 echo "</form>";
 
 echo "</body>\n";

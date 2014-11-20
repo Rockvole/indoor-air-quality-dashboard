@@ -93,7 +93,7 @@ if(!isset($row['ts'])) {
     echo $room_name;
   else echo "Unknown location";  
   echo "</span>";
-  echo "<img src='html/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."\"' style='cursor:pointer;'>";
+  echo "<img src='html/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."&start_date=".$start_date_param."&size=".$size."\"' style='cursor:pointer;'>";
   echo "</td>";
   echo "<td align=right><input type='button' value='Download CSV' onclick='location.href=\"download_csv.php?id=$id\"'></td></tr>";
   echo "</table>";  
