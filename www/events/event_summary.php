@@ -75,7 +75,7 @@ while($row = mysqli_fetch_array($result)) {
 $arr_count=count($ts_arr);
 if($arr_count>0) {
   echo "<div class='container' style='background-color:white;$clear_location' >";
-  echo "<h3 style='text-align:left;'>Location Changes</h3>";
+  echo "<h3 style='text-align:left;'>Location</h3>";
   echo "<table border=0 style='border-spacing:6px;'>";
 
   for($i=0;$i<$arr_count;$i++) {
@@ -88,7 +88,7 @@ if($arr_count>0) {
       if(!empty($ts_arr[$i])) {
         $event_ts = Carbon::createFromTimeStamp($ts_arr[$i]);
         echo $event_ts->format('H:i');
-      } else echo "(previous)";
+      } else echo "&nbsp;";
       echo "</td>";  
       echo "</tr>";
     }

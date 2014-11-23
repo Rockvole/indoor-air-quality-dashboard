@@ -78,19 +78,17 @@ if(!isset($row['ts'])) {
   echo "<tr><td>";
   echo "<h2>Indoor Air Quality Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
-  $name_result=mysqli_query($conn,"SELECT room_name from locations WHERE core_id=$id and ts = ".
-				  "(SELECT MAX(ts) as ts from locations WHERE core_id=$id and ts <= $end_day_utc)");
+  $name_result=mysqli_query($conn,"SELECT name from cores WHERE id=$id");
   $name_row = mysqli_fetch_array($name_result);
-  $room_name=$name_row['room_name'];
+  $name=$name_row['name'];
   $location_result=mysqli_query($conn,"SELECT location_name from locations WHERE core_id=$id and ts = ".
 				  "(SELECT MAX(ts) as ts from locations WHERE core_id=$id and ts <= $end_day_utc and location_name is not null)");
   $location_row = mysqli_fetch_array($location_result);  
   $location_name=$location_row['location_name'];
-  echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:blueviolet;vertical-align:top;'>";
-  if(strlen($location_name)>0)
-    echo $location_name." - ";  
-  if(strlen($room_name)>0)
-    echo $room_name;
+  echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
+  echo $name;  
+  if(strlen($location_name)>0) 
+    echo " - ".$location_name;
   else echo "Unknown location";  
   echo "</span>";
   echo "<img src='html/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."&start_date=".$start_date_param."&size=".$size."\"' style='cursor:pointer;'>";

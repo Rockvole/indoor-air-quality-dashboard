@@ -24,6 +24,7 @@
 #define BLUE_LED                A7
 
 #define DUST_PIN                D1
+#define DHT_PIN                 D2
 #define USER_SAMPLING_BTN       D3
 #define CALIBRATE_BTN           D4
 
@@ -55,11 +56,11 @@ RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
 RgbLedControl::Color color;
 
 // --------------------------------------------------------------------- DHT22
-#define DUST_SAMPLE_INTERVAL_MS 30000
 void dht_wrapper();
-PietteTech_DHT DHT(D2, DHT22, dht_wrapper);
+PietteTech_DHT DHT(DHT_PIN, DHT22, dht_wrapper);
 
 // --------------------------------------------------------------------- Shinyei PPD42NS
+#define DUST_SAMPLE_INTERVAL_MS 30000
 ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
 
 // --------------------------------------------------------------------- TGS2602
@@ -90,7 +91,8 @@ void setup()
   pinMode(CALIBRATE_BTN, INPUT_PULLUP);
   pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
   pinMode(BUZZER_PIN, OUTPUT); 
-  pinMode(DUST_PIN, INPUT);   
+  pinMode(DUST_PIN, INPUT);
+  pinMode(DHT_PIN, INPUT_PULLUP);   
 
   request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
   //request.ip = {192, 168, 1, 130}; // davidlub
