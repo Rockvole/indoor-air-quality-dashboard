@@ -26,6 +26,8 @@ $graph->SetMarginColor('white');
 $graph->SetScale('datlin',0,100);
 $graph->Add($hcho_plot);
 
+$graph->ygrid->SetColor("azure3");
+
 $graph->xaxis->SetLabelAngle(90);
 $graph->xaxis->scale->SetDateFormat('g a');
 $graph->xaxis->SetWeight(2);
@@ -39,6 +41,7 @@ $graph->yaxis->title->Set('% Formaldehyde');
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
+$graph->yaxis->SetTickPositions(array(0,10,20,30,40,50,60,70,80,90,100), null);
 
 // Display the graph
 $graph->Stroke();

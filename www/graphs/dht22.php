@@ -47,6 +47,7 @@ $graph->yaxis->title->Set('%RH');
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
+$graph->yaxis->SetTickPositions(array(0,10,20,30,40,50,60,70,80,90,100), null);
 
 $graph->y2axis->SetWeight(2);
 $graph->y2axis->SetColor('hotpink3');

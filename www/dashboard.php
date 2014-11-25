@@ -89,7 +89,6 @@ if(!isset($row['ts'])) {
   echo $name;  
   if(strlen($location_name)>0) 
     echo " - ".$location_name;
-  else echo "Unknown location";  
   echo "</span>";
   echo "<img src='html/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."&start_date=".$start_date_param."&size=".$size."\"' style='cursor:pointer;'>";
   echo "</td>";

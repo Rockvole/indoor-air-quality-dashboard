@@ -50,6 +50,7 @@ int calibration_count=0;
 int stage=0;
 bool first_sample=true;
 bool acquired_ip=true;
+int uptime_start=0;
 
 // --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
@@ -124,8 +125,9 @@ void loop()
 {
   if(color!=rgbLed.RED) color=rgbLed.OFF;
   unix_time=Time.now();
-  delay_ms=200;
+  if(uptime_start<1000000000) uptime_start = unix_time;  
   stage=rs.getStage(unix_time);
+  delay_ms=200;  
 
   switch(stage) {
     case rs.USER_SAMPLING:
@@ -166,9 +168,11 @@ void loop()
           do {
             reading_sent=false;
             curr_sample = q.front();
-            sprintf(url, "/iaq/get_reading.php?core_id=%s&temp=%2f&hum=%2f&hcho=%i&sewer=%i&dust=%2f&unix_time=%i", 
-                         Spark.deviceID().c_str(), curr_sample.temperature, curr_sample.humidity, curr_sample.wsp2110_hcho, 
-                         curr_sample.tgs2602_sewer, curr_sample.dust_concentration, curr_sample.reading_time);  
+            sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=%i&sewer=%i&dust=%.2f&core_id=%s&uptime=%i", 
+                         curr_sample.reading_time,  
+                         curr_sample.temperature, curr_sample.humidity, curr_sample.wsp2110_hcho, 
+                         curr_sample.tgs2602_sewer, curr_sample.dust_concentration,
+                         Spark.deviceID().c_str(), (unix_time-uptime_start));  
             request.path = url;
             http.get(request, response);
             char read_time_chars[12];

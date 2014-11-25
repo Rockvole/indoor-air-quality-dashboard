@@ -24,6 +24,8 @@ $graph->SetMarginColor('white');
 $graph->SetScale('datlin',0,200);
 $graph->Add($sewer_plot);
 
+$graph->ygrid->SetColor("azure3");
+
 $graph->xaxis->SetLabelAngle(90);
 $graph->xaxis->scale->SetDateFormat('g a');
 $graph->xaxis->SetWeight(2);
