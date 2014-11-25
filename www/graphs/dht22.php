@@ -31,6 +31,9 @@ $graph->Add($humidity_plot);
 $graph->SetY2Scale('lin',5,40);
 $graph->AddY2($temperature_plot);
 
+$graph->ygrid->SetColor("azure3");
+$graph->ygrid->Show(true, true);
+
 $graph->xaxis->SetLabelAngle(90);
 $graph->xaxis->scale->SetDateFormat('g a');
 $graph->xaxis->SetWeight(2);
