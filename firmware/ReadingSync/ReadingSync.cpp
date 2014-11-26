@@ -49,9 +49,18 @@ bool ReadingSync::isTimeToSendReading(int currentTime) {
     return getSecsSinceStartOfDay(currentTime) >= next_send_secs;
 }
 
+bool ReadingSync::isFirstPreHeatLoop() {
+  if(_is_first_pre_heat_loop) {
+    _is_first_pre_heat_loop=false;
+    return true;
+  }
+  return false;
+}
 // --------------------------------------------------------------------- CALIBRATION
 void ReadingSync::startCalibrating(int currentTime) {
     calibration_start_time=currentTime;
+    _is_first_pre_heat_loop=true;
+    _is_first_sampling_loop=true;
     _stage=PRE_HEAT_CALIBRATING;
 }
 
@@ -62,18 +71,30 @@ void ReadingSync::setCalibratingComplete() {
 // --------------------------------------------------------------------- USER SAMPLING
 void ReadingSync::startUserSampling(int currentTime) {
     user_sampling_start_time=currentTime;
+    _is_first_pre_heat_loop=true;
+    _is_first_sampling_loop=true;
     _stage=PRE_HEAT_USER_SAMPLING;
 }
 
 // --------------------------------------------------------------------- SCHEDULED SAMPLING
 void ReadingSync::setSamplingComplete() {
     if(_stage==SAMPLING) next_send_secs = last_read_secs + (rand() % (secs_between_readings-120));   
+    _is_first_sampling_loop=true;
+    _is_first_pre_heat_loop=true;
     _stage=CONTINUE;
 }
 
 void ReadingSync::setReadingSent() {
     next_send_secs = C_MAX_INT;
     _stage=CONTINUE;
+}
+
+bool ReadingSync::isFirstSamplingLoop() {
+  if(_is_first_sampling_loop) {
+    _is_first_sampling_loop=false;
+    return true;
+  }
+  return false;
 }
 
 // --------------------------------------------------------------------- STAGE

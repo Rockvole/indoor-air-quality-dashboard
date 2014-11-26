@@ -37,8 +37,10 @@ class ReadingSync {
         secs_between_readings=mins_between_readings * 60;
         pre_heat_secs=phs;
         last_read_secs = C_MAX_INT;
-        next_send_secs = C_MAX_INT;         
-        srand(currentTime);        
+        next_send_secs = C_MAX_INT;
+        srand(currentTime);
+        _is_first_sampling_loop=true;
+        _is_first_pre_heat_loop=true;
       }
       int getStartOfDayUnixTime(int currentTime);
       void startCalibrating(int currentTime);
@@ -47,14 +49,18 @@ class ReadingSync {
       void setSamplingComplete();
       void setCalibratingComplete();
       Stage getStage(int currentTime);
+      bool isFirstPreHeatLoop();
+      bool isFirstSamplingLoop();
     private:
-      ReadingSync() { } 
-      Stage _stage;  
-      int calibration_start_time;   
-      int user_sampling_start_time;      
+      ReadingSync() { }
+      Stage _stage;
+      bool _is_first_sampling_loop;
+      bool _is_first_pre_heat_loop;
+      int calibration_start_time;
+      int user_sampling_start_time;
       int getSecsSinceStartOfDay(int currentTime);
       bool isTimeToPreHeat(int currentTime);
       bool isTimeToSample(int currentTime); 
       bool isTimeToSendReading(int currentTime);
-      int getRemainingSecsUntilSample(int currentTime);       
+      int getRemainingSecsUntilSample(int currentTime);
 };

@@ -9,7 +9,7 @@
 #include "ShinyeiPPD42NS.h"
 #include "function_pulseIn.h"
 
-#define INTERVAL_MINS 60
+#define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
 #define CALIBRATION_SAMPLE_FREQUENCY 50
 #define CALIBRATION_SAMPLE_INTERVAL 500
@@ -45,10 +45,8 @@ reading sample;
 union float2bytes {float f; char b[sizeof(float)]; };
 int unix_time = 0;
 int delay_ms = 0;
-int heating_count=0;
 int calibration_count=0;
 int stage=0;
-bool first_sample=true;
 bool acquired_ip=true;
 int uptime_start=0;
 
@@ -133,9 +131,8 @@ void loop()
     case rs.USER_SAMPLING:
     case rs.SAMPLING:
       {
-        unsigned long current_ms = millis();    
-        if(first_sample) {
-          first_sample=false;  
+        unsigned long current_ms = millis();  
+        if(rs.isFirstSamplingLoop()) {  
           tgs2602.startSampling(current_ms);
           wsp2110.startSampling(current_ms);
           dust.startSampling(current_ms);
@@ -216,17 +213,12 @@ void loop()
     case rs.PRE_HEATING:
       {
         color=rgbLed.ORANGE;
-        if(heating_count==0) {  // Take ambient temperature before pre-heating
+        if(rs.isFirstPreHeatLoop()) { // Take ambient temperature before pre-heating
           read_dht22();
         }
-        heating_count++;
       }
       break;
     case rs.CONTINUE:
-      {
-        first_sample=true;
-        heating_count=0;
-      }
       break;            
     default:  
       delay(1);
@@ -236,8 +228,6 @@ void loop()
     rs.startCalibrating(unix_time);
   }
   if(digitalRead(USER_SAMPLING_BTN)==LOW) {
-    first_sample=true;
-    heating_count=0;
     rs.startUserSampling(unix_time);
   }  
 
