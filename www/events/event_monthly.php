@@ -15,10 +15,8 @@
       document.cal.month.value=month;    
       document.cal.submit();
     }
-    function draw_charts(start_date) {
-      document.cal.add.value='true';
-      document.cal.start_date.value=start_date;
-      document.cal.hour.value=document.getElementById('hour').value;
+    function select_day(day) {
+      document.cal.day.value=day;
       document.cal.submit();      
     }
     function back_button() {
@@ -56,6 +54,7 @@ echo "<tr>\n";
 echo "<td colspan=2><h2>Choose Event</h2></td>\n";
 echo "<td align=right><input type='button' value='Back' style='padding:2px;' onclick='back_button()'></td>\n";
 echo "</tr>\n";
+echo "</table>";
 echo "<table border=0 style='width:240px'>\n";
 echo "<tr>\n";
 echo "<td><input type='button' value='&lt; Previous' style='padding:2px;' onclick='change_month(\"".$prevMonth->year()->int()."\",\"".$prevMonth->int()."\")'></td>\n";
@@ -112,7 +111,7 @@ echo "<tr>\n";
 	$day_html=$day->int() . "\n";
       }
       if(strlen($tooltip_str)>0) {
-        echo "<td onclick='alert(\"nothing\");' id='cal-day' style='background-color:$background_color;cursor:pointer;' title='$tooltip_str'>\n";     
+        echo "<td onclick='select_day(".$day->int().");' id='cal-day' style='background-color:$background_color;cursor:pointer;' title='$tooltip_str'>\n";     
         echo $day_html;
         echo "</td>\n";
       } else {
@@ -125,16 +124,26 @@ echo "<tr>\n";
   endforeach;
 echo "</table>\n";
 echo "</li>\n";
+echo "<li>";
+echo "<table border=1 width=1000>";
+echo "<tr><td><img src='../html/transparent.gif' width='800' height='1'></td></tr>";
+echo "<tr>";
+echo "<td>";
+echo "Placeholder for event selector";
+echo "</td>";
+echo "</tr>";
+echo "</table>";
+echo "</li>";
 echo "</ul>\n";
 echo "</section>\n";
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>\n";
+
+
 // ------------------------------------------------------------------- Form
 echo "<form action='event_monthly.php' method='get' name='cal'>\n";
 echo "<input type='hidden' name='id' value='$id'>\n";
 echo "<input type='hidden' name='year' value='$year'>\n";
 echo "<input type='hidden' name='month' value='$month'>\n";
+echo "<input type='hidden' name='day' value=''>\n";
 echo "</form>\n";
 // ------------------------------------------------------------------- Back
 echo "<form action='../index.php' method='get' name='back'>\n";
