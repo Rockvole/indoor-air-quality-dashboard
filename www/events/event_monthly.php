@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../calendar/calendar.css" type="text/css" />
   <link rel="stylesheet" href="../javascript/tipsy.css" type="text/css" />
   <script src="../javascript/jquery-1.11.1.min.js"></script>
-  <script src="../javascript/jquery.tipsy.js"></script>  
+  <script src="../javascript/jquery.tipsy.js"></script>
 </head>
   <script>
     function change_month(year,month) {
@@ -38,6 +38,7 @@ if (mysqli_connect_errno()) {
 } 
 $year  = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
 $month = filter_input(INPUT_GET, 'month', FILTER_VALIDATE_INT);
+$day_param   = filter_input(INPUT_GET, 'day', FILTER_VALIDATE_INT);
 
 // initialize the calendar object
 $calendar = new calendar();
@@ -125,11 +126,11 @@ echo "<tr>\n";
 echo "</table>\n";
 echo "</li>\n";
 echo "<li>";
-echo "<table border=1 width=1000>";
+echo "<table border=0>";
 echo "<tr><td><img src='../html/transparent.gif' width='800' height='1'></td></tr>";
 echo "<tr>";
 echo "<td>";
-echo "Placeholder for event selector";
+include 'event_selector.php';
 echo "</td>";
 echo "</tr>";
 echo "</table>";
