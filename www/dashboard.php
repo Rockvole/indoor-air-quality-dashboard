@@ -31,8 +31,6 @@ $graph_width=1000;
 $width_pix = array(300, 600, 1000);
 $height_pix = array(150, 300, 500);
 
-if(!isset($_GET["id"])) exit("Must specify id parameter");
-$id = htmlspecialchars($_GET["id"]);
 $start_date_param = htmlspecialchars($_GET["start_date"]);
 $direction_param = htmlspecialchars($_GET["direction"]);
 if(!isset($_GET["size"])) $size=1;

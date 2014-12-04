@@ -24,7 +24,7 @@
 #define BLUE_LED                A7
 
 #define DUST_PIN                D1
-#define DHT_PIN                 D2
+#define DHT_PIN                 D0
 #define USER_SAMPLING_BTN       D3
 #define CALIBRATE_BTN           D4
 

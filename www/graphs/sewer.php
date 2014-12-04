@@ -21,7 +21,7 @@ $graph->SetBackgroundImage('traffic33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,200);
+$graph->SetScale('datlin',0,400);
 $graph->Add($sewer_plot);
 
 $graph->ygrid->SetColor("azure3");

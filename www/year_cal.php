@@ -20,8 +20,6 @@ use Carbon\Carbon;
 require('calendar/calendar.php');
 include 'globals.php';
 
-if(!isset($_GET["id"])) exit("Must specify id parameter");
-$id = htmlspecialchars($_GET["id"]);
 $sensor = htmlspecialchars($_GET["sensor"]);
 switch($sensor) {
   case 1: // Dust

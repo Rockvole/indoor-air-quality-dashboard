@@ -23,7 +23,7 @@ $graph->SetBackgroundImage('traffic33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,100);
+$graph->SetScale('datlin',0,200);
 $graph->Add($hcho_plot);
 
 $graph->ygrid->SetColor("azure3");
@@ -37,11 +37,11 @@ $graph->yaxis->SetWeight(2);
 $graph->yaxis->SetColor('firebrick4');
 $graph->yaxis->SetFont(FF_ARIAL,FS_NORMAL,$font_size-3);
 $graph->yaxis->title->SetColor('firebrick4');
-$graph->yaxis->title->Set('% Formaldehyde');
+$graph->yaxis->title->Set('Formaldehyde');
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
-$graph->yaxis->SetTickPositions(array(0,10,20,30,40,50,60,70,80,90,100), null);
+//$graph->yaxis->SetTickPositions(array(0,10,20,30,40,50,60,70,80,90,100), null);
 
 // Display the graph
 $graph->Stroke();
