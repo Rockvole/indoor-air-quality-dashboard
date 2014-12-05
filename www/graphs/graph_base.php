@@ -3,6 +3,7 @@ include '../globals.php';
 require_once ("jpgraph/jpgraph.php");
 require_once ("jpgraph/jpgraph_line.php");
 require_once ("jpgraph/jpgraph_date.php");
+require_once ("jpgraph/jpgraph_bar.php");
 
 if(!isset($_GET["id"])) {
 	error_log("Must specify id parameter");

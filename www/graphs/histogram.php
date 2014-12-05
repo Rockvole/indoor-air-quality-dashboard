@@ -135,7 +135,7 @@ if($type_day) {
   echo "</tr>\n";
   echo "<tr>\n";  
   echo "<td>\n";
-  echo "<img src='sewer.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(2);' style='cursor:pointer;'>\n";
+  echo "<img src='hist_sewer.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(2);' style='cursor:pointer;'>\n";
   echo "</td>\n";
   echo "</tr>\n";
  
