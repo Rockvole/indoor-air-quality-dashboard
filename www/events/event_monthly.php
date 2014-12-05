@@ -19,6 +19,12 @@
       document.cal.day.value=day;
       document.cal.submit();      
     }
+    function select_event(event_type, event_name, start_ts, end_ts) {
+      document.graph.type.value=event_type;
+      document.graph.name.value=event_name;
+      document.graph.start_ts.value=start_ts;
+      document.graph.end_ts.value=end_ts;
+    }
     function back_button() {
       document.back.submit();
     }
@@ -126,14 +132,16 @@ echo "<tr>\n";
 echo "</table>\n";
 echo "</li>\n";
 echo "<li>";
-echo "<table border=0>";
-echo "<tr><td><img src='../html/transparent.gif' width='800' height='1'></td></tr>";
-echo "<tr>";
-echo "<td>";
-include 'event_selector.php';
-echo "</td>";
-echo "</tr>";
-echo "</table>";
+if(isset($day_param)) {
+  echo "<table border=0>";
+  echo "<tr><td><img src='../html/transparent.gif' width='800' height='1'></td></tr>";
+  echo "<tr>";
+  echo "<td>";
+  include 'event_selector.php';
+  echo "</td>";
+  echo "</tr>";
+  echo "</table>";
+}
 echo "</li>";
 echo "</ul>\n";
 echo "</section>\n";
@@ -145,6 +153,14 @@ echo "<input type='hidden' name='id' value='$id'>\n";
 echo "<input type='hidden' name='year' value='$year'>\n";
 echo "<input type='hidden' name='month' value='$month'>\n";
 echo "<input type='hidden' name='day' value=''>\n";
+echo "</form>\n";
+// ------------------------------------------------------------------- Graph Form
+echo "<form action='../graphs/histogram.php' method='get' name='graph'>\n";
+echo "<input type='hidden' name='id' value='$id'>\n";
+echo "<input type='hidden' name='type' value=''>\n";
+echo "<input type='hidden' name='name' value=''>\n";
+echo "<input type='hidden' name='start_ts' value=''>\n";
+echo "<input type='hidden' name='end_ts' value=''>\n";
 echo "</form>\n";
 // ------------------------------------------------------------------- Back
 echo "<form action='../index.php' method='get' name='back'>\n";
