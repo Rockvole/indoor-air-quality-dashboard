@@ -72,7 +72,7 @@ if(!isset($row['ts'])) {
   echo "<table border=0>";
   echo "<tr><td width=$range_width></td><td width =$graph_width></td><td width=100></td></tr>";
   echo "<tr><td colspan=3>";
-  echo "<table border=1 width=100%>";
+  echo "<table border=0 width=100%>";
   echo "<tr><td>";
   echo "<h2>Indoor Air Quality Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
@@ -203,7 +203,6 @@ if(!isset($row['ts'])) {
  
   echo "</table>";
   echo "</div>"; 
-
   // ------------------------------------------------------------------- Formaldehyde
   echo "<div class='container'>";  
   echo "<table border=0>";      
