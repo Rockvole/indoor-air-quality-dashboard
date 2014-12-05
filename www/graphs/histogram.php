@@ -141,6 +141,21 @@ if($type_day) {
  
   echo "</table>\n";
   echo "</div>\n"; 
+  // ------------------------------------------------------------------- Formaldehyde
+  echo "<div class='container'>";  
+  echo "<table border=0>";      
+  echo "<tr>";
+  echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
+  echo "</td>";  
+  echo "</tr>";
+  echo "<tr>";  
+  echo "<td>";
+  echo "<img src='hist_wsp2110.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(3);' style='cursor:pointer;'>";
+  echo "</td>";
+  echo "</tr>";
+ 
+  echo "</table>";
+  echo "</div>";      
   // ------------------------------------------------------------------- Form
   echo "<form action='histogram.php' method='get' name='dash'>\n";
   echo "<input type='hidden' name='id' value='$id'>\n";

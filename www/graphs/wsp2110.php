@@ -4,13 +4,11 @@ include 'graph_base.php';
 $result=mysqli_query($conn,"SELECT * from readings WHERE core_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $hcho=Array();
-$level=Array();
 while($row = mysqli_fetch_array($result)) {
 	$ts_str=gmdate('r', $row['ts']);
 	error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
 	$ts[]=$row['ts'];
 	$hcho[]=$row['hcho'];
-	$level[]=1000;
 }
 $hcho_plot=new LinePlot($hcho,$ts);
 $hcho_plot->SetColor('firebrick4');
@@ -23,7 +21,7 @@ $graph->SetBackgroundImage('background_h_33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,200);
+$graph->SetScale('datlin',0,300);
 $graph->Add($hcho_plot);
 
 $graph->ygrid->SetColor("azure3");
