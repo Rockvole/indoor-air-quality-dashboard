@@ -14,5 +14,9 @@
     $result=mysqli_query($conn,"SELECT * from cores WHERE id=$id");
     $row = mysqli_fetch_array($result);
     $user_timezone=$row['tz'];
+    
+    $result=mysqli_query($conn,"SELECT name from cores WHERE id=$id");
+    $sensor_name_row = mysqli_fetch_array($result);
+    $sensor_name=$sensor_name_row['name'];    
   }
 ?>

@@ -72,19 +72,17 @@ if(!isset($row['ts'])) {
   echo "<table border=0>";
   echo "<tr><td width=$range_width></td><td width =$graph_width></td><td width=100></td></tr>";
   echo "<tr><td colspan=3>";
-  echo "<table border=0 width=100%>";
+  echo "<table border=1 width=100%>";
   echo "<tr><td>";
   echo "<h2>Indoor Air Quality Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
-  $name_result=mysqli_query($conn,"SELECT name from cores WHERE id=$id");
-  $name_row = mysqli_fetch_array($name_result);
-  $name=$name_row['name'];
+
   $location_result=mysqli_query($conn,"SELECT location_name from locations WHERE core_id=$id and ts = ".
 				  "(SELECT MAX(ts) as ts from locations WHERE core_id=$id and ts <= $end_day_utc and location_name is not null)");
   $location_row = mysqli_fetch_array($location_result);  
   $location_name=$location_row['location_name'];
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
-  echo $name;  
+  echo $sensor_name;  
   if(strlen($location_name)>0) 
     echo " - ".$location_name;
   echo "</span>";
