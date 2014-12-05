@@ -22,7 +22,7 @@ $temperature_plot->SetWeight(2);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
-$graph->SetBackgroundImage('traffic40_60.png',BGIMG_FILLPLOT);
+$graph->SetBackgroundImage('background_h_40_60.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');

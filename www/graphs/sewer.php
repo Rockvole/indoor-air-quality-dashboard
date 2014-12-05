@@ -17,11 +17,11 @@ $sewer_plot->SetFillColor($line_fill_color);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
-$graph->SetBackgroundImage('traffic33_66.png',BGIMG_FILLPLOT);
+$graph->SetBackgroundImage('background_h_33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,400);
+$graph->SetScale('datlin',0,450);
 $graph->Add($sewer_plot);
 
 $graph->ygrid->SetColor("azure3");

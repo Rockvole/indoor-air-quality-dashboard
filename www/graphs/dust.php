@@ -20,7 +20,7 @@ $level_plot=new LinePlot($level,$ts);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
-$graph->SetBackgroundImage('traffic33_66.png',BGIMG_FILLPLOT);
+$graph->SetBackgroundImage('background_h_33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');

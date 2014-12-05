@@ -1,7 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
 $range_interval=50;
-$range_count=8;
+$range_count=9;
 
 $result=mysqli_query($conn,"SELECT * from readings WHERE core_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
