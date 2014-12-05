@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Add Location</title>
+  <title>Choose Event</title>
   <link rel="stylesheet" href="../html/stylesheet.css" type="text/css" >
   <link rel="stylesheet" href="../calendar/calendar.css" type="text/css" />
   <link rel="stylesheet" href="../javascript/tipsy.css" type="text/css" />
@@ -19,11 +19,10 @@
       document.cal.day.value=day;
       document.cal.submit();      
     }
-    function select_event(event_type, event_name, start_ts, end_ts) {
+    function select_event(event_type, event_name, event_id) {
       document.graph.type.value=event_type;
       document.graph.name.value=event_name;
-      document.graph.start_ts.value=start_ts;
-      document.graph.end_ts.value=end_ts;
+      document.graph.event_id.value=event_id;
     }
     function back_button() {
       document.back.submit();
@@ -157,10 +156,9 @@ echo "</form>\n";
 // ------------------------------------------------------------------- Graph Form
 echo "<form action='../graphs/histogram.php' method='get' name='graph'>\n";
 echo "<input type='hidden' name='id' value='$id'>\n";
-echo "<input type='hidden' name='type' value=''>\n";
-echo "<input type='hidden' name='name' value=''>\n";
-echo "<input type='hidden' name='start_ts' value=''>\n";
-echo "<input type='hidden' name='end_ts' value=''>\n";
+echo "<input type='hidden' name='type' value='day'>\n";
+echo "<input type='hidden' name='name' value='Entire Day'>\n";
+echo "<input type='hidden' name='event_id' value='-1'>\n";
 echo "</form>\n";
 // ------------------------------------------------------------------- Back
 echo "<form action='../index.php' method='get' name='back'>\n";
