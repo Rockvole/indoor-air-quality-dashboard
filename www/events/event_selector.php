@@ -17,7 +17,7 @@ use Carbon\Carbon;
   echo "<h4>".$ts_carbon->format('l, F jS Y')."</h4>";
   echo "</td></tr>";
   echo "<tr><td style='$td_style'>";
-  echo "<input type='radio' name='event' onchange=\"select_event('day','Entire Day',-1)\";>";
+  echo "<input type='radio' name='event' onchange=\"select_event('day','Entire Day',-1);\" checked=\"checked\">";
   echo "Entire Day";
   echo "</td></tr>";
   while($row = mysqli_fetch_array($result)) {

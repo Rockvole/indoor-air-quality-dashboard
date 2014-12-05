@@ -9,6 +9,15 @@
       document.dash.size.value=size;
       document.dash.submit();
     }
+    function change_date(year,month,day,direction) {
+      document.dash.action = "histogram.php";
+      document.dash.type.value="day";      
+      document.dash.year.value=year;
+      document.dash.month.value=month;
+      document.dash.day.value=day;
+      document.dash.direction.value=direction;
+      document.dash.submit();
+    }    
   </script>  
   <body>
 <?php
@@ -17,6 +26,10 @@ use Carbon\Carbon;
 include '../globals.php';
 
 $type = $_GET["type"];
+$type_day=true;
+if(strlen($type)>0) 
+  if(strcmp($type,"day")!=0) $type_day=false; 
+
 $event_id = filter_input(INPUT_GET, 'event_id', FILTER_VALIDATE_INT);
 $year  = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
 $month = filter_input(INPUT_GET, 'month', FILTER_VALIDATE_INT);
@@ -26,38 +39,92 @@ $range_width=100;
 $graph_width=1000;
 $width_pix = array(300, 600, 1000);
 $height_pix = array(150, 300, 500);
+
+$direction_param = htmlspecialchars($_GET["direction"]);
 if(!isset($_GET["size"])) $size=1;
   else $size = htmlspecialchars($_GET["size"]);
 if($size==0) $default_size_0="selected='selected'";
 if($size==1) $default_size_1="selected='selected'";
 if($size==2) $default_size_2="selected='selected'";
 
-$date=Carbon::createFromDate($year,$month,$day_param);
-$title=$_GET["name"];
-
-  echo "<table border=0 width=100%>\n";
-  echo "<tr><td>\n";
-  if(strcmp($type,"day")==0) {
-    echo "<h2>".$title." - ".$date->format('l, F jS Y')."</h2>\n";
-    $start_day_utc = $date->startOfDay()->format('U');
-    $end_day_utc = $date->endOfDay()->format('U');    
-  } else {
-    echo "<h2>".$title."</h2>\n";
+if($type_day) {
+  if(strlen($day_param)<=0) {
+    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id");
+  } else if(strcmp($direction_param, "next")==0) { // Next button pressed
+    $dt = Carbon::createFromDate($year,$month,$day_param);
+    $dt_utc = $dt->startOfDay()->format('U');
+    $result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE core_id=$id and ts > $dt_utc");
+  } else { // previous button pressed
+    $dt = Carbon::createFromDate($year,$month,$day_param);
+    $dt_utc = $dt->endOfDay()->format('U');
+    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id and ts < $dt_utc");
+  }  
+  if(mysql_errno()) {
+    exit('Error: '.mysqli_error($conn));
   }
-  echo "</td><td width='300' style='vertical-align:top'>\n";
+  $row = mysqli_fetch_array($result);
+  if(!isset($row['ts'])) {
+    echo "No records found";
+  } else {  
+    $date=Carbon::createFromTimeStamp($row['ts']);
+    $prev_date=$date->copy()->subDay();
+    $next_date=$date->copy()->addDay();
+    $start_day_utc = $date->startOfDay()->format('U');
+    $end_day_utc = $date->endOfDay()->format('U'); 
+    
+    $prev_year  = $prev_date->format('Y');
+    $prev_month = $prev_date->format('m');
+    $prev_day   = $prev_date->format('d');
+    $next_year  = $next_date->format('Y');
+    $next_month = $next_date->format('m');    
+    $next_day   = $next_date->format('d');
+  }
+}
 
-  echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>\n";
+  $title=$_GET["name"];
+
+  // ------------------------------------------------------------------- Heading
+  echo "<div style='padding:10px;'>";
+  echo "<table border=0>";
+  echo "<tr><td width=$range_width></td><td width =$graph_width></td><td width=100></td></tr>";
+  echo "<tr><td colspan=3>";
+  echo "<table border=0 width=100%>";
+  echo "<tr><td>";
+  echo "<h2>";
+  echo "<h2>Histogram of ".$title."</h2>\n";
+
+  echo "</h2>";
+  echo "</td><td width='400' style='vertical-align:top'>";
+
+  echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
   echo $sensor_name;  
-  echo "</span>\n";
-  echo "</td>\n";
-  echo "<td align=right width=400>\n";
-  echo "<select name='size' id='size_id' onchange='change_size(document.getElementById(\"size_id\").value);'>\n";
-  echo "<option value=0 $default_size_0>Small</option>\n";
-  echo "<option value=1 $default_size_1>Medium</option>\n";
-  echo "<option value=2 $default_size_2>Large</option>\n";
-  echo "</select>\n";
-  echo "</td></tr>\n";
-  echo "</table>\n";
+  echo "</span>";
+  echo "</td>";
+  echo "<td align=right width=400>";
+  echo "<select name='size' id='size_id' onchange='change_size(document.getElementById(\"size_id\").value);'>";
+  echo "<option value=0 $default_size_0>Small</option>";
+  echo "<option value=1 $default_size_1>Medium</option>";
+  echo "<option value=2 $default_size_2>Large</option>";
+  echo "</select>";
+  echo "</td></tr>";
+  echo "</table>";  
+  echo "<tr>";
+  echo "<td colspan=2 width=$graph_width align=center>";
+  if($type_day) {
+    echo "<table border=0>";
+    echo "<tr>";
+    echo "  <td align='right'><input type='button' value='&lt; Previous' onclick='change_date($prev_year,$prev_month,$prev_day,\"prev\")'></td>";
+    echo "  <td width='300' align=center >";
+    echo "  <input type='button' value='".$date->format('l, F jS Y')."' onclick='go_calendar(0);'>";
+    echo "  </td>";
+    echo "  <td><input type='button' value='Next    &gt;' onclick='change_date($next_year,$next_month,$next_day,\"next\")'></td>";
+    echo "</tr>";
+    echo "</table>";
+  }
+  echo "</td>";
+  echo "</tr>";
+  echo "</table>";
+  echo "</div>";  
 
   // ------------------------------------------------------------------- Sewer
   echo "<div class='container'>\n";  
@@ -83,7 +150,8 @@ $title=$_GET["name"];
   echo "<input type='hidden' name='year' value='$year'>\n";
   echo "<input type='hidden' name='month' value='$month'>\n";
   echo "<input type='hidden' name='day' value='$day_param'>\n";
-  echo "<input type='hidden' name='size' value=''>\n";  
+  echo "<input type='hidden' name='direction' value=''>\n";  
+  echo "<input type='hidden' name='size' value='$size'>\n";  
   echo "</form>\n";
 mysqli_free_result($result);
 ?>
