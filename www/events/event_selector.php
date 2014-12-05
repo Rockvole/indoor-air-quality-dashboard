@@ -31,7 +31,7 @@ use Carbon\Carbon;
     echo "</tr>";
   }
   echo "<tr><td style='$td_style'>";
-  echo "<input type='button' value='Show Graph' onclick='document.graph.submit();'/>";
+  echo "<input type='button' value='Show Graph' onclick='document.graph.submit();' style='padding:5px;'/>";
   echo "</td></tr>";
   echo "</table>";
 

@@ -43,7 +43,7 @@ if (mysqli_connect_errno()) {
 } 
 $year  = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
 $month = filter_input(INPUT_GET, 'month', FILTER_VALIDATE_INT);
-$day_param   = filter_input(INPUT_GET, 'day', FILTER_VALIDATE_INT);
+$day_param = filter_input(INPUT_GET, 'day', FILTER_VALIDATE_INT);
 
 // initialize the calendar object
 $calendar = new calendar();
@@ -105,7 +105,7 @@ echo "<tr>\n";
 	$ts_carbon = Carbon::createFromTimeStamp($row['ts']);	
 	error_log("name=".$row['name']."||ts=".$row['ts']."||ts=".$ts_carbon->format($param_date_format));
 	$ts[]=$row['ts'];
-	$tooltip_str.=$ts_carbon->format($user_date_format)."=".$row['name'];
+	$tooltip_str.=$ts_carbon->format('H:i')." ".$row['name'];
 	$found_event=true;
       }     
       if($found_event) {
@@ -131,7 +131,7 @@ echo "<tr>\n";
 echo "</table>\n";
 echo "</li>\n";
 echo "<li>";
-if(isset($day_param)) {
+if(strlen($day_param)>0) {
   echo "<table border=0>";
   echo "<tr><td><img src='../html/transparent.gif' width='800' height='1'></td></tr>";
   echo "<tr>";
@@ -159,6 +159,9 @@ echo "<input type='hidden' name='id' value='$id'>\n";
 echo "<input type='hidden' name='type' value='day'>\n";
 echo "<input type='hidden' name='name' value='Entire Day'>\n";
 echo "<input type='hidden' name='event_id' value='-1'>\n";
+echo "<input type='hidden' name='year' value='$year'>\n";
+echo "<input type='hidden' name='month' value='$month'>\n";
+echo "<input type='hidden' name='day' value='$day_param'>\n";
 echo "</form>\n";
 // ------------------------------------------------------------------- Back
 echo "<form action='../index.php' method='get' name='back'>\n";
