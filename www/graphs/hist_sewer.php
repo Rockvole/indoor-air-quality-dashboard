@@ -17,7 +17,7 @@ $tick_labels=Array();
 // Initialize bucket with 0's
 for($i=0;$i<$range_count;$i++) {
   $bucket[$i]=0;
-  $tick_labels[$i]=($i*50)."-".((($i+1)*50)-1);
+  $tick_labels[$i]=($i*$range_interval)."-".((($i+1)*$range_interval)-1);
 }
 foreach($sewer as $value) {
   $bucket_pos=floor($value / $range_interval);
@@ -32,6 +32,8 @@ $sewer_plot->SetFillColor('darkgoldenrod');
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
+$graph->SetBackgroundImage('background_v_33_66.png',BGIMG_FILLPLOT);
+$graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
 $graph->SetScale('textlin');
