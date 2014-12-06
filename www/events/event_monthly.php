@@ -171,8 +171,8 @@ echo "<input type='hidden' name='id' value='$id'>\n";
 echo "<input type='hidden' name='type' value='day'>\n";
 echo "<input type='hidden' name='name' value='Entire Day'>\n";
 echo "<input type='hidden' name='event_id' value='-1'>\n";
-echo "<input type='hidden' name='year' value='$year'>\n";
-echo "<input type='hidden' name='month' value='$month'>\n";
+echo "<input type='hidden' name='year' value='".$currentMonth->year()->int()."'>\n";
+echo "<input type='hidden' name='month' value='".$currentMonth->int()."'>\n";
 echo "<input type='hidden' name='day' value='$day_param'>\n";
 echo "</form>\n";
 // ------------------------------------------------------------------- Back
