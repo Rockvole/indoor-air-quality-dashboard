@@ -8,7 +8,7 @@ $ts=Array();
 $sewer=Array();
 while($row = mysqli_fetch_array($result)) {
 	$ts_str=gmdate('r', $row['ts']);
-	error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+	//error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
 	$ts[]=$row['ts'];
 	$sewer[]=$row['sewer'];
 }
@@ -17,12 +17,13 @@ $tick_labels=Array();
 // Initialize bucket with 0's
 for($i=0;$i<$range_count;$i++) {
   $bucket[$i]=0;
-  $tick_labels[$i]=($i*$range_interval)."- ".((($i+1)*$range_interval)-1);
+  $tick_labels[$i]=($i*$range_interval)."+"; //.((($i+1)*$range_interval)-1);
 }
 foreach($sewer as $value) {
   $bucket_pos=floor($value / $range_interval);
+  if($bucket_pos>=$range_count) $bucket_pos=($range_count-1);   
   $bucket[$bucket_pos]++;
-  error_log("item=".$value."||bucket_pos=".$bucket_pos."||count=".$bucket[$bucket_pos]);  
+  //error_log("item=".$value."||bucket_pos=".$bucket_pos."||count=".$bucket[$bucket_pos]);  
 }
 
 $sewer_plot=new BarPlot($bucket);
