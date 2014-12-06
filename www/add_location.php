@@ -88,7 +88,7 @@ $nextMonth = $currentMonth->next();
 echo "<table border=0 class='form_table'>";
 echo "<tr>";
 echo "<td colspan=2><h2>Add Location</h2></td>";
-echo "<td align=right><input type='button' value='Back' style='padding:2px;' onclick='back_button()'></td>";
+echo "<td align=right><img src='images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'></td>\n";
 echo "</tr>";
 echo "<tr>";
 echo "<td></td>";

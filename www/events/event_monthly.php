@@ -148,7 +148,7 @@ echo "</li>\n";
 echo "<li>";
 if(strlen($day_param)>0) {
   echo "<table border=0>";
-  echo "<tr><td><img src='../html/transparent.gif' width='800' height='1'></td></tr>";
+  echo "<tr><td><img src='../images/transparent.gif' width='800' height='1'></td></tr>";
   echo "<tr>";
   echo "<td>";
   include 'event_selector.php';

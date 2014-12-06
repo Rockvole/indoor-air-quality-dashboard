@@ -12,6 +12,10 @@
       document.cal.sensor.value=sensor;
       document.cal.submit();
     }
+    function home_button() {
+      document.cal.action = "index.php";
+      document.cal.submit();
+    }     
   </script>
 <body>
 <?php
@@ -95,6 +99,7 @@ $currentYear = $calendar->year($year);
   echo "<td>";
   echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Formaldehyde";
   echo "</td>";  
+  echo "<td align=right><img src='images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
   echo "</table>";
   echo "</td><tr>";
   echo "<td width='100'></td>";

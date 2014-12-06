@@ -70,7 +70,7 @@ if(strlen($op)>0) {
 echo "<table border=0 width=100%>";
 echo "<tr>";
 echo "<td><h2>Manage Event (".$event_ts->format($user_date_format).")</h2></td>";
-echo "<td align=right><input type='button' value='Back' style='padding:2px;' onclick='back_button()'></td>";
+echo "<td align=right><img src='../images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'></td>\n";
 echo "</tr>";
 echo "</table>";
 echo "<table border=0 class='form_table'>";

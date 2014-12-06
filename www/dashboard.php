@@ -20,6 +20,14 @@
       document.dash.sensor.value=sensor;
       document.dash.submit();
     }
+    function back_button() {
+      document.home.action = "year_cal.php";
+      document.home.submit();
+    } 
+    function home_button() {
+      document.home.action = "index.php";
+      document.home.submit();
+    }    
   </script>
   <body>
 <?php
@@ -88,7 +96,10 @@ if(!isset($row['ts'])) {
   echo "</span>";
   echo "<img src='images/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."&start_date=".$start_date_param."&size=".$size."\"' style='cursor:pointer;'>";
   echo "</td>";
-  echo "<td align=right><input type='button' value='Download CSV' onclick='location.href=\"download_csv.php?id=$id\"'></td></tr>";
+  echo "<td align=right><input type='button' value='Download CSV' onclick='location.href=\"download_csv.php?id=$id\"'></td>\n";
+  echo "<td align=right><img src='images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'></td>\n";    
+  echo "<td align=right><img src='images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
+  echo "</tr>";
   echo "</table>";  
   include 'events/event_timeline.php';  
   echo "<tr>";
@@ -233,7 +244,10 @@ if(!isset($row['ts'])) {
  
   echo "</table>";
   echo "</div>";    
-
+  // ------------------------------------------------------------------- Home Form
+  echo "<form action='index.php' method='get' name='home'>\n";
+  echo "<input type='hidden' name='id' value='$id'>\n";
+  echo "</form>\n";     
   // ------------------------------------------------------------------- Form
   echo "<form action='dashboard.php' method='get' name='dash'>";
   echo "<input type='hidden' name='id' value='$id'>";
