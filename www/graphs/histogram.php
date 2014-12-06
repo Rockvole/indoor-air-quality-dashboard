@@ -90,10 +90,7 @@ if($type_day) {
   echo "<tr><td colspan=3>";
   echo "<table border=0 width=100%>";
   echo "<tr><td>";
-  echo "<h2>";
   echo "<h2>Histogram of ".$title."</h2>\n";
-
-  echo "</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
 
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
