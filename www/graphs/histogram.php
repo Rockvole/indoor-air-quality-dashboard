@@ -17,7 +17,15 @@
       document.dash.day.value=day;
       document.dash.direction.value=direction;
       document.dash.submit();
-    }    
+    }
+    function back_button() {
+      document.home.action = "../events/event_monthly.php";
+      document.home.submit();
+    } 
+    function home_button() {
+      document.home.action = "../index.php";
+      document.home.submit();
+    }     
   </script>  
   <body>
 <?php
@@ -113,7 +121,6 @@ if($type_day) {
   echo "<tr><td>";
   echo "<h2>Histogram of ".$title."</h2>\n";
   echo "</td><td width='400' style='vertical-align:top'>";
-
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
   echo $sensor_name;  
   echo "</span>";
@@ -124,7 +131,10 @@ if($type_day) {
   echo "<option value=1 $default_size_1>Medium</option>";
   echo "<option value=2 $default_size_2>Large</option>";
   echo "</select>";
-  echo "</td></tr>";
+  echo "</td>";
+  echo "<td align=right><img src='../images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'></td>\n";    
+  echo "<td align=right><img src='../images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
+  echo "</tr>";
   echo "</table>";  
   echo "<tr>";
   echo "<td colspan=2 width=$graph_width align=center>";
@@ -202,7 +212,14 @@ if($type_day) {
   echo "</tr>";
  
   echo "</table>";
-  echo "</div>";      
+  echo "</div>";   
+  // ------------------------------------------------------------------- Home Form
+  echo "<form action='../index.php' method='get' name='home'>\n";
+  echo "<input type='hidden' name='id' value='$id'>\n";
+  echo "<input type='hidden' name='year' value='$year'>\n";
+  echo "<input type='hidden' name='month' value='$month'>\n";
+  echo "<input type='hidden' name='day' value='$day_param'>\n";
+  echo "</form>\n";       
   // ------------------------------------------------------------------- Form
   echo "<form action='histogram.php' method='get' name='dash'>\n";
   echo "<input type='hidden' name='id' value='$id'>\n";

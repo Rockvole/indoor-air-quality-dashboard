@@ -176,7 +176,7 @@ while($row = mysqli_fetch_array($result)) {
   echo "<td nowrap>$location</td>\n";
   echo "<td nowrap>" . $row['room_name'] . "</td>";
   echo "<td nowrap>".$date->format($user_date_format)."</td>\n";
-  echo "<td width=100%>&nbsp;&nbsp;<img src='html/delete.gif' onclick='delete_location(".$row['ts'].");' style='cursor:pointer;'></td>\n";
+  echo "<td width=100%>&nbsp;&nbsp;<img src='images/delete.gif' onclick='delete_location(".$row['ts'].");' style='cursor:pointer;'></td>\n";
   echo "</tr>";
 }
 echo "</table>";

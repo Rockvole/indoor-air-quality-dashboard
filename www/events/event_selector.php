@@ -15,7 +15,7 @@ use Carbon\Carbon;
     
   echo "<table border=0>";
   echo "<tr><td style='$td_style'>";
-  echo "<h4>".$ts_carbon->format('l, F jS Y')."</h4>";
+  echo "<h4>".$curr_date->format('l, F jS Y')."</h4>";
   echo "</td></tr>";
   echo "<tr><td style='$td_style'>";
   echo "<input type='radio' name='event' onchange=\"select_event('day','Entire Day',-1);\" checked=\"checked\">";
