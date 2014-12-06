@@ -132,8 +132,8 @@ if($type_day) {
   echo "<option value=2 $default_size_2>Large</option>";
   echo "</select>";
   echo "</td>";
-  echo "<td align=right><img src='../images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'></td>\n";    
-  echo "<td align=right><img src='../images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
+  echo "<td align=right><img src='../images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'>\n";    
+  echo "<img src='../images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
   echo "</tr>";
   echo "</table>";  
   echo "<tr>";

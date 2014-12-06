@@ -164,8 +164,8 @@ echo "</section>\n";
 // ------------------------------------------------------------------- Form
 echo "<form action='event_monthly.php' method='get' name='cal'>\n";
 echo "<input type='hidden' name='id' value='$id'>\n";
-echo "<input type='hidden' name='year' value='$year'>\n";
-echo "<input type='hidden' name='month' value='$month'>\n";
+echo "<input type='hidden' name='year' value='".$currentMonth->year()->int()."'>\n";
+echo "<input type='hidden' name='month' value='".$currentMonth->int()."'>\n";
 echo "<input type='hidden' name='day' value=''>\n";
 echo "</form>\n";
 // ------------------------------------------------------------------- Graph Form
