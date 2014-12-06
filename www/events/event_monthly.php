@@ -24,6 +24,11 @@
       document.graph.name.value=event_name;
       document.graph.event_id.value=event_id;
     }
+    function submit_day(day) {
+      document.graph.day.value=day;
+      select_event('day','Entire Day',-1);
+      document.graph.submit();
+    }
     function back_button() {
       document.back.submit();
     }
@@ -90,41 +95,50 @@ echo "<tr>\n";
       $curr_date=Carbon::createFromDate($day->year()->int(),$day->month()->int(),$day->int(), $user_timezone);
       $curr_date_start_utc=$curr_date->startOfDay()->format('U');
       $curr_date_end_utc=$curr_date->endOfDay()->format('U');
-      $result=mysqli_query($conn,"SELECT * from events WHERE core_id=$id and ts>=$curr_date_start_utc and ts<$curr_date_end_utc ".
-                                 "and name is not null  order by ts");
+      // Search day for all readings to see if we will allow day to be clickable
+      $result=mysqli_query($conn,"SELECT count(*) as cnt from readings WHERE core_id=$id and ts>=$curr_date_start_utc and ts<$curr_date_end_utc");
       if(mysql_errno()) {
         exit('Error: '.mysqli_error($conn));
       }
-      $found_event=false;
-      $background_color='white';
-      $tooltip_str="";
+      $row = mysqli_fetch_array($result);
+      if($row['cnt']>0) {
+        // Search day for all events so we can display tooltips
+        $result=mysqli_query($conn,"SELECT * from events WHERE core_id=$id and ts>=$curr_date_start_utc and ts<$curr_date_end_utc ".
+                                   "and name is not null  order by ts");
+        if(mysql_errno()) {
+          exit('Error: '.mysqli_error($conn));
+        }
+        $found_event=false;
+        $background_color='white';
+        $tooltip_str="";
       
-      while($row = mysqli_fetch_array($result)) {
-	if(!$found_event) {
-	  $tooltip_str.="Events<br/>";
-	}
-	$ts_carbon = Carbon::createFromTimeStamp($row['ts']);	
-	error_log("name=".$row['name']."||ts=".$row['ts']."||ts=".$ts_carbon->format($param_date_format));
-	$ts[]=$row['ts'];
-	$tooltip_str.=$ts_carbon->format('H:i')." ".$row['name'];
-	$found_event=true;
-      }     
-      if($found_event) {
-	$background_color='cyan';
-      }
-      if($day->isToday()) {
-	$day_html="<strong style='color:red;'>" . $day->int() . "</strong>\n";
-      } else {
-	$day_html=$day->int() . "\n";
-      }
-      if(strlen($tooltip_str)>0) {
-        echo "<td onclick='select_day(".$day->int().");' id='cal-day' style='background-color:$background_color;cursor:pointer;' title='$tooltip_str'>\n";     
-        echo $day_html;
-        echo "</td>\n";
-      } else {
-	echo "<td>".$day_html."</td>\n";
-      }
-
+        while($row = mysqli_fetch_array($result)) {
+	  if(!$found_event) {
+	    $tooltip_str.="Events<br/>";
+	  }
+	  $ts_carbon = Carbon::createFromTimeStamp($row['ts']);	
+	  error_log("name=".$row['name']."||ts=".$row['ts']."||ts=".$ts_carbon->format($param_date_format));
+	  $ts[]=$row['ts'];
+	  $tooltip_str.=$ts_carbon->format('H:i')." ".$row['name']."<br/>";
+	  $found_event=true;
+        }     
+        if($found_event) {
+	  $background_color='cyan';
+        }
+      
+        if($day->isToday()) {
+	  $day_html="<strong style='color:red;'>" . $day->int() . "</strong>\n";
+        } else {
+	  $day_html=$day->int() . "\n";
+        }
+        if(strlen($tooltip_str)>0) {
+          echo "<td onclick='select_day(".$day->int().");' class='cal-day' style='background-color:$background_color;cursor:pointer;' title='$tooltip_str'>\n";     
+          echo $day_html;
+          echo "</td>\n";
+        } else {
+	  echo "<td onclick=\"submit_day(".$day->int().");\" style='background-color:aliceblue;cursor:pointer;'>".$day_html."</td>\n";
+        }
+      } else echo "<td>".$day->int()."</td>\n";
     }
   endforeach;
   echo "</tr>\n";
@@ -183,7 +197,7 @@ echo "      title: 'title',\n";  // attribute/callback containing tooltip text
 echo "      trigger: 'hover'\n"; // how tooltip is triggered - hover | focus | manual
 echo "    };\n";
 echo "$(function() {\n";
-echo "  $('#cal-day').tipsy({gravity: 'nw'});\n";
+echo "  $('.cal-day').tipsy({gravity: 'nw'});\n";
 echo "});\n";
 echo "</script>\n";
 echo "</body>\n";
