@@ -79,8 +79,29 @@ if($type_day) {
     $next_month = $next_date->format('m');    
     $next_day   = $next_date->format('d');
   }
+} else if(strcmp($type,"event")==0) {
+  $result=mysqli_query($conn,"SELECT * from events WHERE core_id=$id order by ts");
+  $get_next=false;
+  while($row = mysqli_fetch_array($result)) {
+    error_log("events=".$row['ts']." = ".$row['name']);
+    if($get_next) {
+      $end_day_utc = $row['ts'];
+      $get_next=false;
+    }
+    if($event_id==$row['id']) {
+      $start_day_utc = $row['ts'];
+      $get_next=true;
+    }
+  }
+  if(!isset($end_day_utc)) {
+    $result=mysqli_query($conn,"SELECT max(ts) as ts from readings WHERE core_id=$id");  
+    $row=mysqli_fetch_array($result);
+    $end_day_utc=$row['ts'];
+  }
+  //error_log("start_day_utc=".$start_day_utc."||end_day_utc=".$end_day_utc);
+} else {
+  exit('Error: unknown type '.$type);
 }
-
   $title=$_GET["name"];
 
   // ------------------------------------------------------------------- Heading

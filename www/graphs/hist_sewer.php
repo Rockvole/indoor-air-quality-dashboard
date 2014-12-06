@@ -3,14 +3,15 @@ include 'graph_base.php';
 $range_interval=25;
 $range_count=18;
 
-$result=mysqli_query($conn,"SELECT * from readings WHERE core_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $sewer=Array();
-while($row = mysqli_fetch_array($result)) {
-	$ts_str=gmdate('r', $row['ts']);
-	//error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
-	$ts[]=$row['ts'];
-	$sewer[]=$row['sewer'];
+if($result=mysqli_query($conn,"SELECT * from readings WHERE core_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts")) {
+  while($row = mysqli_fetch_array($result)) {
+    $ts_str=gmdate('r', $row['ts']);
+    //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+    $ts[]=$row['ts'];
+    $sewer[]=$row['sewer'];
+  }
 }
 $bucket=Array();
 $tick_labels=Array();

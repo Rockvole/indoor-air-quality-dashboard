@@ -3,14 +3,15 @@ include 'graph_base.php';
 $range_interval=250;
 $range_count=18;
 
-$result=mysqli_query($conn,"SELECT * from readings WHERE core_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $dust=Array();
-while($row = mysqli_fetch_array($result)) {
-	$ts_str=gmdate('r', $row['ts']);
-	//error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
-	$ts[]=$row['ts'];
-	$dust[]=$row['dust'];
+if($result=mysqli_query($conn,"SELECT * from readings WHERE core_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts")) {
+  while($row = mysqli_fetch_array($result)) {
+    $ts_str=gmdate('r', $row['ts']);
+    //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+    $ts[]=$row['ts'];
+    $dust[]=$row['dust'];
+  }
 }
 // Deal with putting values in buckets for histogram
 $bucket=Array();
@@ -53,7 +54,7 @@ $graph->yaxis->SetWeight(2);
 $graph->yaxis->SetColor('darkgray');
 $graph->yaxis->SetFont(FF_ARIAL,FS_NORMAL,$font_size-3);
 $graph->yaxis->title->SetColor('darkgray');
-$graph->yaxis->title->Set('Dust');
+$graph->yaxis->title->Set('Number of occurrences');
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
