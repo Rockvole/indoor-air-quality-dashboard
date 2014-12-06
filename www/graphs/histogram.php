@@ -26,6 +26,10 @@
       document.home.action = "../index.php";
       document.home.submit();
     }     
+    function go_graph() {
+      document.home.action = "../dashboard.php";
+      document.home.submit();
+    }    
   </script>  
   <body>
 <?php
@@ -56,6 +60,7 @@ if($size==1) $default_size_1="selected='selected'";
 if($size==2) $default_size_2="selected='selected'";
 
 if($type_day) {
+  $title="Entire Day";
   if(strlen($day_param)<=0) {
     $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id");
   } else if(strcmp($direction_param, "next")==0) { // Next button pressed
@@ -88,6 +93,7 @@ if($type_day) {
     $next_day   = $next_date->format('d');
   }
 } else if(strcmp($type,"event")==0) {
+  $title=$_GET["name"];  
   $result=mysqli_query($conn,"SELECT * from events WHERE core_id=$id order by ts");
   $get_next=false;
   while($row = mysqli_fetch_array($result)) {
@@ -110,7 +116,6 @@ if($type_day) {
 } else {
   exit('Error: unknown type '.$type);
 }
-  $title=$_GET["name"];
 
   // ------------------------------------------------------------------- Heading
   echo "<div style='padding:10px;'>";
@@ -143,7 +148,7 @@ if($type_day) {
     echo "<tr>";
     echo "  <td align='right'><input type='button' value='&lt; Previous' onclick='change_date($prev_year,$prev_month,$prev_day,\"prev\")'></td>";
     echo "  <td width='300' align=center >";
-    echo "  <input type='button' value='".$date->format('l, F jS Y')."' onclick='go_calendar(0);'>";
+    echo "  <input type='button' value='".$date->format('l, F jS Y')."' onclick='go_graph();'>";
     echo "  </td>";
     echo "  <td><input type='button' value='Next    &gt;' onclick='change_date($next_year,$next_month,$next_day,\"next\")'></td>";
     echo "</tr>";
@@ -216,9 +221,10 @@ if($type_day) {
   // ------------------------------------------------------------------- Home Form
   echo "<form action='../index.php' method='get' name='home'>\n";
   echo "<input type='hidden' name='id' value='$id'>\n";
-  echo "<input type='hidden' name='year' value='$year'>\n";
-  echo "<input type='hidden' name='month' value='$month'>\n";
-  echo "<input type='hidden' name='day' value='$day_param'>\n";
+  echo "<input type='hidden' name='year' value='".$date->format('Y')."'>\n";
+  echo "<input type='hidden' name='month' value='".$date->format('n')."'>\n";
+  echo "<input type='hidden' name='day' value='".$date->format('j')."'>\n";
+  echo "<input type='hidden' name='start_date' value='".$date->format($param_date_format)."'>\n";  
   echo "</form>\n";       
   // ------------------------------------------------------------------- Form
   echo "<form action='histogram.php' method='get' name='dash'>\n";
@@ -226,9 +232,9 @@ if($type_day) {
   echo "<input type='hidden' name='type' value='$type'>\n";
   echo "<input type='hidden' name='name' value='$title'>\n";
   echo "<input type='hidden' name='event_id' value='$event_id'>\n";
-  echo "<input type='hidden' name='year' value='$year'>\n";
-  echo "<input type='hidden' name='month' value='$month'>\n";
-  echo "<input type='hidden' name='day' value='$day_param'>\n";
+  echo "<input type='hidden' name='year' value='".$date->format('Y')."'>\n";
+  echo "<input type='hidden' name='month' value='".$date->format('n')."'>\n";
+  echo "<input type='hidden' name='day' value='".$date->format('j')."'>\n";
   echo "<input type='hidden' name='direction' value=''>\n";  
   echo "<input type='hidden' name='size' value='$size'>\n";  
   echo "</form>\n";
