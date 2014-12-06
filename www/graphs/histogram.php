@@ -120,12 +120,12 @@ if($type_day) {
   echo "<table border=0 width=100%>";
   echo "<tr><td>";
   echo "<h2>Histogram of ".$title."</h2>\n";
-  echo "</td><td width='400' style='vertical-align:top'>";
+  echo "</td><td style='vertical-align:top'>";
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
   echo $sensor_name;  
   echo "</span>";
   echo "</td>";
-  echo "<td align=right width=400>";
+  echo "<td align=right>";
   echo "<select name='size' id='size_id' onchange='change_size(document.getElementById(\"size_id\").value);'>";
   echo "<option value=0 $default_size_0>Small</option>";
   echo "<option value=1 $default_size_1>Medium</option>";
