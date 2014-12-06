@@ -122,9 +122,6 @@ echo "<tr>\n";
 	  $tooltip_str.=$ts_carbon->format('H:i')." ".$row['name']."<br/>";
 	  $found_event=true;
         }     
-        if($found_event) {
-	  $background_color='cyan';
-        }
       
         if($day->isToday()) {
 	  $day_html="<strong style='color:red;'>" . $day->int() . "</strong>\n";
@@ -132,11 +129,11 @@ echo "<tr>\n";
 	  $day_html=$day->int() . "\n";
         }
         if(strlen($tooltip_str)>0) {
-          echo "<td onclick='select_day(".$day->int().");' class='cal-day' style='background-color:$background_color;cursor:pointer;' title='$tooltip_str'>\n";     
+          echo "<td onclick='select_day(".$day->int().");' class='cal-day' style='background-color:blueviolet;color:white;cursor:pointer;' title='$tooltip_str'>\n";     
           echo $day_html;
           echo "</td>\n";
         } else {
-	  echo "<td onclick=\"submit_day(".$day->int().");\" style='background-color:aliceblue;cursor:pointer;'>".$day_html."</td>\n";
+	  echo "<td onclick=\"submit_day(".$day->int().");\" style='background-color:thistle;cursor:pointer;'>".$day_html."</td>\n";
         }
       } else echo "<td>".$day->int()."</td>\n";
     }
