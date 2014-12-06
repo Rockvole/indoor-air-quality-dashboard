@@ -125,6 +125,21 @@ if($type_day) {
   echo "</tr>";
   echo "</table>";
   echo "</div>";  
+  
+  // ------------------------------------------------------------------- Humidity
+  echo "<div class='container'>";
+  echo "<table border=0>";    
+  echo "<tr>";
+  echo "<td align=center><h3 style='display:inline;'>Humidity</h3>&nbsp;";
+  echo "</td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td>";
+  echo "<img src='hist_dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(0);' style='cursor:pointer;'>";
+  echo "</td>";
+  echo "</tr>";
+  echo "</table>";
+  echo "</div>";  
   // ------------------------------------------------------------------- Dust
   echo "<div class='container'>";  
   echo "<table border=0>";      
