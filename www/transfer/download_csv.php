@@ -21,9 +21,9 @@ if(is_numeric($start_time)) {
 if(is_numeric($end_time)) {
   $end_sql = " AND ts <= $end_time ";
 }
-
+ 
 $result=mysqli_query($conn,"SELECT * from readings where core_id=$id $start_sql $end_sql order by ts");
-echo "temperature,humidity,dust,sewer,formaldehyde,unix_time\n";
+echo "temperature,humidity,dust,sewer,hcho,unix_time\n";
 while($row = mysqli_fetch_array($result)) {
   echo $row['temperature'].",".$row['humidity'].",".$row['dust'].",".$row['sewer'].",".$row['hcho'].",".$row['ts']."\n";
 }
