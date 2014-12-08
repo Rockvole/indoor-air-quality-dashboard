@@ -14,18 +14,24 @@ if(!is_string($filename) || !is_numeric($core_id)) {
 
 $row = 1;
 if (($handle = fopen($filename, "r")) !== FALSE) {
+  echo "fhandle";
   while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    echo "inhere\n";
     $valid_row=true;
     $num_fields = count($data);
-    if($num_fields==3) {
-      $row++;
-      for ($i=0; $i < $num_fields; $i++) {
-        if(!is_numeric($data[$i])) $valid_row=false;
-        echo $data[$i].",";
+    
+    $row++;
+    for ($i=0; $i < $num_fields; $i++) {
+      if(!is_numeric($data[$i])) {
+	$valid_row=false;
       }
-      echo "\n";
-      if($valid_row) {
-        $sql = "SELECT * from readings where core_id = $core_id and ts = $data[2]";
+      echo $data[$i].",";
+    }
+    echo "\n";
+    if($valid_row) {
+      if($num_fields==3) { // ------------------------------------------ TEMPERATURE / HUMIDITY
+	$ts=$data[2];
+        $sql = "SELECT * from readings where core_id = $core_id and ts = $ts";
         echo $sql."\n";	      
       
         $result=mysqli_query($conn,$sql);
@@ -35,13 +41,30 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
           echo "NOT IMPLEMENTED: ".$sql."\n";	
         } else {
           $sql = "   UPDATE readings set temperature=$data[0], humidity=$data[1] ".
-	         "    WHERE core_id=$core_id and ts=$data[2]";
+	         "    WHERE core_id=$core_id and ts=$ts";
           if($result=mysqli_query($conn,$sql)) {
             echo "SUCCESS: ".$sql."\n";		  
           }
         }
       }
-    }
+      if($num_fields==6) { // ------------------------------------------ INDOOR AIR QUALITY
+	$ts=$data[5];
+        $sql = "SELECT * from readings where core_id = $core_id and ts = $ts";
+        echo $sql."\n";	      
+      
+        $result=mysqli_query($conn,$sql);
+        $num_rows=mysqli_num_rows($result);
+        if($num_rows==0) {
+          $sql = "INSERT into readings (temperature, humidity, dust, sewer, hcho, core_id, ts) ".
+	         "VALUES ($data[0], $data[1], $data[2], $data[3], $data[4], $core_id, $ts)";
+          if($result=mysqli_query($conn,$sql)) {
+            echo "SUCCESS: ".$sql."\n";		  
+          }
+        } else {
+          echo "CANNOT UPDATE INDOOR AIR QUALITY TABLE\n";
+        }
+      }      
+    } // valid_row
   }
   fclose($handle);
 }
