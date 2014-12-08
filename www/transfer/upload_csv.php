@@ -14,22 +14,30 @@ if(!is_string($filename) || !is_numeric($core_id)) {
 
 $row = 1;
 if (($handle = fopen($filename, "r")) !== FALSE) {
-  echo "fhandle";
   while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-    echo "inhere\n";
-    $valid_row=true;
+    $all_numeric=true;
     $num_fields = count($data);
-    
-    $row++;
-    for ($i=0; $i < $num_fields; $i++) {
-      if(!is_numeric($data[$i])) {
-	$valid_row=false;
+    if($row==1) {
+      if(($num_fields==3) && (strcmp($data[0],"temperature")==0)) { // - TEMPERATURE / HUMIDITY
+        $type=99;
+      } else if(($num_fields==6) && (strcmp($data[0],"temperature")==0)) { // INDOOR AIR QUALITY
+        $type=0;
+      } else if(strcmp($data[0],"name")==0) { // ----------------------- EVENTS
+        $type=1;
+      } else if(strcmp($data[0],"location_name")==0) { // -------------- LOCATIONS
+        $type=2;
+      } else {
+        exit("File type not recognized");
       }
-      echo $data[$i].",";
-    }
-    echo "\n";
-    if($valid_row) {
-      if($num_fields==3) { // ------------------------------------------ TEMPERATURE / HUMIDITY
+    } else { // After the first row
+      for ($i=0; $i < $num_fields; $i++) {
+        if(!is_numeric($data[$i])) {
+	  $all_numeric=false;
+        }
+        echo $data[$i].",";
+      }
+      echo "\n";
+      if($all_numeric && $type==99 && $num_fields==3) { // --------------------------- TEMPERATURE / HUMIDITY
 	$ts=$data[2];
         $sql = "SELECT * from readings where core_id = $core_id and ts = $ts";
         echo $sql."\n";	      
@@ -47,7 +55,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
           }
         }
       }
-      if($num_fields==6) { // ------------------------------------------ INDOOR AIR QUALITY
+      if($all_numeric && $type==0 && $num_fields==6) { // ---------------------------- INDOOR AIR QUALITY
 	$ts=$data[5];
         $sql = "SELECT * from readings where core_id = $core_id and ts = $ts";
         echo $sql."\n";	      
@@ -63,9 +71,50 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         } else {
           echo "CANNOT UPDATE INDOOR AIR QUALITY TABLE\n";
         }
-      }      
-    } // valid_row
-  }
+      } 
+      if(!$all_numeric && $type==1 && $num_fields==2) { // ---------------------------- EVENTS
+	$ts=$data[1];
+        $sql = "SELECT * from events where core_id = $core_id and ts = $ts";
+        echo $sql."\n";	      
+      
+        $result=mysqli_query($conn,$sql);
+        $num_rows=mysqli_num_rows($result);
+        if($num_rows==0) {
+	  if(strlen($data[0])>0) $event_name="\"".$data[0]."\"";
+	    else $event_name="NULL";	  
+          $sql = "INSERT into events (name, core_id, ts) ".
+	         "VALUES ($event_name, $core_id, $ts)";
+          if($result=mysqli_query($conn,$sql)) {
+            echo "SUCCESS: ".$sql."\n";		  
+          }
+        } else {
+          echo "CANNOT UPDATE EVENT TABLE\n";
+        }
+      }
+      if(!$all_numeric && $type==2 && $num_fields==3) { // ---------------------------- LOCATIONS
+	$ts=$data[2];
+        $sql = "SELECT * from locations where core_id = $core_id and ts = $ts";
+        echo $sql."\n";	      
+      
+        $result=mysqli_query($conn,$sql);
+        $num_rows=mysqli_num_rows($result);
+        if($num_rows==0) {
+	  if(strlen($data[0])>0) $location_name="\"".$data[0]."\"";
+	    else $location_name="NULL";
+	  if(strlen($data[1])>0) $room_name="\"".$data[1]."\"";
+	    else $room_name="NULL";	    
+          $sql = "INSERT into locations (location_name, room_name, core_id, ts) ".
+	         "VALUES ($location_name, $room_name, $core_id, $ts)";
+          if($result=mysqli_query($conn,$sql)) {
+            echo "SUCCESS: ".$sql."\n";		  
+          }
+        } else {
+          echo "CANNOT UPDATE LOCATION TABLE\n";
+        }
+      }	
+    }
+    $row++;
+  } // while
   fclose($handle);
 }
 ?>

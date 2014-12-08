@@ -12,10 +12,11 @@
       document.dl.action = '../index.php';
       document.dl.submit();
     }
-    function download_csv() {
+    function download_csv(type) {
       document.dl.action = "download_csv.php";
       document.dl.start_time.value=document.getElementById('start_time').value;
       document.dl.end_time.value=document.getElementById('end_time').value;      
+      document.dl.type.value=type;
       document.dl.submit();
     }
   </script>
@@ -39,26 +40,25 @@ echo "<table border=0 class='form_table'>";
 echo "<tr>";
 echo "<th align=right>Start Unix time:</th>";
 echo "<td><input type='text' name='start_time' maxlength=10 size=10 id='start_time' value='$start_time'></td>";
-echo "<td style='font-size:110%;font-style:italic;'>Unix time to start downloading at e.g. 1388502000<br/>Leave blank for all</td>";
+echo "<td style='font-size:110%;font-style:italic;' colspan=2>Unix time to start downloading at e.g. 1388502000<br/>Leave blank for all</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<th align=right style='vertical-align:top'>End Unix Time:</th>";
 echo "<td style='vertical-align:top'><input type='text' name='end_time' maxlength=10 size=10 id='end_time' value='$end_time'></td>";
-echo "<td style='font-size:110%;font-style:italic;'>Unix time to end downloading at e.g. 1388556000<br/>Leave blank for all";
+echo "<td style='font-size:110%;font-style:italic;' colspan=2>Unix time to end downloading at e.g. 1388556000<br/>Leave blank for all";
 echo "</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<th align=right style='vertical-align:top'></th>";
 echo "<td style='vertical-align:top'></td>";
-echo "<td style='font-size:110%;font-style:italic;'>You may use the upload_csv.php utility to upload";
+echo "<td style='font-size:110%;font-style:italic;' colspan=2>You may use the upload_csv.php utility to upload";
 echo "</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<th align=right style='vertical-align:top'></th>";
-echo "<td style='vertical-align:top'><input type='button' value='Download CSV' onclick='download_csv();'></td>";
-echo "<td style='font-size:110%;font-style:italic;'>";
-echo "</td>";
-echo "<td align=right></td>\n";
+echo "<td style='vertical-align:top'><input type='button' value='Download Readings' onclick='download_csv(0);'></td>";
+echo "<td style='vertical-align:top'><input type='button' value='Download Events' onclick='download_csv(1);'></td>";
+echo "<td style='vertical-align:top'><input type='button' value='Download Locations' onclick='download_csv(2);'></td>";
 echo "</tr>";
 echo "</table>";
 
@@ -66,6 +66,7 @@ echo "<form action='download_csv.php' method='get' name='dl'>\n";
 echo "<input type='hidden' name='id' value='$id'>\n";
 echo "<input type='hidden' name='start_time' value='$start_time'>\n";
 echo "<input type='hidden' name='end_time' value='$end_time'>\n";
+echo "<input type='hidden' name='type' value=''>\n";
 echo "</form>\n";
    
 ?>
