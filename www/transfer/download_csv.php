@@ -26,31 +26,25 @@ if(is_numeric($end_time)) {
   $end_sql = " AND ts <= $end_time ";
 }
 
-error_log("type=".$type);
 if($type==1) { // ------------------------------------------------------ EVENTS
-  error_log("Download Events");
   $result=mysqli_query($conn,"SELECT * from events where core_id=$id $start_sql $end_sql order by ts");
   echo "name,unix_time\n";
   while($row = mysqli_fetch_array($result)) {
     echo $row['name'].",".$row['ts']."\n";
   }    
 } else if($type==2) { // ----------------------------------------------- LOCATIONS
-  error_log("Download Locations");
   $result=mysqli_query($conn,"SELECT * from locations where core_id=$id $start_sql $end_sql order by ts");
   echo "location_name,room_name,unix_time\n";
   while($row = mysqli_fetch_array($result)) {
     echo $row['location_name'].",".$row['room_name'].",".$row['ts']."\n";
   }      
 } else { // ------------------------------------------------------------ READINGS
-  error_log("Download Readings");
   $result=mysqli_query($conn,"SELECT * from readings where core_id=$id $start_sql $end_sql order by ts");
   echo "temperature,humidity,dust,sewer,hcho,unix_time\n";
   while($row = mysqli_fetch_array($result)) {
     echo $row['temperature'].",".$row['humidity'].",".$row['dust'].",".$row['sewer'].",".$row['hcho'].",".$row['ts']."\n";
   }  
 }
-
 mysqli_close($conn);
-
 ?>
 

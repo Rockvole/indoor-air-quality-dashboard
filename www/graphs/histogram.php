@@ -238,6 +238,8 @@ if($type_day) {
   echo "<input type='hidden' name='direction' value=''>\n";  
   echo "<input type='hidden' name='size' value='$size'>\n";  
   echo "</form>\n";
+  include '../events/event_summary.php';  
+  
 mysqli_free_result($result);
 ?>
   </body>  
