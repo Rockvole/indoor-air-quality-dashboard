@@ -13,14 +13,21 @@ sewer INT,
 hcho INT, 
 core_id INT, ts INT UNSIGNED, PRIMARY KEY (id), UNIQUE(core_id, ts));
 
+create table geographical (id INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(40),
+core_id INT NOT NULL,
+ts INT UNSIGNED NOT NULL,
+UNIQUE(core_id, ts), PRIMARY KEY (id));
+
 create table locations (id INT NOT NULL AUTO_INCREMENT, 
 location_name VARCHAR(40), 
-room_name VARCHAR(60) NOT NULL,
+room_name VARCHAR(40) NOT NULL,
 core_id INT NOT NULL, 
 ts INT UNSIGNED NOT NULL, 
 UNIQUE(core_id, ts), PRIMARY KEY (id));
 
 create table events (id INT NOT NULL AUTO_INCREMENT, 
+event_type INT NOT NULL DEFAULT 1,
 name VARCHAR(40), 
 core_id INT NOT NULL, 
 ts INT UNSIGNED NOT NULL, 

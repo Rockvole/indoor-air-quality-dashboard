@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Manage Event</title>
+  <title>Manage Location</title>
   <link rel="stylesheet" href="../html/stylesheet.css" type="text/css" >
 </head>
   <script>
@@ -38,11 +38,11 @@ $finish_event=false;
 
 if(strlen($op)>0) {
   if($op==2) { // Delete event
-    $sql = "DELETE from events where ts='$ts' AND event_type=1";
+    $sql = "DELETE from events where ts='$ts' AND event_type=2";
     if(!mysqli_query($conn,$sql)) {
        exit('Error: '.mysqli_error($conn));
     }
-    echo "<div class='alerthead'>Event Deleted</div>";
+    echo "<div class='alerthead'>Location Deleted</div>";
   } else {
     if($op==1) {
       if(strlen($name)<=0) exit('Please enter Name');
@@ -51,7 +51,7 @@ if(strlen($op)>0) {
       $sql_name="NULL";
     }
     
-    $sql = "INSERT into events (name, event_type, core_id, ts) VALUES ($sql_name, 1, '$id', '$ts')";
+    $sql = "INSERT into events (name, event_type, core_id, ts) VALUES ($sql_name, 2, '$id', '$ts')";
     if(!mysqli_query($conn,$sql)) {
        exit('Error: '.mysqli_error($conn));
     }
@@ -59,7 +59,7 @@ if(strlen($op)>0) {
       else echo "<div class='alerthead'>Event Finished</div>";
   }
 } else { // Retrieve existing events
-  $result=mysqli_query($conn,"SELECT * from events where ts=$ts AND event_type=1 AND core_id=$id");
+  $result=mysqli_query($conn,"SELECT * from events where ts=$ts AND event_type=2 AND core_id=$id");
   $row = mysqli_fetch_array($result);
   $name=$row['name'];
   if(mysqli_num_rows($result)>0) {
@@ -69,33 +69,27 @@ if(strlen($op)>0) {
 }
 echo "<table border=0 width=100%>";
 echo "<tr>";
-echo "<td><h2>Manage Event (".$event_ts->format($user_date_format).")</h2></td>";
+echo "<td><h2>Manage Location (".$event_ts->format($user_date_format).")</h2></td>";
 echo "<td align=right><img src='../images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'></td>\n";
 echo "</tr>";
 echo "</table>";
 echo "<table border=0 class='form_table'>";
 
 echo "<tr>";
-if($finish_event) {
-  echo "<th align=right style='vertical-align:top'>Delete Finish Event</th>";
-} else {
-  echo "<th align=right style='vertical-align:top'>Name:</th>";
-  echo "<td style='vertical-align:top'><input type='text' name='name' maxlength=40 size=40 id='name' value='$name'></td>";
-  echo "<td style='font-size:110%;font-style:italic;'>e.g. Sealed Bathroom door<br/>";
-  echo "e.g. Sealed sink with tape";
-  echo "</td>";    
-}
+echo "<th align=right style='vertical-align:top'>Name:</th>";
+echo "<td style='vertical-align:top'><input type='text' name='name' maxlength=40 size=40 id='name' value='$name'></td>";
+echo "<td style='font-size:110%;font-style:italic;'>e.g. Sealed Bathroom door<br/>";
+echo "e.g. Sealed sink with tape";
+echo "</td>";    
 
 echo "</tr>";
 echo "<tr><td>&nbsp;</td>";
 
 echo "<td colspan=2>";
 if($delete_only) {
-  echo "<input type='button' value='Delete Event' onclick='change_event(2);'>";
+  echo "<input type='button' value='Delete Location' onclick='change_event(2);'>";
 } else {
-  echo "<input type='button' value='Finish Previous Event' onclick='change_event(3);'>";
-  echo "&nbsp;&nbsp;OR&nbsp;&nbsp;";
-  echo "<input type='button' value='Add Event' onclick='change_event(1);'>";
+  echo "<input type='button' value='Add Location' onclick='change_event(1);'>";
 }
 echo "</td>";
 echo "</tr>";
@@ -103,7 +97,7 @@ echo "</tr>";
 echo "</table>";  
 
 // ------------------------------------------------------------------- Form
-echo "<form action='manage_event.php' method='get' name='event'>";
+echo "<form action='manage_location.php' method='get' name='event'>";
 echo "<input type='hidden' name='id' value='$id'>";
 echo "<input type='hidden' name='name' value=''>";
 echo "<input type='hidden' name='op' value=''>";
