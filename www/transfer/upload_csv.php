@@ -93,20 +93,19 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       }
       if(!$all_numeric && $type==2 && $num_fields==3) { // ---------------------------- LOCATIONS
 	$ts=$data[2];
-        $sql = "SELECT * from locations where core_id = $core_id and ts = $ts";
+        $sql = "SELECT * from locations WHERE type = 1 AND core_id = $core_id AND ts = $ts";
         echo $sql."\n";	      
       
         $result=mysqli_query($conn,$sql);
         $num_rows=mysqli_num_rows($result);
         if($num_rows==0) {
-	  if(strlen($data[0])>0) $location_name="\"".$data[0]."\"";
-	    else $location_name="NULL";
-	  if(strlen($data[1])>0) $room_name="\"".$data[1]."\"";
-	    else $room_name="NULL";	    
-          $sql = "INSERT into locations (location_name, room_name, core_id, ts) ".
-	         "VALUES ($location_name, $room_name, $core_id, $ts)";
-          if($result=mysqli_query($conn,$sql)) {
-            echo "SUCCESS: ".$sql."\n";		  
+	  if(strlen($data[1])>0) {
+	    $name="\"".$data[1]."\"";
+            $sql = "INSERT into locations (type, name, core_id, ts) ".
+	           "VALUES (1, $name, $core_id, $ts)";
+            if($result=mysqli_query($conn,$sql)) {
+              echo "SUCCESS: ".$sql."\n";		  
+	    }
           }
         } else {
           echo "CANNOT UPDATE LOCATION TABLE\n";
