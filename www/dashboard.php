@@ -98,13 +98,11 @@ if(!isset($row['ts'])) {
   if(strlen($location_name)>0) 
     echo " - ".$location_name;
   echo "</span>";
-  echo "<img src='images/location.png' onclick='location.href=\"add_location.php?id=$id&year=".$date->format('Y')."&month=".$date->format('n')."&start_date=".$start_date_param."&size=".$size."\"' style='cursor:pointer;'>";
   echo "</td>";
   echo "<td align=right><img src='images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'>\n";    
   echo "<img src='images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
   echo "</tr>";
   echo "</table>";  
-  include 'events/event_timeline.php';  
   echo "<tr>";
   echo "<td colspan=2 width=$graph_width align=center>";
   echo "<table border=0>";
@@ -264,7 +262,6 @@ if(!isset($row['ts'])) {
   echo "<input type='hidden' name='size' value='$size'>";
   echo "<input type='hidden' name='sensor' value=''>";
   echo "</form>";
-  include 'events/event_summary.php'; 
   include 'events/event_dayview.php';    
 }
 mysqli_free_result($result);

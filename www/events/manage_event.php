@@ -38,7 +38,7 @@ $finish_event=false;
 
 if(strlen($op)>0) {
   if($op==2) { // Delete event
-    $sql = "DELETE from events where ts='$ts' AND event_type=1";
+    $sql = "DELETE from events where ts='$ts' AND core_id=$id";
     if(!mysqli_query($conn,$sql)) {
        exit('Error: '.mysqli_error($conn));
     }
@@ -51,7 +51,7 @@ if(strlen($op)>0) {
       $sql_name="NULL";
     }
     
-    $sql = "INSERT into events (name, event_type, core_id, ts) VALUES ($sql_name, 1, '$id', '$ts')";
+    $sql = "INSERT into events (name, core_id, ts) VALUES ($sql_name, '$id', '$ts')";
     if(!mysqli_query($conn,$sql)) {
        exit('Error: '.mysqli_error($conn));
     }
@@ -59,7 +59,7 @@ if(strlen($op)>0) {
       else echo "<div class='alerthead'>Event Finished</div>";
   }
 } else { // Retrieve existing events
-  $result=mysqli_query($conn,"SELECT * from events where ts=$ts AND event_type=1 AND core_id=$id");
+  $result=mysqli_query($conn,"SELECT * from events where ts=$ts AND core_id=$id");
   $row = mysqli_fetch_array($result);
   $name=$row['name'];
   if(mysqli_num_rows($result)>0) {
