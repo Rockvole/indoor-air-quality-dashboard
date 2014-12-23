@@ -89,14 +89,14 @@ if(!isset($row['ts'])) {
   echo "<h2>Indoor Air Quality Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
 
-  $location_result=mysqli_query($conn,"SELECT location_name from locations WHERE core_id=$id and ts = ".
-				  "(SELECT MAX(ts) as ts from locations WHERE core_id=$id and ts <= $end_day_utc and location_name is not null)");
-  $location_row = mysqli_fetch_array($location_result);  
-  $location_name=$location_row['location_name'];
+  $geo_result=mysqli_query($conn,"SELECT name from geographical WHERE core_id=$id and ts = ".
+				  "(SELECT MAX(ts) as ts from geographical WHERE core_id=$id and ts <= $end_day_utc)");
+  $geo_row = mysqli_fetch_array($geo_result);  
+  $geo_name=$geo_row['name'];
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
   echo $sensor_name;  
-  if(strlen($location_name)>0) 
-    echo " - ".$location_name;
+  if(strlen($geo_name)>0) 
+    echo " - ".$geo_name;
   echo "</span>";
   echo "</td>";
   echo "<td align=right><img src='images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'>\n";    
