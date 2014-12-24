@@ -22,6 +22,19 @@
   echo "</tr>";
   
   echo "<tr>";
+  echo "<th align=right>Attached Sensors:</th>";
+  echo "<td>";
+  echo "<select name='sensors'>";
+  echo "  <option value='0'>ALL</option>";
+  echo "  <option value='1'>Temperature & Humidity</option>";
+  echo "  <option value='2'>Dust</option>";
+  echo "  <option value='3'>Sewer</option>";
+  echo "  <option value='4'>Formaldehyde</option>";
+  echo "</select>";
+  echo "</td>";
+  echo "</tr>";  
+  
+  echo "<tr>";
   echo "<th align=right>Time Zone:</th>";
   echo "<td>";
   echo "<select name='tz'>";
