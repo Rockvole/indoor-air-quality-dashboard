@@ -14,8 +14,18 @@ LAMP based Indoor Air Quality Web Dashboard for the Spark Core
 |DHT22          |Temperature/Humidity         |
 |Shinyei PPD42NS|Dust Particles               |
 |Figaro TGS2602 |Hydrogen Sulfide (Sewer Gas) |
-|MQ131          |Ozone                        |
+|WSP2110        |Formaldehyde                 |
 
+### Directories
+|Directory      |Description                                                      |
+|---------------|-----------------------------------------------------------------|
+|ancillary      |Installation and setup instructions                              |
+|dht22          |Spark Core firmware for dht22 temperature / humidity sensor      |
+|firmware       |Spark Core firmware for full suite of indoor air quality sensors |
+|hardware       |Details about the indoor air quality shield hardware             |
+|libs           |firmware libraries for the sensors                               |
+|sht15          |Spark Core firmware for sht15 temperature / humidity sensor      |
+|www            |PHP Web pages to view graphs of collected data                   |
 
 ### History
 <a href="http://community.spark.io/t/custom-shield-indoor-air-quality-monitor/121" title="Development evolution of the hardware"><img src="spark.jpg"/></a>
