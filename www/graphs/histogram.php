@@ -159,65 +159,69 @@ if($type_day) {
   echo "</table>";
   echo "</div>";  
   
-  // ------------------------------------------------------------------- Humidity
-  echo "<div class='container'>";
-  echo "<table border=0>";    
-  echo "<tr>";
-  echo "<td align=center><h3 style='display:inline;'>Humidity</h3>&nbsp;";
-  echo "</td>";
-  echo "</tr>";
-  echo "<tr>";
-  echo "<td>";
-  echo "<img src='hist_dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(0);' style='cursor:pointer;'>";
-  echo "</td>";
-  echo "</tr>";
-  echo "</table>";
-  echo "</div>";  
-  // ------------------------------------------------------------------- Dust
-  echo "<div class='container'>";  
-  echo "<table border=0>";      
-  echo "<tr>";
-  echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
-  echo "</td>";  
-  echo "</tr>";
-  echo "<tr>";  
-  echo "<td>";
-  echo "<img src='hist_dust.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
-  echo "</td>";
-  echo "</tr>";
+  if($sensor_type==0 || $sensor_type==1) { // -------------------------- Humidity
+    echo "<div class='container'>";
+    echo "<table border=0>";    
+    echo "<tr>";
+    echo "<td align=center><h3 style='display:inline;'>Humidity</h3>&nbsp;";
+    echo "</td>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td>";
+    echo "<img src='hist_dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(0);' style='cursor:pointer;'>";
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+    echo "</div>";  
+  }
+  if($sensor_type==0 || $sensor_type==2) { // -------------------------- Dust  
+    echo "<div class='container'>";  
+    echo "<table border=0>";      
+    echo "<tr>";
+    echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
+    echo "</td>";  
+    echo "</tr>";
+    echo "<tr>";  
+    echo "<td>";
+    echo "<img src='hist_dust.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
+    echo "</td>";
+    echo "</tr>";
  
-  echo "</table>";
-  echo "</div>";
-  // ------------------------------------------------------------------- Sewer
-  echo "<div class='container'>\n";  
-  echo "<table border=0>\n";      
-  echo "<tr>\n";
-  echo "<td align=center colspan=2><h3 style='display:inline;'>Sewer Gas</h3>&nbsp;\n";
-  echo "</td>\n";   
-  echo "</tr>\n";
-  echo "<tr>\n";  
-  echo "<td>\n";
-  echo "<img src='hist_sewer.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(2);' style='cursor:pointer;'>\n";
-  echo "</td>\n";
-  echo "</tr>\n";
+    echo "</table>";
+    echo "</div>";
+  }
+  if($sensor_type==0 || $sensor_type==3) { // -------------------------- Sewer  
+    echo "<div class='container'>\n";  
+    echo "<table border=0>\n";      
+    echo "<tr>\n";
+    echo "<td align=center colspan=2><h3 style='display:inline;'>Sewer Gas</h3>&nbsp;\n";
+    echo "</td>\n";   
+    echo "</tr>\n";
+    echo "<tr>\n";  
+    echo "<td>\n";
+    echo "<img src='hist_sewer.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(2);' style='cursor:pointer;'>\n";
+    echo "</td>\n";
+    echo "</tr>\n";
+
+    echo "</table>\n";
+    echo "</div>\n"; 
+  }
+  if($sensor_type==0 || $sensor_type==4) { // -------------------------- Formaldehyde  
+    echo "<div class='container'>";  
+    echo "<table border=0>";      
+    echo "<tr>";
+    echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
+    echo "</td>";  
+    echo "</tr>";
+    echo "<tr>";  
+    echo "<td>";
+    echo "<img src='hist_wsp2110.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(3);' style='cursor:pointer;'>";
+    echo "</td>";
+    echo "</tr>";
  
-  echo "</table>\n";
-  echo "</div>\n"; 
-  // ------------------------------------------------------------------- Formaldehyde
-  echo "<div class='container'>";  
-  echo "<table border=0>";      
-  echo "<tr>";
-  echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
-  echo "</td>";  
-  echo "</tr>";
-  echo "<tr>";  
-  echo "<td>";
-  echo "<img src='hist_wsp2110.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(3);' style='cursor:pointer;'>";
-  echo "</td>";
-  echo "</tr>";
- 
-  echo "</table>";
-  echo "</div>";   
+    echo "</table>";
+    echo "</div>";   
+  }
   // ------------------------------------------------------------------- Home Form
   echo "<form action='../index.php' method='get' name='home'>\n";
   echo "<input type='hidden' name='id' value='$id'>\n";

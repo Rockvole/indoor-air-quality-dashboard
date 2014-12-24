@@ -79,14 +79,14 @@ if(!isset($row['ts'])) {
   $prev_day_str = $date->copy()->subDay()->format($param_date_format);
   $next_day_str = $date->copy()->addDay()->format($param_date_format);
   $end_day_utc = $date->endOfDay()->format('U');
-  
+
   echo "<div style='padding:10px;'>";
   echo "<table border=0>";
   echo "<tr><td width=$range_width></td><td width =$graph_width></td><td width=100></td></tr>";
   echo "<tr><td colspan=3>";
   echo "<table border=0 width=100%>";
   echo "<tr><td>";
-  echo "<h2>Indoor Air Quality Dashboard</h2>";
+  echo "<h2>$sensor_type_name Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
 
   $geo_result=mysqli_query($conn,"SELECT name from geographical WHERE core_id=$id and ts = ".
@@ -126,125 +126,129 @@ if(!isset($row['ts'])) {
   echo "</table>";
   echo "</div>";
   
-  // ------------------------------------------------------------------- Temperature / Humidity
-  echo "<div class='container'>";
-  echo "<table border=0>";    
-  echo "<tr>";
-  if($size==2) {
-    echo "<td></td>";
-  }
-  echo "<td align=center><h3 style='display:inline;'>Temperature & Humidity</h3>&nbsp;";
-  echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";  
-  echo "</td>";
-  echo "</tr>";
-  echo "<tr>";
-  if($size==2) {
-    echo "<td rowspan=2 width=$range_width style='height:100%;'>";
-    echo "  <div style='height:100%;overflow:auto;'>";  
-    echo "  <table style='width:100%;height:100%;' border=0>";
-    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
-    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
-    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
-    echo "  </table>";
-    echo "  </div>";  
-    echo "</td>"; 
-  }
-  echo "<td>";
-  echo "<img src='graphs/dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(0);' style='cursor:pointer;'>";
-  echo "</td>";
-  echo "</tr>";
-  echo "</table>";
-  echo "</div>";
-  // ------------------------------------------------------------------- Dust
-  echo "<div class='container'>";  
-  echo "<table border=0>";      
-  echo "<tr>";
-  if($size==2) {
-    echo "<td></td>";
-  }  
-  echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
-  echo "<img src='health/mask.png' onclick='location.href=\"health/dust.html\"' width=30 height=30 style='cursor:pointer;'>";    
-  echo "</td>";  
-  echo "</tr>";
-  echo "<tr>";  
-  if($size==2) {  
-    echo "<td rowspan=2 width=$range_width style='height:100%'>";
-    echo "  <div style='height:100%;overflow:auto;'>";  
-    echo "  <table style='width:100%;height:100%' border=0>";
-    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
-    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
-    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
-    echo "  </table>";
-    echo "  </div>";  
+  if($sensor_type==0 || $sensor_type==1) { // -------------------------- Temperature / Humidity
+    echo "<div class='container'>";
+    echo "<table border=0>";    
+    echo "<tr>";
+    if($size==2) {
+      echo "<td></td>";
+    }
+    echo "<td align=center><h3 style='display:inline;'>Temperature & Humidity</h3>&nbsp;";
+    echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";
-  }
-  echo "<td>";
-  echo "<img src='graphs/dust.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
-  echo "</td>";
-  echo "</tr>";
- 
-  echo "</table>";
-  echo "</div>";   
-  // ------------------------------------------------------------------- Sewer
-  echo "<div class='container'>";  
-  echo "<table border=0>";      
-  echo "<tr>";
-  if($size==2) {
-    echo "<td></td>";
-  }  
-  echo "<td align=center colspan=2><h3 style='display:inline;'>Sewer Gas</h3>&nbsp;";
-  echo "<img src='health/mask.png' onclick='location.href=\"health/sewer.html\"' width=30 height=30 style='cursor:pointer;'>";    
-  echo "</td>";   
-  echo "</tr>";
-  echo "<tr>";  
-  if($size==2) {  
-    echo "<td rowspan=2 width=$range_width style='height:100%'>";
-    echo "  <div style='height:100%;overflow:auto;'>";  
-    echo "  <table style='width:100%;height:100%' border=0>";
-    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
-    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
-    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
-    echo "  </table>";
-    echo "  </div>";  
+    echo "</tr>";
+    echo "<tr>";
+    if($size==2) {
+      echo "<td rowspan=2 width=$range_width style='height:100%;'>";
+      echo "  <div style='height:100%;overflow:auto;'>";  
+      echo "  <table style='width:100%;height:100%;' border=0>";
+      echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+      echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+      echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+      echo "  </table>";
+      echo "  </div>";  
+      echo "</td>"; 
+    }
+    echo "<td>";
+    echo "<img src='graphs/dht22.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
     echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+    echo "</div>";
   }
-  echo "<td>";
-  echo "<img src='graphs/sewer.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(2);' style='cursor:pointer;'>";
-  echo "</td>";
-  echo "</tr>";
- 
-  echo "</table>";
-  echo "</div>"; 
-  // ------------------------------------------------------------------- Formaldehyde
-  echo "<div class='container'>";  
-  echo "<table border=0>";      
-  echo "<tr>";
-  if($size==2) {
-    echo "<td></td>";
-  }  
-  echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
-  echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";    
-  echo "</td>";  
-  echo "</tr>";
-  echo "<tr>";  
-  if($size==2) {  
-    echo "<td rowspan=2 width=$range_width style='height:100%'>";
-    echo "  <div style='height:100%;overflow:auto;'>";  
-    echo "  <table style='width:100%;height:100%' border=0>";
-    echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
-    echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
-    echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
-    echo "  </table>";
-    echo "  </div>";  
+  if($sensor_type==0 || $sensor_type==2) { // -------------------------- Dust
+    echo "<div class='container'>";  
+    echo "<table border=0>";      
+    echo "<tr>";
+    if($size==2) {
+      echo "<td></td>";
+    }  
+    echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
+    echo "<img src='health/mask.png' onclick='location.href=\"health/dust.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "</td>";  
+    echo "</tr>";
+    echo "<tr>";  
+    if($size==2) {  
+      echo "<td rowspan=2 width=$range_width style='height:100%'>";
+      echo "  <div style='height:100%;overflow:auto;'>";  
+      echo "  <table style='width:100%;height:100%' border=0>";
+      echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+      echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+      echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+      echo "  </table>";
+      echo "  </div>";  
+      echo "</td>";
+    }
+    echo "<td>";
+    echo "<img src='graphs/dust.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(2);' style='cursor:pointer;'>";
     echo "</td>";
-  }
-  echo "<td>";
-  echo "<img src='graphs/wsp2110.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(3);' style='cursor:pointer;'>";
-  echo "</td>";
-  echo "</tr>";
+    echo "</tr>";
  
-  echo "</table>";
-  echo "</div>";    
+    echo "</table>";
+    echo "</div>";   
+  }
+  if($sensor_type==0 || $sensor_type==3) { // -------------------------- Sewer
+    echo "<div class='container'>";  
+    echo "<table border=0>";      
+    echo "<tr>";
+    if($size==2) {
+      echo "<td></td>";
+    }  
+    echo "<td align=center colspan=2><h3 style='display:inline;'>Sewer Gas</h3>&nbsp;";
+    echo "<img src='health/mask.png' onclick='location.href=\"health/sewer.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "</td>";   
+    echo "</tr>";
+    echo "<tr>";  
+    if($size==2) {  
+      echo "<td rowspan=2 width=$range_width style='height:100%'>";
+      echo "  <div style='height:100%;overflow:auto;'>";  
+      echo "  <table style='width:100%;height:100%' border=0>";
+      echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+      echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+      echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+      echo "  </table>";
+      echo "  </div>";  
+      echo "</td>";
+    }
+    echo "<td>";
+    echo "<img src='graphs/sewer.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(3);' style='cursor:pointer;'>";
+    echo "</td>";
+    echo "</tr>";
+ 
+    echo "</table>";
+    echo "</div>"; 
+  }
+  if($sensor_type==0 || $sensor_type==4) { // -------------------------- Formaldehyde
+    echo "<div class='container'>";  
+    echo "<table border=0>";      
+    echo "<tr>";
+    if($size==2) {
+      echo "<td></td>";
+    }  
+    echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
+    echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "</td>";  
+    echo "</tr>";
+    echo "<tr>";  
+    if($size==2) {  
+      echo "<td rowspan=2 width=$range_width style='height:100%'>";
+      echo "  <div style='height:100%;overflow:auto;'>";  
+      echo "  <table style='width:100%;height:100%' border=0>";
+      echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+      echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+      echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+      echo "  </table>";
+      echo "  </div>";  
+      echo "</td>";
+    }
+    echo "<td>";
+    echo "<img src='graphs/wsp2110.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(4);' style='cursor:pointer;'>";
+    echo "</td>";
+    echo "</tr>";
+ 
+    echo "</table>";
+    echo "</div>";    
+  }
   // ------------------------------------------------------------------- Home Form
   echo "<form action='index.php' method='get' name='home'>\n";
   echo "<input type='hidden' name='id' value='$id'>\n";

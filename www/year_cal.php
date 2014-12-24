@@ -24,33 +24,35 @@ use Carbon\Carbon;
 require('calendar/calendar.php');
 include 'globals.php';
 
-$sensor = htmlspecialchars($_GET["sensor"]);
+if($sensor_type==0) {
+  $sensor = htmlspecialchars($_GET["sensor"]);
+} else $sensor=$sensor_type;
 switch($sensor) {
-  case 1: // Dust
+  case 2: // Dust
     $title_name="Dust";
     $sensor_column="dust";
-    $default_sensor_1="checked='checked'";
+    $default_sensor_2="checked='checked'";
     $min_orange=1000;
     $min_red=2000;
     break;       
-  case 2: // Sewer
+  case 3: // Sewer
     $title_name="Sewer";
     $sensor_column="sewer";
-    $default_sensor_2="checked='checked'";
+    $default_sensor_3="checked='checked'";
     $min_orange=500;
     $min_red=1000;
     break;  
-  case 3: // Formaldehyde
+  case 4: // Formaldehyde
     $title_name="Formaldehyde";
     $sensor_column="hcho";
-    $default_sensor_3="checked='checked'";
+    $default_sensor_4="checked='checked'";
     $min_orange=5;
     $min_red=10;
     break;   
   default: // Humidity
     $title_name="Humidity";
     $sensor_column="humidity";
-    $default_sensor_0="checked='checked'";
+    $default_sensor_1="checked='checked'";
     $min_orange=40;
     $min_red=60;
     break;    
@@ -87,18 +89,20 @@ $currentYear = $calendar->year($year);
   echo "<td>";
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$sensor_name</span>";
   echo "</td>";
-  echo "<td>";
-  echo "<input type='radio' onclick='change_sensor(0);' $default_sensor_0>Humidity";
-  echo "</td>";
-  echo "<td>";
-  echo "<input type='radio' onclick='change_sensor(1);' $default_sensor_1>Dust";
-  echo "</td>";  
-  echo "<td>";
-  echo "<input type='radio' onclick='change_sensor(2);' $default_sensor_2>Sewer";
-  echo "</td>";
-  echo "<td>";
-  echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Formaldehyde";
-  echo "</td>";  
+  if($sensor_type==0) {
+    echo "<td>";
+    echo "<input type='radio' onclick='change_sensor(1);' $default_sensor_1>Humidity";
+    echo "</td>";
+    echo "<td>";
+    echo "<input type='radio' onclick='change_sensor(2);' $default_sensor_2>Dust";
+    echo "</td>";  
+    echo "<td>";
+    echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Sewer";
+    echo "</td>";
+    echo "<td>";
+    echo "<input type='radio' onclick='change_sensor(4);' $default_sensor_4>Formaldehyde";
+    echo "</td>";  
+  }
   echo "<td align=right><img src='images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
   echo "</table>";
   echo "</td><tr>";

@@ -11,12 +11,33 @@
     } 
     $id = htmlspecialchars($_GET["id"]);  
   
-    $result=mysqli_query($conn,"SELECT * from cores WHERE id=$id");
+    $result=mysqli_query($conn,"SELECT * FROM cores WHERE id=$id");
     $row = mysqli_fetch_array($result);
     $user_timezone=$row['tz'];
-    
-    $result=mysqli_query($conn,"SELECT name from cores WHERE id=$id");
-    $sensor_name_row = mysqli_fetch_array($result);
-    $sensor_name=$sensor_name_row['name'];    
+    $sensor_name=$row['name'];  
+    $sensor_type=$row['sensors'];  
+    $sensor_type_name=get_sensor_type_name($sensor_type);
+  }
+  
+  function get_sensor_type_name($sensor_type) {
+    switch($sensor_type) {
+      case 0:
+        return "Indoor Air Quality";
+	break;
+      case 1:
+        return "Temperature & Humidity";
+	break;
+      case 2:
+	return "Dust";
+	break;
+      case 3:
+        return "Sewer";
+	break;		
+      case 4:
+        return "Formaldehyde";
+	break;
+      default:
+        exit("Unknown sensor type: $sensor_type");
+    }    
   }
 ?>
