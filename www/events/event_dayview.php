@@ -79,9 +79,10 @@ function draw_timetable($is_location) {
 }
 
 function location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
+  global $loc_arr;  
   global $id;
-  global $loc_arr;
-  
+  global $start_date_param;
+  global $size;
 
   $background='background-color:#FFFCEB;';
   if($loc_arr[$curr_hour][1]==1) {
@@ -90,7 +91,7 @@ function location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
     $background='background-color:#FFEB44;';
   }    
   $html ="";
-  $html.="<td style='text-align:left;cursor:pointer;border:1px solid purple;$background' ";
+  $html.="<td style='text-align:left;cursor:pointer;$background' ";
   $html.="onclick='location.href=\"events/manage_location.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";        
   $html.=$loc_arr[$curr_hour][0];
   $html.="&nbsp;";  
@@ -99,8 +100,10 @@ function location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
 }
 
 function event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
+  global $event_arr;  
   global $id;
-  global $event_arr;
+  global $start_date_param;
+  global $size;  
   
   $background='background-color:#F0F7FD;';
   if($event_arr[$curr_hour][1]==1) {
@@ -109,7 +112,7 @@ function event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
     $background='background-color:#2FB3F8;';
   }    
   $html ="";
-  $html.="<td style='text-align:left;cursor:pointer;border:1px solid purple;$background' ";
+  $html.="<td style='text-align:left;cursor:pointer;$background' ";
   $html.="onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";        
   $html.=$event_arr[$curr_hour][0];
   $html.="&nbsp;";
