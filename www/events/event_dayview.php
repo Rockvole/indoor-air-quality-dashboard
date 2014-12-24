@@ -27,79 +27,56 @@ cell_colors($loc_arr);
 
 echo "<hr noshade style='background-color:purple;border: 1px solid purple;border-radius: 7px 7px 7px 7px;clear:left;'/>";
 
-// --------------------------------------------------------------------- LOCATION
-echo "<div class='container'>";  
-echo "<table border=0>";
+echo draw_timetable(true);
+echo draw_timetable(false);
+
+// --------------------------------------------------------------------- FUNCTIONS
+function draw_timetable($is_location) {
+  global $date;
   
-echo "<tr>";
-echo "<td colspan=6><h3 style='text-align:center;'>Location</h3></td>";
-echo "</tr>";   
-echo "<tr>";
-echo "<td><img src='images/transparent.gif' width='40' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='150' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='40' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='150' height='1'></td>";  
-echo "<td><img src='images/transparent.gif' width='40' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='150' height='1'></td>";  
-echo "</tr>";  
+  if($is_location) $title="Location";
+    else $title="Events";
+  $html="";
+  $html.="<div class='container'>";  
+  $html.="<table border=0>";
   
-  for($inner_loop=0;$inner_loop<8;$inner_loop++)
-  {
-    echo "<tr>";    
-    for($column_loop=0;$column_loop<3;$column_loop++) 
-    {    
-      $curr_hour=$inner_loop+($column_loop*8);
-      $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
-
-      echo "<td style='text-align:right;font-size:11px;'>";
-      echo sprintf("%1$02d:00&nbsp;",$curr_hour);
-      echo "</td>";
-
-      echo location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
-    } // $column_loop
-    echo "</tr>";
-  } // $inner_loop
-
-echo "</table>";
-echo "</div>";
-
-// --------------------------------------------------------------------- EVENT
-echo "<div class='container'>";  
-echo "<table border=0>";
-  
-echo "<tr>";
-echo "<td colspan=6><h3 style='text-align:center;'>Events</h3></td>";
-echo "</tr>";   
-echo "<tr>";
-echo "<td><img src='images/transparent.gif' width='40' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='150' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='40' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='150' height='1'></td>";  
-echo "<td><img src='images/transparent.gif' width='40' height='1'></td>";
-echo "<td><img src='images/transparent.gif' width='150' height='1'></td>";  
-echo "</tr>";  
+  $html.="<tr>";
+  $html.="<td colspan=6><h3 style='text-align:center;'>$title</h3></td>";
+  $html.="</tr>";   
+  $html.="<tr>";
+  $html.="<td><img src='images/transparent.gif' width='40' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='150' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='40' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='150' height='1'></td>";  
+  $html.="<td><img src='images/transparent.gif' width='40' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='150' height='1'></td>";  
+  $html.="</tr>";  
   
   for($inner_loop=0;$inner_loop<8;$inner_loop++)
   {
-    echo "<tr>";
+    $html.="<tr>";
     for($column_loop=0;$column_loop<3;$column_loop++) 
     {
       $curr_hour=$inner_loop+($column_loop*8);
       $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
 
 
-      echo "<td style='text-align:right;font-size:11px;'>";
-      echo sprintf("%1$02d:00&nbsp;",$curr_hour);
-      echo "</td>";
-
-      echo event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
+      $html.="<td style='text-align:right;font-size:11px;'>";
+      $html.=sprintf("%1$02d:00&nbsp;",$curr_hour);
+      $html.="</td>";
+      
+      if($is_location)
+        $html.=location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
+      else $html.=event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
+      
     } // $column_loop
-    echo "</tr>";
+    $html.="</tr>";
   } // $inner_loop
 
-echo "</table>";
-echo "</div>";
-
+  $html.="</table>";
+  $html.="</div>";  
+  return $html;
+}
 
 function location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
   global $id;
@@ -163,9 +140,7 @@ function cell_colors(&$event_arr) {
         }
       }
     }   
-    if(true) {
-      error_log("event_arr[$curr_hour][0]=".$event_arr[$curr_hour][0]." event_arr[$curr_hour][1]=".$event_arr[$curr_hour][1]); 
-    }
+    //error_log("event_arr[$curr_hour][0]=".$event_arr[$curr_hour][0]." event_arr[$curr_hour][1]=".$event_arr[$curr_hour][1]); 
   }
 }
 

@@ -6,7 +6,7 @@ $ts=Array();
 $sewer=Array();
 while($row = mysqli_fetch_array($result)) {
 	$ts_str=gmdate('r', $row['ts']);
-	error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+	//error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
 	$ts[]=$row['ts'];
 	$sewer[]=$row['sewer'];
 }
