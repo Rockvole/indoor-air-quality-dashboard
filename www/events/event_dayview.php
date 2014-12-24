@@ -45,26 +45,18 @@ echo "</tr>";
   
   for($inner_loop=0;$inner_loop<8;$inner_loop++)
   {
-    $curr_hour=$inner_loop;
-    $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
+    echo "<tr>";    
+    for($column_loop=0;$column_loop<3;$column_loop++) 
+    {    
+      $curr_hour=$inner_loop+($column_loop*8);
+      $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
 
-    echo "<tr>";
-    echo "<td style='text-align:right;font-size:11px;'>";
-    echo sprintf("%1$02d:00&nbsp;",$curr_hour);
-    echo "</td>";
+      echo "<td style='text-align:right;font-size:11px;'>";
+      echo sprintf("%1$02d:00&nbsp;",$curr_hour);
+      echo "</td>";
 
-    echo location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
-    
-    echo "<td style='text-align:right;font-size:11px;'>";
-    echo sprintf("%1$02d:00&nbsp;",$curr_hour+8);
-    echo "</td>";    
-    echo location_cell($curr_hour+8,$curr_ts_utc,$start_date_param,$size);
-    
-    echo "<td style='text-align:right;font-size:11px;'>";
-    echo sprintf("%1$02d:00&nbsp;",$curr_hour+16);
-    echo "</td>";    
-    echo location_cell($curr_hour+16,$curr_ts_utc,$start_date_param,$size);
-    
+      echo location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
+    } // $column_loop
     echo "</tr>";
   } // $inner_loop
 
@@ -89,26 +81,19 @@ echo "</tr>";
   
   for($inner_loop=0;$inner_loop<8;$inner_loop++)
   {
-    $curr_hour=$inner_loop;
-    $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
-
     echo "<tr>";
-    echo "<td style='text-align:right;font-size:11px;'>";
-    echo sprintf("%1$02d:00&nbsp;",$curr_hour);
-    echo "</td>";
+    for($column_loop=0;$column_loop<3;$column_loop++) 
+    {
+      $curr_hour=$inner_loop+($column_loop*8);
+      $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
 
-    echo event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
-    
-    echo "<td style='text-align:right;font-size:11px;'>";
-    echo sprintf("%1$02d:00&nbsp;",$curr_hour+8);
-    echo "</td>";    
-    echo event_cell($curr_hour+8,$curr_ts_utc,$start_date_param,$size);
-    
-    echo "<td style='text-align:right;font-size:11px;'>";
-    echo sprintf("%1$02d:00&nbsp;",$curr_hour+16);
-    echo "</td>";    
-    echo event_cell($curr_hour+16,$curr_ts_utc,$start_date_param,$size);
-    
+
+      echo "<td style='text-align:right;font-size:11px;'>";
+      echo sprintf("%1$02d:00&nbsp;",$curr_hour);
+      echo "</td>";
+
+      echo event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
+    } // $column_loop
     echo "</tr>";
   } // $inner_loop
 
