@@ -79,6 +79,7 @@ public:
 #if defined(DHT_DEBUG_TIMING)
     volatile uint8_t _edges[41];
 #endif
+    volatile uint8_t _bits[5];    
     
 private:
     void (*isrCallback_wrapper)(void);
@@ -87,7 +88,6 @@ private:
     enum states{RESPONSE=0,DATA=1,ACQUIRED=2,STOPPED=3,ACQUIRING=4};
     volatile states _state;
     volatile int _status;
-    volatile uint8_t _bits[5];
     volatile uint8_t _cnt;
     volatile uint8_t _idx;
     volatile unsigned long _us;
