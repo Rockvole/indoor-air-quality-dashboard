@@ -59,6 +59,7 @@ $graph->y2axis->title->SetAngle(90);
 $graph->y2axis->title->SetMargin(10);
 $graph->y2axis->SetTickPositions(array(0,5,10,15,20,25,30),
 	        array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30));
+add_plotlines($start_ts, $ts);
 
 // Display the graph
 $graph->Stroke();

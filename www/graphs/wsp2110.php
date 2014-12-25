@@ -39,6 +39,7 @@ $graph->yaxis->title->Set('Formaldehyde');
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
+add_plotlines($start_ts, $ts);
 //$graph->yaxis->SetTickPositions(array(0,10,20,30,40,50,60,70,80,90,100), null);
 
 // Display the graph

@@ -39,6 +39,7 @@ $graph->yaxis->title->Set('Sewer');
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
+add_plotlines($start_ts, $ts);
 
 // Display the graph
 $graph->Stroke();
