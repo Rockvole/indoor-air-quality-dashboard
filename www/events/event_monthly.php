@@ -99,15 +99,15 @@ echo "<tr>\n";
       $curr_date_start_utc=$curr_date->startOfDay()->format('U');
       $curr_date_end_utc=$curr_date->endOfDay()->format('U');
       // Search day for all readings to see if we will allow day to be clickable
-      $result=mysqli_query($conn,"SELECT count(*) as cnt from readings WHERE core_id=$id and ts>=$curr_date_start_utc and ts<$curr_date_end_utc");
+      $result=mysqli_query($conn,"SELECT count(*) as cnt FROM readings WHERE group_id=$id AND ts>=$curr_date_start_utc AND ts<$curr_date_end_utc");
       if(mysql_errno()) {
         exit('Error: '.mysqli_error($conn));
       }
       $row = mysqli_fetch_array($result);
       if($row['cnt']>0) {
         // Search day for all events so we can display tooltips
-        $result=mysqli_query($conn,"SELECT * from events WHERE core_id=$id and ts>=$curr_date_start_utc and ts<$curr_date_end_utc ".
-                                   "and name is not null  order by ts");
+        $result=mysqli_query($conn,"SELECT * from events WHERE group_id=$id AND ts>=$curr_date_start_utc AND ts<$curr_date_end_utc ".
+                                   "AND name IS NOT NULL order by ts");
         if(mysql_errno()) {
           exit('Error: '.mysqli_error($conn));
         }

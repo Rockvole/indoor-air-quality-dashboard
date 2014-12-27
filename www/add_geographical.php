@@ -52,7 +52,7 @@ $start_date_param = htmlspecialchars($_GET["start_date"]);
 $size_param = htmlspecialchars($_GET["size"]);
 if(strlen($ts)>0) {
   
-  $sql = "DELETE from geographical where ts=$ts AND core_id=$id";
+  $sql = "DELETE from geographical where ts=$ts AND group_id=$id";
   if(!mysqli_query($conn,$sql)) {
      exit('Error: '.mysqli_error($conn));
   }
@@ -64,7 +64,7 @@ if(strlen($ts)>0) {
   $dt = Carbon::createFromFormat($param_date_format, $start_date_param);
   $dt->startOfDay()->addHours($hour);
   $dt_utc = $dt->format('U');
-  $sql = "INSERT into geographical (name, core_id, ts) VALUES ('$name', '$id', '$dt_utc')";
+  $sql = "INSERT into geographical (name, group_id, ts) VALUES ('$name', '$id', '$dt_utc')";
   if(!mysqli_query($conn,$sql)) {
      exit('Error: '.mysqli_error($conn));
   }
@@ -156,7 +156,7 @@ echo "<tr><td></td><td colspan=2>";
 echo "<table border=0 style='border-spacing:6px;'>";
 echo "<tr><th style='text-align:left;'>Name</th>";
 echo "<th style='text-align:left;'>Date</th><th style='text-align:left;'>Delete</th></td>";
-$result=mysqli_query($conn,"SELECT * from geographical where core_id=$id order by ts asc");
+$result=mysqli_query($conn,"SELECT * from geographical where group_id=$id order by ts asc");
 while($row = mysqli_fetch_array($result)) {
   if(strlen($row['name'])>0) $name=$row['name'];
   echo "<tr>";

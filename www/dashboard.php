@@ -57,15 +57,15 @@ if (mysqli_connect_errno()) {
 } 
 
 if(strlen($start_date_param)<=0) {
-	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id");
+	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
 } else if(strcmp($direction_param, "next")==0) { // Next button pressed
 	$dt = Carbon::createFromFormat($param_date_format, $start_date_param);
 	$dt_utc = $dt->startOfDay()->format('U');
-	$result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE core_id=$id and ts > $dt_utc");
+	$result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE group_id=$id and ts > $dt_utc");
 } else { // previous button pressed
 	$dt = Carbon::createFromFormat($param_date_format, $start_date_param);
 	$dt_utc = $dt->endOfDay()->format('U');
-	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id and ts < $dt_utc");
+	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id and ts < $dt_utc");
 }
 if(mysql_errno()) {
   exit('Error: '.mysqli_error($conn));
@@ -89,8 +89,8 @@ if(!isset($row['ts'])) {
   echo "<h2>$sensor_type_name Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
 
-  $geo_result=mysqli_query($conn,"SELECT name from geographical WHERE core_id=$id and ts = ".
-				  "(SELECT MAX(ts) as ts from geographical WHERE core_id=$id and ts <= $end_day_utc)");
+  $geo_result=mysqli_query($conn,"SELECT name from geographical WHERE group_id=$id and ts = ".
+				  "(SELECT MAX(ts) as ts from geographical WHERE group_id=$id and ts <= $end_day_utc)");
   $geo_row = mysqli_fetch_array($geo_result);  
   $geo_name=$geo_row['name'];
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";

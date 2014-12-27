@@ -2,42 +2,69 @@ create database iaq;
 grant all on iaq.* to ''@'localhost';
 use iaq;
 
-create table cores (id INT NOT NULL AUTO_INCREMENT, 
-core_name VARCHAR(24), 
-name VARCHAR(20), 
-sensors INT NOT NULL DEFAULT 0,
+create table groups (
+id INT NOT NULL AUTO_INCREMENT, 
+name VARCHAR(30), 
+temp_hum INT DEFAULT NULL, -- id of core in cores table
+dust INT DEFAULT NULL, -- id of core in cores table
+sewer INT DEFAULT NULL, -- id of core in cores table
+hcho INT DEFAULT NULL, -- id of core in cores table
 tz VARCHAR(40), 
-UNIQUE(core_name), 
-UNIQUE(name), PRIMARY KEY (id));
+UNIQUE(name),
+UNIQUE(temp_hum),
+UNIQUE(dust),
+UNIQUE(sewer),
+UNIQUE(hcho),
+PRIMARY KEY (id)
+);
 
-create table readings (id INT NOT NULL AUTO_INCREMENT, 
+create table cores (
+id INT NOT NULL AUTO_INCREMENT, 
+core_id VARCHAR(24), 
+UNIQUE(core_id), 
+PRIMARY KEY (id)
+);
+
+create table readings (
+id INT NOT NULL AUTO_INCREMENT, 
 temperature DECIMAL(4,2), 
 humidity INT, 
 dust INT, 
 sewer INT, 
 hcho INT, 
-core_id INT, 
+group_id INT, 
 ts INT UNSIGNED, 
-PRIMARY KEY (id), UNIQUE(core_id, ts));
+PRIMARY KEY (id), 
+UNIQUE(group_id, ts)
+);
 
-create table geographical (id INT NOT NULL AUTO_INCREMENT,
+create table geographical (
+id INT NOT NULL AUTO_INCREMENT,
 name VARCHAR(40),
-core_id INT NOT NULL,
+group_id INT NOT NULL,
 ts INT UNSIGNED NOT NULL,
-UNIQUE(core_id, ts), PRIMARY KEY (id));
+UNIQUE(group_id, ts), 
+PRIMARY KEY (id)
+);
 
-create table locations (id INT NOT NULL AUTO_INCREMENT, 
+create table locations (
+id INT NOT NULL AUTO_INCREMENT, 
 type INT NOT NULL,
 name VARCHAR(40) NOT NULL,
-core_id INT NOT NULL, 
+group_id INT NOT NULL, 
 ts INT UNSIGNED NOT NULL, 
-UNIQUE(type, core_id, ts), PRIMARY KEY (id));
+UNIQUE(type, group_id, ts), 
+PRIMARY KEY (id)
+);
 
-create table events (id INT NOT NULL AUTO_INCREMENT, 
+create table events (
+id INT NOT NULL AUTO_INCREMENT, 
 name VARCHAR(40), 
-core_id INT NOT NULL, 
+group_id INT NOT NULL, 
 ts INT UNSIGNED NOT NULL, 
-UNIQUE(core_id, ts), PRIMARY KEY (id));
+UNIQUE(group_id, ts), 
+PRIMARY KEY (id)
+);
 
 # ---------------------------- change time zone to UTC
 # in /etc/mysql/my.cnf [mysqld] section

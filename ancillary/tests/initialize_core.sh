@@ -1,6 +1,6 @@
 #! /bin/bash
 source globals.sh
 
-curl "http://$ip/initialize_core.php?core_id=43Re3&name=fake_day_readings&sensors=0&tz=America/Los_Angeles"
+echo ---- All Sensor Group
+curl "http://$ip/initialize_core.php?name=All_Sensor_Group&tz=America/Los_Angeles&core_id_1=TH_Sensor&temp_hum=1&core_id_2=Remaining_Sensors&dust=2&sewer=2&hcho=2&core_id_3=&core_id_4="
 
-curl "http://$ip/initialize_core.php?core_id=67Tf9&name=fake_day_readings_ht&sensors=1&tz=America/Los_Angeles"

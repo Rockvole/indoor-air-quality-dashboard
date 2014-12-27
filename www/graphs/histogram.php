@@ -62,15 +62,15 @@ if($size==2) $default_size_2="selected='selected'";
 if($type_day) {
   $title="Entire Day";
   if(strlen($day_param)<=0) {
-    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id");
+    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
   } else if(strcmp($direction_param, "next")==0) { // Next button pressed
     $dt = Carbon::createFromDate($year,$month,$day_param);
     $dt_utc = $dt->startOfDay()->format('U');
-    $result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE core_id=$id and ts > $dt_utc");
+    $result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE group_id=$id and ts > $dt_utc");
   } else { // previous button pressed
     $dt = Carbon::createFromDate($year,$month,$day_param);
     $dt_utc = $dt->endOfDay()->format('U');
-    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id and ts < $dt_utc");
+    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id and ts < $dt_utc");
   }  
   if(mysql_errno()) {
     exit('Error: '.mysqli_error($conn));
@@ -94,7 +94,7 @@ if($type_day) {
   }
 } else if(strcmp($type,"event")==0) {
   $title=$_GET["name"];  
-  $result=mysqli_query($conn,"SELECT * from events WHERE core_id=$id order by ts");
+  $result=mysqli_query($conn,"SELECT * from events WHERE group_id=$id order by ts");
   $get_next=false;
   while($row = mysqli_fetch_array($result)) {
     error_log("events=".$row['ts']." = ".$row['name']);
@@ -108,7 +108,7 @@ if($type_day) {
     }
   }
   if(!isset($end_day_utc)) {
-    $result=mysqli_query($conn,"SELECT max(ts) as ts from readings WHERE core_id=$id");  
+    $result=mysqli_query($conn,"SELECT max(ts) as ts from readings WHERE group_id=$id");  
     $row=mysqli_fetch_array($result);
     $end_day_utc=$row['ts'];
   }

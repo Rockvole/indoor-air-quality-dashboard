@@ -10,12 +10,11 @@
       exit('Failed to connect to MySQL: ' . mysqli_connect_error());
     } 
     $id = htmlspecialchars($_GET["id"]);  
-  
-    $result=mysqli_query($conn,"SELECT * FROM cores WHERE id=$id");
+    $result=mysqli_query($conn,"SELECT * FROM groups WHERE id=$id");
     $row = mysqli_fetch_array($result);
     $user_timezone=$row['tz'];
     $sensor_name=$row['name'];  
-    $sensor_type=$row['sensors'];  
+    $sensor_sewer=$row['sewer'];  
     $sensor_type_name=get_sensor_type_name($sensor_type);
   }
   

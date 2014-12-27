@@ -7,15 +7,15 @@ $color_toggle=0;
 $event_arr = array_fill(0, 24, array_fill(0, 2, ''));
 
 // --------------------------------------------------------------------- EVENTS
-$result=mysqli_query($conn,"SELECT * from events where ts>=$start_day_utc and ts<$end_day_utc and core_id=$id order by ts");
+$result=mysqli_query($conn,"SELECT * FROM events WHERE ts>=$start_day_utc AND ts<$end_day_utc AND group_id=$id order by ts");
 while($row = mysqli_fetch_array($result)) {
   $event_ts = Carbon::createFromTimeStamp($row['ts']);
   $curr_hour = $event_ts->format('G');
   $event_arr[$curr_hour][0] = $row['name'];
 }
 // Find events before today
-$result=mysqli_query($conn,"SELECT name from events where ts=".
-                            "(SELECT max(ts) from events where ts<$start_day_utc and core_id=$id)");
+$result=mysqli_query($conn,"SELECT name FROM events WHERE ts=".
+                            "(SELECT max(ts) FROM events WHERE ts<$start_day_utc AND group_id=$id) AND group_id=$id");
 $row = mysqli_fetch_array($result);
 if(isset($row['name'])) {
   if(!is_null($event_arr[0][0]))  $event_arr[0][0]=$row['name']." (previous)";
@@ -155,7 +155,7 @@ function get_day_locations() {
 
   // ------------------------------------------------------------------- Fill positions array
   $pos_arr = array_fill(0, 24, '');  
-  $result=mysqli_query($conn,"SELECT * from locations WHERE ts>=$start_day_utc AND ts<$end_day_utc AND type=2 AND core_id=$id order by ts");
+  $result=mysqli_query($conn,"SELECT * from locations WHERE ts>=$start_day_utc AND ts<$end_day_utc AND type=2 AND group_id=$id order by ts");
   while($row = mysqli_fetch_array($result)) {
     $event_ts = Carbon::createFromTimeStamp($row['ts']);
     $curr_hour = $event_ts->format('G');
@@ -165,14 +165,14 @@ function get_day_locations() {
   // Check first hour is filled
   if(strlen($pos_arr[0])==0) { // First hour has no position so retrieve last one
     $pos_result=mysqli_query($conn,"SELECT name from locations where ts=".
-                                   "  (SELECT max(ts) from locations where ts<$start_day_utc AND type=2 AND core_id=$id) AND type=2");
+                                   "  (SELECT max(ts) from locations where ts<$start_day_utc AND type=2 AND group_id=$id) AND type=2 AND group_id=$id");
     $pos_row = mysqli_fetch_array($pos_result);
     $pos_arr[0] = $pos_row['name'];
   }  
   
   // ------------------------------------------------------------------- Fill rooms array
   $room_arr = array_fill(0, 24, '');  
-  $result=mysqli_query($conn,"SELECT * from locations where ts>=$start_day_utc AND ts<$end_day_utc AND type=1 AND core_id=$id order by ts");
+  $result=mysqli_query($conn,"SELECT * from locations where ts>=$start_day_utc AND ts<$end_day_utc AND type=1 AND group_id=$id order by ts");
   while($row = mysqli_fetch_array($result)) {
     $event_ts = Carbon::createFromTimeStamp($row['ts']);
     $curr_hour = $event_ts->format('G');
@@ -182,7 +182,7 @@ function get_day_locations() {
   // Check first hour is filled  
   if((strlen($room_arr[0])==0)) { // First hour has no room so retrieve last one
     $room_result=mysqli_query($conn,"SELECT name from locations where ts=".
-                                    "  (SELECT max(ts) from locations where ts<$start_day_utc AND type=1 AND core_id=$id) AND type=1");
+                                    "  (SELECT max(ts) from locations where ts<$start_day_utc AND type=1 AND group_id=$id) AND type=1 AND group_id=$id");
     $room_row = mysqli_fetch_array($room_result);
     $room_arr[0] = $room_row['name'];
   }  

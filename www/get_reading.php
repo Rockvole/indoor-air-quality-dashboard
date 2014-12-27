@@ -3,16 +3,14 @@ include 'globals.php';
 
 if(!isset($_GET["core_id"])) exit("Must specify core_id parameter");
 if(!isset($_GET["unix_time"])) exit("Must specify unix_time parameter");
-if(!isset($_GET["temp"])) exit("Must specify temp parameter");
-if(!isset($_GET["hum"])) exit("Must specify hum parameter");
 
 $core_id = htmlspecialchars($_GET["core_id"]);
 $unix_time = htmlspecialchars($_GET["unix_time"]);
 $dust = htmlspecialchars($_GET["dust"]);
 $temp = htmlspecialchars($_GET["temp"]);
 $hum = htmlspecialchars($_GET["hum"]);
-$hcho = htmlspecialchars($_GET["hcho"]);
 $sewer = htmlspecialchars($_GET["sewer"]);
+$hcho = htmlspecialchars($_GET["hcho"]);
 $error=false;
 $conn=mysqli_connect("", "", "", $db_name);
 
@@ -22,7 +20,7 @@ if (mysqli_connect_errno()) {
   $error=true;
 } else {
   // ------------------------------------------------------------------- RETRIEVE CORE INFO
-  $result=mysqli_query($conn,"SELECT * from cores where core_name='".$core_id."'");	
+  $result=mysqli_query($conn,"SELECT * from cores where core_id='".$core_id."'");	
   if(mysql_errno()) {
     exit('Error: '.mysqli_error($conn));
     $error=true;
@@ -35,15 +33,86 @@ if (mysqli_connect_errno()) {
   $row = mysqli_fetch_array($result);
   $id=$row['id'];
   mysqli_free_result($result);
-  // ------------------------------------------------------------------- INSERT READING
-  $sql = "INSERT into readings (temperature, humidity, dust, hcho, sewer, core_id, ts) VALUES ('$temp', '$hum', '$dust', '$hcho', '$sewer', '$id', '$unix_time')";
-  if(!mysqli_query($conn,$sql)) {
+  // ------------------------------------------------------------------- Temperature / Humidity
+  if(strlen($temp)>0 && strlen($hum)>0) { 
+    $result=mysqli_query($conn,"SELECT id from groups where temp_hum=".$id);	   
+    if(mysql_errno()) {
       exit('Error: '.mysqli_error($conn));
       $error=true;
+    }    
+    if(mysqli_num_rows($result)>0) {
+      $row = mysqli_fetch_array($result);
+      $group_id=$row['id'];
+      insert_empty_reading($group_id, $unix_time);
+      $sql = "UPDATE readings SET temperature=$temp, humidity=$hum WHERE group_id=$group_id AND ts=$unix_time";
+      $result=mysqli_query($conn,$sql);
+    }    
   }
+  // ------------------------------------------------------------------- Dust
+  if(strlen($dust)>0) {
+    $result=mysqli_query($conn,"SELECT id from groups where dust=".$id);	   
+    if(mysql_errno()) {
+      exit('Error: '.mysqli_error($conn));
+      $error=true;
+    }    
+    if(mysqli_num_rows($result)>0) {
+      $row = mysqli_fetch_array($result);
+      $group_id=$row['id'];
+      insert_empty_reading($group_id, $unix_time);
+      $sql = "UPDATE readings SET dust=$dust WHERE group_id=$group_id AND ts=$unix_time";
+      $result=mysqli_query($conn,$sql);
+    }    
+  }
+  // ------------------------------------------------------------------- Sewer
+  if(strlen($sewer)>0) {
+    $result=mysqli_query($conn,"SELECT id from groups where sewer=".$id);	   
+    if(mysql_errno()) {
+      exit('Error: '.mysqli_error($conn));
+      $error=true;
+    }    
+    if(mysqli_num_rows($result)>0) {
+      $row = mysqli_fetch_array($result);
+      $group_id=$row['id'];
+      insert_empty_reading($group_id, $unix_time);
+      $sql = "UPDATE readings SET sewer=$sewer WHERE group_id=$group_id AND ts=$unix_time";
+      $result=mysqli_query($conn,$sql);
+    }    
+  }
+  // ------------------------------------------------------------------- HCHO
+  if(strlen($hcho)>0) {
+    $result=mysqli_query($conn,"SELECT id from groups where hcho=".$id);	   
+    if(mysql_errno()) {
+      exit('Error: '.mysqli_error($conn));
+      $error=true;
+    }    
+    if(mysqli_num_rows($result)>0) {
+      $row = mysqli_fetch_array($result);
+      $group_id=$row['id'];
+      insert_empty_reading($group_id, $unix_time);
+      $sql = "UPDATE readings SET hcho=$hcho WHERE group_id=$group_id AND ts=$unix_time";
+      $result=mysqli_query($conn,$sql);
+    }    
+  }
+  
   mysqli_close($conn);
   if($error!=true) {
-      echo $unix_time;
+    echo $unix_time;
+  }
+}
+
+// --------------------------------------------------------------------- INSERT EMPTY READING
+function insert_empty_reading($group_id, $unix_time) {
+  global $conn;
+  global $error;
+
+  $result=mysqli_query($conn,"SELECT * FROM readings WHERE group_id=".$group_id." AND ts=$unix_time");
+  $num_rows = mysqli_num_rows($result);
+  if($num_rows<=0) {
+    $sql = "INSERT into readings (temperature, humidity, dust, hcho, sewer, group_id, ts) VALUES (NULL, NULL, NULL, NULL, NULL, '$group_id', '$unix_time')";
+    if(!mysqli_query($conn,$sql)) {
+      exit('Error: '.mysqli_error($conn));
+      $error=true;
+    }        
   }
 }
 ?>

@@ -46,7 +46,7 @@ $finish_event=false;
 
 if(strlen($op)>0) {
   if($op==2) { // ------------------------------------------------------ DELETE
-    $sql = "DELETE from locations where ts=$ts AND core_id=$id AND type=$type";
+    $sql = "DELETE from locations where ts=$ts AND group_id=$id AND type=$type";
     if(!mysqli_query($conn,$sql)) {
        exit('Error: '.mysqli_error($conn));
     }
@@ -60,7 +60,7 @@ if(strlen($op)>0) {
       if(strlen($room_name)<=0) exit('Please enter Room Name');
       $name = $room_name;
     }
-    $sql = "INSERT into locations (type, name, core_id, ts) VALUES ($type, '$name', $id, $ts)";
+    $sql = "INSERT into locations (type, name, group_id, ts) VALUES ($type, '$name', $id, $ts)";
     if(!mysqli_query($conn,$sql)) {
        exit('Error: '.mysqli_error($conn));
     }
@@ -70,28 +70,28 @@ if(strlen($op)>0) {
   }
 }
 // Check if there is an existing Room
-$result=mysqli_query($conn,"SELECT name FROM locations WHERE ts=$ts AND type=1 AND core_id=$id");
+$result=mysqli_query($conn,"SELECT name FROM locations WHERE ts=$ts AND type=1 AND group_id=$id");
 $row = mysqli_fetch_array($result);
 $room_name=$row['name'];
 if(strlen($room_name)>0) $delete_room=true;
 
 // Retrieve previous Room events
 $result=mysqli_query($conn,"SELECT name FROM locations WHERE ts=".
-                             "  (SELECT max(ts) FROM locations where ts<$ts AND type=1 AND core_id=$id)".
+                             "  (SELECT max(ts) FROM locations where ts<$ts AND type=1 AND group_id=$id)".
 			     "  AND type=1 AND core_id=$id");
 $row = mysqli_fetch_array($result);
 $prev_room_name=$row['name'];
 if(!isset($prev_room_name)) $prev_room_name="&lt;NONE&gt;";
 
 // Check if there is an existing Position
-$result=mysqli_query($conn,"SELECT name FROM locations WHERE ts=$ts AND type=2 AND core_id=$id");
+$result=mysqli_query($conn,"SELECT name FROM locations WHERE ts=$ts AND type=2 AND group_id=$id");
 $row = mysqli_fetch_array($result);
 $position=$row['name'];
 if(strlen($position)>0) $delete_position=true;
 
 // Retrieve previous Position events
 $result=mysqli_query($conn,"SELECT name FROM locations WHERE ts=".
-                             "  (SELECT max(ts) FROM locations WHERE ts<$ts AND type=2 AND core_id=$id)".
+                             "  (SELECT max(ts) FROM locations WHERE ts<$ts AND type=2 AND group_id=$id)".
 			     "  AND type=2 AND core_id=$id");
 $row = mysqli_fetch_array($result);
 $prev_position=$row['name'];

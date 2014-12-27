@@ -25,11 +25,11 @@ $conn=mysqli_connect("", "", "", $db_name);
 if (mysqli_connect_errno()) {
   exit('Failed to connect to MySQL: ' . mysqli_connect_error());
 } 
-$result=mysqli_query($conn,"SELECT * from cores");
+$result=mysqli_query($conn,"SELECT * from groups");
 
 echo "<table border=0 width='100%'><tr>";
-echo "<td><h2>Choose Sensor</h2></td>";
-echo "<td><input type='button' value='Add New Sensor' onclick='click_button(null,\"add_new_sensor.php\");'></td></tr>";
+echo "<td><h2>Sensor Groups</h2></td>";
+echo "<td><input type='button' value='Add New Sensor Group' onclick='click_button(null,\"add_new_sensor.php\");'></td></tr>";
 echo "</tr></table>\n";
 echo "<br/>";
 

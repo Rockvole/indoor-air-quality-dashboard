@@ -6,7 +6,7 @@
   
   <body>
 <?php
-  echo "<h2>Add New Sensor</h2>";
+  echo "<h2>Add New Sensor Group</h2>";
   
   echo "<form action='initialize_core.php' method='get'>";
   echo "<table border=0 class='form_table'>";
@@ -14,25 +14,14 @@
   echo "<tr>";
   echo "<th align=right>Identifying Name:<br/>(Button name on front page)</th>";
   echo "<td><input type='text' name='name' size=30></td>";
-  echo "</tr>";  
-  
-  echo "<tr>";
-  echo "<th align=right>Core Id:<br/>(e.g. 53ff70065069544807300687)</th>";
-  echo "<td><input type='text' name='core_id' size=30></td>";
-  echo "</tr>";
-  
-  echo "<tr>";
-  echo "<th align=right>Attached Sensors:</th>";
-  echo "<td>";
-  echo "<select name='sensors'>";
-  echo "  <option value='0'>ALL</option>";
-  echo "  <option value='1'>Temperature & Humidity</option>";
-  echo "  <option value='2'>Dust</option>";
-  echo "  <option value='3'>Sewer</option>";
-  echo "  <option value='4'>Formaldehyde</option>";
-  echo "</select>";
+  echo "<td style='font-size:110%;font-style:italic;'>e.g. Johns Sensors 1"; 
   echo "</td>";
   echo "</tr>";  
+
+  echo "<tr>";
+  echo "<th align=right>Password:<br/>(NOT IMPLEMENTED)</th>";
+  echo "<td><input type='text' name='password' size=30></td>";
+  echo "</tr>"; 
   
   echo "<tr>";
   echo "<th align=right>Time Zone:</th>";
@@ -51,15 +40,40 @@
   echo "<tr>";
   echo "<th align=right>Unit:<br/>(NOT IMPLEMENTED)</th>";
   echo "<td><input type='radio' name='unit' value='C' checked>Centigrade<br/>";
-  
   echo"<input type='radio' name='unit' value='F'>Fahrenheit</td>";
   echo "</tr>";  
   
+  echo "<tr>";
+  echo "<td></td>";
+  echo "<td colspan=3>";
+  echo "<table border=1>";
+  echo "<tr><th>Core Id</th><th width=100>Temperature<br/>& Humidity</th><th width=100>Dust</th><th width=100>Sewer</th><th width=100>Formaldehyde</th></tr>";
+  for($sensor=0;$sensor<5;$sensor++) {
+    $check_str="";
+    echo "<tr>";
+    if($sensor==0) {
+      echo "<td height=40>&lt;NOT ASSIGNED&gt;</td>";
+      $check_str="checked='checked'";
+    } else {
+      echo "<td height=40>";
+      echo "<input type='text' name='core_id_$sensor' size=30>";
+      echo "</td>";
+    }
+    echo "<td align=center><input type='radio' name='temp_hum' $check_str value=$sensor></td>";
+    echo "<td align=center><input type='radio' name='dust' $check_str value=$sensor></td>";
+    echo "<td align=center><input type='radio' name='sewer' $check_str value=$sensor></td>";
+    echo "<td align=center><input type='radio' name='hcho' $check_str value=$sensor></td>";
+    echo "</tr>";
+  }
+  echo "</table>";
+  echo "</td>";
+  echo "</tr>";
   echo "<tr>";
   echo "<th align=right></th>";
   echo "<td><input type='submit' value='Submit'></td>";
   echo "</tr>";  
   echo "</table>";
+  echo "<input type='hidden' name='group_id' value='34'>";
   echo "</form>";
   
 function tz_list() {
