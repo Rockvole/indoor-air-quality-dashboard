@@ -12,7 +12,7 @@
   echo "<table border=0 class='form_table'>";
   
   echo "<tr>";
-  echo "<th align=right>Identifying Name:<br/>(Button name on front page)</th>";
+  echo "<th align=right>Identifying Name:<br/>(Name on front page)</th>";
   echo "<td><input type='text' name='name' size=30></td>";
   echo "<td style='font-size:110%;font-style:italic;'>e.g. Johns Sensors 1"; 
   echo "</td>";

@@ -19,12 +19,10 @@
   </script>
   <body>
 <?php
+require_once ("Carbon/Carbon.php");
+use Carbon\Carbon;
 include 'globals.php';
 
-$conn=mysqli_connect("", "", "", $db_name);
-if (mysqli_connect_errno()) {
-  exit('Failed to connect to MySQL: ' . mysqli_connect_error());
-} 
 $result=mysqli_query($conn,"SELECT * from groups");
 
 echo "<table border=0 width='100%'><tr>";
@@ -38,7 +36,10 @@ echo "<input type='hidden' name='id' value='0'>\n";
 
 // Icons from thenounproject
 echo "<table border=0 >\n";
+echo "<tr><td></td><td></td><td></td><td></td><td></td><td></td>";
+echo "<th style='text-align:left;'>Last Reading</th></tr>";
 while($row = mysqli_fetch_array($result)) {
+  $result_group=mysqli_query($conn,"SELECT max(ts) as ts from readings where group_id=".$row['id']);
   echo "<tr>\n";
   echo "<th style='font-size:18px;'>".$row['name']."</th>\n";
   echo "<td><img src='images/calendar.png' onclick='click_button(".$row['id'].");' height=40 width=40 style='cursor:pointer;'></td>";
@@ -46,10 +47,22 @@ while($row = mysqli_fetch_array($result)) {
   echo "<td><img src='images/barchart.png' onclick='click_button(".$row['id'].",\"events/event_monthly.php\");' height=40 width=40 style='cursor:pointer;'></td>";
   echo "<td><img src='images/location.png' onclick='click_button(".$row['id'].",\"add_geographical.php\");' height=40 width=40 style='cursor:pointer;'></td>";  
   echo "<td><img src='images/download.png' onclick='click_button(".$row['id'].",\"transfer/download.php\");' height=40 width=40 style='cursor:pointer;'></td>";
-  if($row['sensors']!=0) {
-    echo "<td>(".get_sensor_type_name($row['sensors']).")</td>";
+  $name=get_sensor_type_name($row['id']);
+  echo "<td>";
+  $row_group=mysqli_fetch_array($result_group);
+  if(!is_null($row_group['ts'])) {
+    $curr_date=Carbon::createFromTimeStamp($row_group['ts']);
+    $curr_date->setTimezone($user_timezone);
+    echo $curr_date->format("F jS Y H:i")."<br/>(".$user_timezone.")";
+  } else echo "&lt;NONE&gt;";
+  echo "</td>";
+  echo "<td>";
+  if($sensor_count==1) {
+    echo "(".$name.")";
   }
+  echo "</td>";  
   echo "</tr>\n";
+
 }
 echo "</table>\n";
 echo "</form>\n";
