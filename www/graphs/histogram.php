@@ -53,8 +53,6 @@ $width_pix = array(300, 600, 1000);
 $height_pix = array(150, 300, 500);
 
 $direction_param = htmlspecialchars($_GET["direction"]);
-if(!isset($_GET["size"])) $size=1;
-  else $size = htmlspecialchars($_GET["size"]);
 if($size==0) $default_size_0="selected='selected'";
 if($size==1) $default_size_1="selected='selected'";
 if($size==2) $default_size_2="selected='selected'";
@@ -130,13 +128,7 @@ if($type_day) {
   echo $group_name;  
   echo "</span>";
   echo "</td>";
-  echo "<td align=right>";
-  echo "<select name='size' id='size_id' onchange='change_size(document.getElementById(\"size_id\").value);'>";
-  echo "<option value=0 $default_size_0>Small</option>";
-  echo "<option value=1 $default_size_1>Medium</option>";
-  echo "<option value=2 $default_size_2>Large</option>";
-  echo "</select>";
-  echo "</td>";
+  echo "<td></td>";
   echo "<td align=right><img src='../images/back.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'>\n";    
   echo "<img src='../images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
   echo "</tr>";
@@ -154,6 +146,13 @@ if($type_day) {
     echo "</tr>";
     echo "</table>";
   }
+  echo "</td>";
+  echo "<td width='100' align=right>";
+  echo "<select name='size' id='size_id' onchange='change_size(document.getElementById(\"size_id\").value);'>";
+  echo "<option value=0 $default_size_0>Small</option>";
+  echo "<option value=1 $default_size_1>Medium</option>";
+  echo "<option value=2 $default_size_2>Large</option>";
+  echo "</select>";  
   echo "</td>";
   echo "</tr>";
   echo "</table>";
@@ -229,6 +228,7 @@ if($type_day) {
   echo "<input type='hidden' name='month' value='".$date->format('n')."'>\n";
   echo "<input type='hidden' name='day' value='".$date->format('j')."'>\n";
   echo "<input type='hidden' name='start_date' value='".$date->format($param_date_format)."'>\n";  
+  echo "<input type='hidden' name='size' value='$size'>";  
   echo "</form>\n";       
   // ------------------------------------------------------------------- Form
   echo "<form action='histogram.php' method='get' name='dash'>\n";

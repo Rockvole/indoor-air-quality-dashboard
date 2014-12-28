@@ -45,8 +45,6 @@ $height_pix = array(150, 300, 500);
 
 $start_date_param = htmlspecialchars($_GET["start_date"]);
 $direction_param = htmlspecialchars($_GET["direction"]);
-if(!isset($_GET["size"])) $size=1;
-  else $size = htmlspecialchars($_GET["size"]);
 if($size==0) $default_size_0="selected='selected'";
 if($size==1) $default_size_1="selected='selected'";
 if($size==2) $default_size_2="selected='selected'";
@@ -255,6 +253,7 @@ if(!isset($row['ts'])) {
   echo "<input type='hidden' name='year' value='".$date->format('Y')."'>\n";
   echo "<input type='hidden' name='month' value='".$date->format('n')."'>\n";
   echo "<input type='hidden' name='day' value='".$date->format('j')."'>\n";  
+  echo "<input type='hidden' name='size' value='$size'>";  
   echo "</form>\n";     
   // ------------------------------------------------------------------- Form
   echo "<form action='dashboard.php' method='get' name='dash'>";

@@ -25,7 +25,10 @@
     if(isset($sensor_hcho)) $sensor_count++;
     $sensor_type_name=get_sensor_type_name();
   }
+  if(!isset($_GET["size"])) $size=1;
+  else $size = htmlspecialchars($_GET["size"]);
   
+  // ------------------------------------------------------------------- FUNCTIONS
   function get_sensor_type_name() {
     if($sensor_count==1) {
       if(isset($sensor_temp)) return "Temperature & Humidity";

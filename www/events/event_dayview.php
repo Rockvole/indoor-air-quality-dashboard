@@ -33,7 +33,14 @@ echo draw_timetable(false);
 // --------------------------------------------------------------------- FUNCTIONS
 function draw_timetable($is_location) {
   global $date;
-  
+  global $size;
+  $width_time=40;
+  $width_cell=150;
+  $font_size="11px";
+  if($size==2) { // Large
+    $width_cell=320;
+    $font_size="16px";
+  }
   if($is_location) $title="Location";
     else $title="Events";
   $html="";
@@ -44,12 +51,12 @@ function draw_timetable($is_location) {
   $html.="<td colspan=6><h3 style='text-align:center;'>$title</h3></td>";
   $html.="</tr>";   
   $html.="<tr>";
-  $html.="<td><img src='images/transparent.gif' width='40' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='150' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='40' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='150' height='1'></td>";  
-  $html.="<td><img src='images/transparent.gif' width='40' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='150' height='1'></td>";  
+  $html.="<td><img src='images/transparent.gif' width='$width_time' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='$width_cell' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='$width_time' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='$width_cell' height='1'></td>";  
+  $html.="<td><img src='images/transparent.gif' width='$width_time' height='1'></td>";
+  $html.="<td><img src='images/transparent.gif' width='$width_cell' height='1'></td>";  
   $html.="</tr>";  
   
   for($inner_loop=0;$inner_loop<8;$inner_loop++)
@@ -61,7 +68,7 @@ function draw_timetable($is_location) {
       $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
 
 
-      $html.="<td style='text-align:right;font-size:11px;'>";
+      $html.="<td style='text-align:right;font-size:$font_size;'>";
       $html.=sprintf("%1$02d:00&nbsp;",$curr_hour);
       $html.="</td>";
       
@@ -83,6 +90,10 @@ function location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
   global $id;
   global $start_date_param;
   global $size;
+  $font_size="14px";
+  if($size==2) { // Large
+    $font_size="20px";
+  }
 
   $background='background-color:#FFFCEB;';
   if($loc_arr[$curr_hour][1]==1) {
@@ -91,7 +102,7 @@ function location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
     $background='background-color:#FFEB44;';
   }    
   $html ="";
-  $html.="<td style='text-align:left;cursor:pointer;$background' ";
+  $html.="<td style='text-align:left;cursor:pointer;$background;font-size:$font_size;' ";
   $html.="onclick='location.href=\"events/manage_location.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";        
   $html.=$loc_arr[$curr_hour][0];
   $html.="&nbsp;";  
@@ -104,6 +115,10 @@ function event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
   global $id;
   global $start_date_param;
   global $size;  
+  $font_size="14px";
+  if($size==2) { // Large
+    $font_size="20px";
+  }  
   
   $background='background-color:#F0F7FD;';
   if($event_arr[$curr_hour][1]==1) {
@@ -112,7 +127,7 @@ function event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
     $background='background-color:#2FB3F8;';
   }    
   $html ="";
-  $html.="<td style='text-align:left;cursor:pointer;$background' ";
+  $html.="<td style='text-align:left;cursor:pointer;$background;font-size:$font_size;' ";
   $html.="onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";        
   $html.=$event_arr[$curr_hour][0];
   $html.="&nbsp;";
