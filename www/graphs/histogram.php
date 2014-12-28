@@ -159,7 +159,7 @@ if($type_day) {
   echo "</table>";
   echo "</div>";  
   
-  if($sensor_type==0 || $sensor_type==1) { // -------------------------- Humidity
+  if(isset($sensor_temp)) { // ----------------------------------------- Humidity
     echo "<div class='container'>";
     echo "<table border=0>";    
     echo "<tr>";
@@ -174,7 +174,7 @@ if($type_day) {
     echo "</table>";
     echo "</div>";  
   }
-  if($sensor_type==0 || $sensor_type==2) { // -------------------------- Dust  
+  if(isset($sensor_dust)) { // ----------------------------------------- Dust  
     echo "<div class='container'>";  
     echo "<table border=0>";      
     echo "<tr>";
@@ -190,7 +190,7 @@ if($type_day) {
     echo "</table>";
     echo "</div>";
   }
-  if($sensor_type==0 || $sensor_type==3) { // -------------------------- Sewer  
+  if(isset($sensor_sewer)) { // ---------------------------------------- Sewer  
     echo "<div class='container'>\n";  
     echo "<table border=0>\n";      
     echo "<tr>\n";
@@ -206,7 +206,7 @@ if($type_day) {
     echo "</table>\n";
     echo "</div>\n"; 
   }
-  if($sensor_type==0 || $sensor_type==4) { // -------------------------- Formaldehyde  
+  if(isset($sensor_hcho)) { // ----------------------------------------- Formaldehyde  
     echo "<div class='container'>";  
     echo "<table border=0>";      
     echo "<tr>";

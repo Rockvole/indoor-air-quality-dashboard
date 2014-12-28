@@ -65,6 +65,9 @@
     echo "<td align=center><input type='radio' name='hcho' $check_str value=$sensor></td>";
     echo "</tr>";
   }
+  echo "<tr>";
+  echo "<td style='font-size:110%;font-style:italic;'>e.g. 53ff70065069544807300687</td>"; 
+  echo "</tr>";  
   echo "</table>";
   echo "</td>";
   echo "</tr>";
