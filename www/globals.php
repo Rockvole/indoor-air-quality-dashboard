@@ -13,30 +13,28 @@
     $result=mysqli_query($conn,"SELECT * FROM groups WHERE id=$id");
     $row = mysqli_fetch_array($result);
     $user_timezone=$row['tz'];
-    $sensor_name=$row['name'];  
+    $group_name=$row['name'];  
+    $sensor_temp=$row['temp_hum'];
+    $sensor_dust=$row['dust'];  
     $sensor_sewer=$row['sewer'];  
-    $sensor_type_name=get_sensor_type_name($sensor_type);
+    $sensor_hcho=$row['hcho']; 
+    $sensor_count=0;
+    if(isset($sensor_temp)) $sensor_count++;
+    if(isset($sensor_dust)) $sensor_count++; 
+    if(isset($sensor_sewer)) $sensor_count++;
+    if(isset($sensor_hcho)) $sensor_count++;
+    $sensor_type_name=get_sensor_type_name();
   }
   
-  function get_sensor_type_name($sensor_type) {
-    switch($sensor_type) {
-      case 0:
-        return "Indoor Air Quality";
-	break;
-      case 1:
-        return "Temperature & Humidity";
-	break;
-      case 2:
-	return "Dust";
-	break;
-      case 3:
-        return "Sewer";
-	break;		
-      case 4:
-        return "Formaldehyde";
-	break;
-      default:
-        exit("Unknown sensor type: $sensor_type");
-    }    
+  function get_sensor_type_name() {
+    if($sensor_count==1) {
+      if(isset($sensor_temp)) return "Temperature & Humidity";
+      if(isset($sensor_dust)) return "Dust";
+      if(isset($sensor_sewer)) return "Sewer";
+      if(isset($sensor_hcho)) return "Formaldehyde";
+      exit("Unknown sensor type: $sensor_type");
+    } else {
+      return "Indoor Air Quality";
+    }
   }
 ?>

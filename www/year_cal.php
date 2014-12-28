@@ -66,7 +66,7 @@ if (mysqli_connect_errno()) {
   exit('Failed to connect to MySQL: ' . mysqli_connect_error());
 }
 if(strlen($year)<=0) {
-  $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE core_id=$id");
+  $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
   if(mysql_errno()) {
     exit('Error: '.mysqli_error($conn));
   }  
@@ -87,18 +87,24 @@ $currentYear = $calendar->year($year);
   echo "<table border=0>";
   echo "<td><h2>$title_name Calendar</h2></td>"; 
   echo "<td>";
-  echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$sensor_name</span>";
+  echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$group_name</span>";
   echo "</td>";
-  if($sensor_type==0) {
+  if(isset($sensor_temp)) {
     echo "<td>";
     echo "<input type='radio' onclick='change_sensor(1);' $default_sensor_1>Humidity";
     echo "</td>";
+  }
+  if(isset($sensor_dust)) {
     echo "<td>";
     echo "<input type='radio' onclick='change_sensor(2);' $default_sensor_2>Dust";
     echo "</td>";  
+  }
+  if(isset($sensor_sewer)) {
     echo "<td>";
     echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Sewer";
     echo "</td>";
+  }
+  if(isset($sensor_hcho)) {
     echo "<td>";
     echo "<input type='radio' onclick='change_sensor(4);' $default_sensor_4>Formaldehyde";
     echo "</td>";  
@@ -137,7 +143,7 @@ foreach($currentYear->months() as $month):
 	      $curr_date=Carbon::createFromDate($day->year()->int(),$day->month()->int(),$day->int()); 
 	      $curr_date_start_utc=$curr_date->startOfDay()->format('U');
 	      $curr_date_end_utc=$curr_date->endOfDay()->format('U');
-              $result=mysqli_query($conn,"SELECT MAX($sensor_column) as mx from readings WHERE core_id=$id and ts>=$curr_date_start_utc and ts<=$curr_date_end_utc");
+              $result=mysqli_query($conn,"SELECT MAX($sensor_column) as mx from readings WHERE group_id=$id and ts>=$curr_date_start_utc and ts<=$curr_date_end_utc");
 	      if(mysql_errno()) {
 	        exit('Error: '.mysqli_error($conn));
               }

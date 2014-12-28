@@ -94,7 +94,7 @@ if(!isset($row['ts'])) {
   $geo_row = mysqli_fetch_array($geo_result);  
   $geo_name=$geo_row['name'];
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
-  echo $sensor_name;  
+  echo $group_name;  
   if(strlen($geo_name)>0) 
     echo " - ".$geo_name;
   echo "</span>";

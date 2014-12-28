@@ -6,10 +6,10 @@ if (mysqli_connect_errno()) {
 } 
 
 $filename = $argv[1];
-$core_id = $argv[2];
-if(!is_string($filename) || !is_numeric($core_id)) {
+$group_id = $argv[2];
+if(!is_string($filename) || !is_numeric($group_id)) {
   exit("Command Line Syntax:\n".
-       "upload_csv.sh <file to upload> <core_id to upload to>\n");  
+       "upload_csv.sh <file to upload> <group_id to upload to>\n");  
 }
 
 $row = 1;
@@ -24,7 +24,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $type=0;
       } else if(strcmp($data[0],"name")==0) { // ----------------------- EVENTS
         $type=1;
-      } else if(strcmp($data[0],"location_name")==0) { // -------------- LOCATIONS
+      } else if(strcmp($data[0],"type")==0) { // ----------------------- LOCATIONS
         $type=2;
       } else {
         exit("File type not recognized");
@@ -39,17 +39,17 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       echo "\n";
       if($all_numeric && $type==99 && $num_fields==3) { // --------------------------- TEMPERATURE / HUMIDITY
 	$ts=$data[2];
-        $sql = "SELECT * from readings where core_id = $core_id and ts = $ts";
+        $sql = "SELECT * from readings where group_id = $group_id and ts = $ts";
         echo $sql."\n";	      
       
         $result=mysqli_query($conn,$sql);
         $num_rows=mysqli_num_rows($result);
         if($num_rows==0) {
-          $sql = "INSERT into readings (temperature, humidity, core_id, ts) VALUES ($data[0], $data[1], $core_id, $data[2])";
+          $sql = "INSERT into readings (temperature, humidity, group_id, ts) VALUES ($data[0], $data[1], $group_id, $data[2])";
           echo "NOT IMPLEMENTED: ".$sql."\n";	
         } else {
           $sql = "   UPDATE readings set temperature=$data[0], humidity=$data[1] ".
-	         "    WHERE core_id=$core_id and ts=$ts";
+	         "    WHERE group_id=$group_id and ts=$ts";
           if($result=mysqli_query($conn,$sql)) {
             echo "SUCCESS: ".$sql."\n";		  
           }
@@ -57,14 +57,14 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       }
       if($all_numeric && $type==0 && $num_fields==6) { // ---------------------------- INDOOR AIR QUALITY
 	$ts=$data[5];
-        $sql = "SELECT * from readings where core_id = $core_id and ts = $ts";
+        $sql = "SELECT * from readings where group_id = $group_id and ts = $ts";
         echo $sql."\n";	      
       
         $result=mysqli_query($conn,$sql);
         $num_rows=mysqli_num_rows($result);
         if($num_rows==0) {
-          $sql = "INSERT into readings (temperature, humidity, dust, sewer, hcho, core_id, ts) ".
-	         "VALUES ($data[0], $data[1], $data[2], $data[3], $data[4], $core_id, $ts)";
+          $sql = "INSERT into readings (temperature, humidity, dust, sewer, hcho, group_id, ts) ".
+	         "VALUES ($data[0], $data[1], $data[2], $data[3], $data[4], $group_id, $ts)";
           if($result=mysqli_query($conn,$sql)) {
             echo "SUCCESS: ".$sql."\n";		  
           }
@@ -74,7 +74,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       } 
       if(!$all_numeric && $type==1 && $num_fields==2) { // ---------------------------- EVENTS
 	$ts=$data[1];
-        $sql = "SELECT * from events where core_id = $core_id and ts = $ts";
+        $sql = "SELECT * from events where group_id = $group_id and ts = $ts";
         echo $sql."\n";	      
       
         $result=mysqli_query($conn,$sql);
@@ -82,8 +82,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         if($num_rows==0) {
 	  if(strlen($data[0])>0) $event_name="\"".$data[0]."\"";
 	    else $event_name="NULL";	  
-          $sql = "INSERT into events (name, core_id, ts) ".
-	         "VALUES ($event_name, $core_id, $ts)";
+          $sql = "INSERT into events (name, group_id, ts) ".
+	         "VALUES ($event_name, $group_id, $ts)";
           if($result=mysqli_query($conn,$sql)) {
             echo "SUCCESS: ".$sql."\n";		  
           }
@@ -93,16 +93,17 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       }
       if(!$all_numeric && $type==2 && $num_fields==3) { // ---------------------------- LOCATIONS
 	$ts=$data[2];
-        $sql = "SELECT * from locations WHERE type = 1 AND core_id = $core_id AND ts = $ts";
+        $sql = "SELECT * from locations WHERE group_id = $group_id AND ts = $ts";
         echo $sql."\n";	      
       
         $result=mysqli_query($conn,$sql);
         $num_rows=mysqli_num_rows($result);
         if($num_rows==0) {
 	  if(strlen($data[1])>0) {
+	    $sql_type=$data[0];
 	    $name="\"".$data[1]."\"";
-            $sql = "INSERT into locations (type, name, core_id, ts) ".
-	           "VALUES (1, $name, $core_id, $ts)";
+            $sql = "INSERT into locations (type, name, group_id, ts) ".
+	           "VALUES ($sql_type, $name, $group_id, $ts)";
             if($result=mysqli_query($conn,$sql)) {
               echo "SUCCESS: ".$sql."\n";		  
 	    }

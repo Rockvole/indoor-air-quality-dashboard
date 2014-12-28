@@ -34,9 +34,9 @@ if($type==1) { // ------------------------------------------------------ EVENTS
   }    
 } else if($type==2) { // ----------------------------------------------- LOCATIONS
   $result=mysqli_query($conn,"SELECT * from locations where core_id=$id $start_sql $end_sql order by ts");
-  echo "location_name,room_name,unix_time\n";
+  echo "type,name,unix_time\n";
   while($row = mysqli_fetch_array($result)) {
-    echo $row['location_name'].",".$row['room_name'].",".$row['ts']."\n";
+    echo $row['type'].",".$row['name'].",".$row['ts']."\n";
   }      
 } else { // ------------------------------------------------------------ READINGS
   $result=mysqli_query($conn,"SELECT * from readings where core_id=$id $start_sql $end_sql order by ts");

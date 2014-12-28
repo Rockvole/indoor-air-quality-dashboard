@@ -6,7 +6,7 @@ use Carbon\Carbon;
   $curr_date_start_utc=$curr_date->startOfDay()->format('U');
   $curr_date_end_utc=$curr_date->endOfDay()->format('U');
 
-  $result=mysqli_query($conn,"SELECT * from events WHERE core_id=$id and name is not null ".
+  $result=mysqli_query($conn,"SELECT * from events WHERE group_id=$id and name is not null ".
 			    "and ts>=$curr_date_start_utc and ts<$curr_date_end_utc order by ts");
   if(mysql_errno()) {
     exit('Error: '.mysqli_error($conn));
