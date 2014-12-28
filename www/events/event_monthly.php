@@ -64,7 +64,7 @@ echo "<table border=0 class='form_table'>\n";
 echo "<tr>\n";
 echo "<td colspan=2><h2>Choose Event</h2></td>\n";
 echo "<td>";
-echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$sensor_name</span>";
+echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$group_name</span>";
 echo "</td>";
 echo "<td align=right><img src='../images/home.png' onclick='back_button();' height=30 width=30 style='cursor:pointer;'></td>\n";
 echo "</tr>\n";

@@ -29,7 +29,7 @@ echo "<tr>";
 echo "<td colspan=2><h2>Download Csv</h2></td>";
 echo "</td><td width='400' style='vertical-align:top'>";
 echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
-echo $sensor_name;  
+echo $group_name;  
 echo "</span>";
 echo "</td>";
 echo "<td width=400 align=right><img src='../images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";

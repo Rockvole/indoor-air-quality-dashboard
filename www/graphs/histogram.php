@@ -127,7 +127,7 @@ if($type_day) {
   echo "<h2>Histogram of ".$title."</h2>\n";
   echo "</td><td style='vertical-align:top'>";
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
-  echo $sensor_name;  
+  echo $group_name;  
   echo "</span>";
   echo "</td>";
   echo "<td align=right>";
