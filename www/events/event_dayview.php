@@ -27,8 +27,8 @@ cell_colors($loc_arr);
 
 echo "<hr noshade style='background-color:purple;border: 1px solid purple;border-radius: 7px 7px 7px 7px;clear:left;'/>";
 
-echo draw_timetable(true);
 echo draw_timetable(false);
+echo draw_timetable(true);
 
 // --------------------------------------------------------------------- FUNCTIONS
 function draw_timetable($is_location) {
