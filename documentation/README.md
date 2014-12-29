@@ -1,7 +1,6 @@
-documentation
-=============
+# documentation
 
-Documentation discussing the issues with Components and Sensors
+Documentation discussing the issues with Sensors and Components
 
 <p align="center">
   <img src="iaq-mod-cropped-text.jpg"/>
@@ -9,7 +8,17 @@ Documentation discussing the issues with Components and Sensors
   Image of the Indoor Air Quality shield.
 </p>
 
-### Components
+## Sensors
+#### DHT22
+#### TGS-2602
+#### WSP-2110
+#### MICS-4514
 
-### Sensors
+## Components
+#### Pair Digital Grove Ports
+#### Pair Analog Grove Ports
+#### Switches
+#### RGB LED
+
+
 
