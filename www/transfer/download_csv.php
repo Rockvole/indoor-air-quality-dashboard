@@ -27,19 +27,19 @@ if(is_numeric($end_time)) {
 }
 
 if($type==1) { // ------------------------------------------------------ EVENTS
-  $result=mysqli_query($conn,"SELECT * from events where core_id=$id $start_sql $end_sql order by ts");
+  $result=mysqli_query($conn,"SELECT * from events where group_id=$id $start_sql $end_sql order by ts");
   echo "name,unix_time\n";
   while($row = mysqli_fetch_array($result)) {
     echo $row['name'].",".$row['ts']."\n";
   }    
 } else if($type==2) { // ----------------------------------------------- LOCATIONS
-  $result=mysqli_query($conn,"SELECT * from locations where core_id=$id $start_sql $end_sql order by ts");
+  $result=mysqli_query($conn,"SELECT * from locations where group_id=$id $start_sql $end_sql order by ts");
   echo "type,name,unix_time\n";
   while($row = mysqli_fetch_array($result)) {
     echo $row['type'].",".$row['name'].",".$row['ts']."\n";
   }      
 } else { // ------------------------------------------------------------ READINGS
-  $result=mysqli_query($conn,"SELECT * from readings where core_id=$id $start_sql $end_sql order by ts");
+  $result=mysqli_query($conn,"SELECT * from readings where group_id=$id $start_sql $end_sql order by ts");
   echo "temperature,humidity,dust,sewer,hcho,unix_time\n";
   while($row = mysqli_fetch_array($result)) {
     echo $row['temperature'].",".$row['humidity'].",".$row['dust'].",".$row['sewer'].",".$row['hcho'].",".$row['ts']."\n";

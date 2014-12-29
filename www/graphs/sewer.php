@@ -5,10 +5,12 @@ $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $
 $ts=Array();
 $sewer=Array();
 while($row = mysqli_fetch_array($result)) {
-	$ts_str=gmdate('r', $row['ts']);
-	//error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
-	$ts[]=$row['ts'];
-	$sewer[]=$row['sewer'];
+  $ts_str=gmdate('r', $row['ts']);
+  //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+  if(strlen($row['sewer'])>0) {
+    $ts[]=$row['ts'];
+    $sewer[]=$row['sewer'];
+  }
 }
 $sewer_plot=new LinePlot($sewer,$ts);
 $sewer_plot->SetColor('darkgoldenrod');

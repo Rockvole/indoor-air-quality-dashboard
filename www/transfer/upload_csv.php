@@ -19,19 +19,26 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $num_fields = count($data);
     if($row==1) {
       if(($num_fields==3) && (strcmp($data[0],"temperature")==0)) { // - TEMPERATURE / HUMIDITY
+	echo "Found Temperature / Humidity\n";
         $type=99;
       } else if(($num_fields==6) && (strcmp($data[0],"temperature")==0)) { // INDOOR AIR QUALITY
+	echo "Found Readings\n";	
         $type=0;
       } else if(strcmp($data[0],"name")==0) { // ----------------------- EVENTS
+	echo "Found Events\n";	
         $type=1;
       } else if(strcmp($data[0],"type")==0) { // ----------------------- LOCATIONS
+	echo "Found Locations\n";	
         $type=2;
       } else {
         exit("File type not recognized");
       }
     } else { // After the first row
+      echo "---------- Processing Row: $row\n";      
       for ($i=0; $i < $num_fields; $i++) {
-        if(!is_numeric($data[$i])) {
+	if(strlen($data[$i])<=0) {
+	  $data[$i]="NULL";
+        } else if(!is_numeric($data[$i])) {
 	  $all_numeric=false;
         }
         echo $data[$i].",";

@@ -4,11 +4,12 @@
   $user_date_format='l, F jS Y H:i';
   $db_name = 'iaq';
   
+  $conn=mysqli_connect("", "", "", $db_name);
+  if (mysqli_connect_errno()) {
+    exit('Failed to connect to MySQL: ' . mysqli_connect_error());
+  }  
+  
   if(isset($_GET["id"])) {
-    $conn=mysqli_connect("", "", "", $db_name);
-    if (mysqli_connect_errno()) {
-      exit('Failed to connect to MySQL: ' . mysqli_connect_error());
-    }
     $id = htmlspecialchars($_GET["id"]);  
     $sensor_type_name=get_sensor_type_name($id); 
   }

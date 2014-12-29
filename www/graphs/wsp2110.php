@@ -5,10 +5,12 @@ $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $
 $ts=Array();
 $hcho=Array();
 while($row = mysqli_fetch_array($result)) {
-	$ts_str=gmdate('r', $row['ts']);
-	//error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
-	$ts[]=$row['ts'];
-	$hcho[]=$row['hcho'];
+  $ts_str=gmdate('r', $row['ts']);
+  //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+  if(strlen($row['hcho'])>0) {
+    $ts[]=$row['ts'];
+    $hcho[]=$row['hcho'];
+  }
 }
 $hcho_plot=new LinePlot($hcho,$ts);
 $hcho_plot->SetColor('firebrick4');
