@@ -37,17 +37,22 @@ To improve the HT readings I suggest :
 #### TGS-2602 (Sewer Gas and VOCs)
 This sensor is where the idea for the indoor air quality monitor began. I am pleased with the performance of this sensor and it appears to detect the presence of VOCs from mould which is a common problem in households.
 #### WSP-2110 (Formaldehyde)
-Originally I planned to use the MQ-138 sensor in the IAQ shield. Unfortunately the prototype version of the shield did not have the ground connected to the  heater so I never obtained readings from this sensor. I later discovered the WSP2110 which is half the price and more sensitive. It correlates well with my handheld Formaldehyde detector.
+I propose to add the WSP-2110 to the board. Originally I planned to use the MQ-138 sensor in the IAQ shield. Unfortunately the prototype version of the shield did not have the ground connected to the  heater so I never obtained readings from this sensor. I later discovered the WSP-2110 which is half the price and more sensitive. It correlates well with my handheld Formaldehyde detector.
 #### MICS-4514 (Carbon Monoxide and Vehicle Exhaust Fumes)
 The original design called for the MICS-5525 sensor, but this was discontinued. The MICS-4514 looks like a good alternative and also detects Nitrogen Dioxide.
 ## Components
 #### Pair Digital Grove Ports
 The hardware designer used a pair of these ports which share the 2 data lines. This allows for either one sensor requiring 2 data lines, or 2 sensors each requiring 1 data line. This is a good solution which makes the best use of available data lines.
+
+<i>The Grove sockets used should be reviewed since they require trimming of the Grove Connectors before the Connectors will fit.</i>
 #### Pair Analog Grove Ports
 I propose adding a pair of analog Grove Ports in the same data line configuration as the existing digital ports. 
 
 If these ports are added I recommend placing them in the same location as the exisiting grove ports, and moving the digital grove ports to the other side of the board. I recommend placing these ports apart from each other since the grove sensors are supplied with short cables and it would be tricky to put 4 sensors on 1 side of the board.
 #### Switches
+I plan to put the IAQ shield into an enclosure, I could not find a simple way to press the switches once the shield is in an enclosure. Replacing the switches with right-angled long actuator switches would enable the buttons to stick out the top of the enclosure. 
+
+<a href="http://www.digikey.com/product-detail/en/TL1105SF160Q/EG1839-ND/13532">Right-Angled Long Actuator Switches</a>
 #### RGB LED
 
 
