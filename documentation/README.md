@@ -5,7 +5,7 @@ Documentation discussing the issues with Sensors and Components
 <p align="center">
   <img src="iaq-mod-cropped-text.jpg"/>
   <br/>
-  Image of the Indoor Air Quality shield - also showing proposed orientation inside enclosure.
+  Indoor Air Quality shield - also showing proposed orientation inside enclosure.
 </p>
 
 ## Sensors
@@ -22,16 +22,24 @@ The main issue with reading HT on the board is that the other components generat
 
 To improve the HT readings I suggest :
 
-1. Air Gap around temperature / humidity sensor - this is used in the <a href="https://acrobotic.com/smart-citizen">Smart Citizen Project</a>
+1. Air Gap around HT sensor - this is used in the <a href="https://acrobotic.com/smart-citizen">Smart Citizen Project</a>
 
 2. Raise HT sensor away from the PCB - this is used in V1 of the Smart Citizen Project and the <a href="http://shop.wickeddevice.com/resources/air-quality-egg/">Air Quality Egg</a>
 
 3. Switchable power to the sensors on the board - many of the sensors have heaters so the ability to programmatically turn off the heaters should reduce heat. The sensors would be turned back on a few minutes before taking readings.
 
-#### TGS-2602 (Sewer Gas and VOCs)
-#### WSP-2110 (Formaldehyde)
-#### MICS-4514 (Carbon Monoxide and Vehicle Exhaust Fumes)
+<p align="center">
+  <img src="DHT22-heat.png"/>
+  <br/>
+  Diagram showing DHT22 oriented away from the PCB
+</p>
 
+#### TGS-2602 (Sewer Gas and VOCs)
+This sensor is where the idea for the indoor air quality monitor began. I am pleased with the performance of this sensor and it appears to detect the presence of VOCs from mould which is a common problem in households.
+#### WSP-2110 (Formaldehyde)
+Originally I planned to use the MQ-138 sensor in the IAQ shield. Unfortunately the prototype version of the shield did not have the ground connected to the  heater so I never obtained readings from this sensor. I later discovered the WSP2110 which is half the price and more sensitive. It correlates well with my handheld Formaldehyde detector.
+#### MICS-4514 (Carbon Monoxide and Vehicle Exhaust Fumes)
+The original design called for the MICS-5525 sensor, but this was discontinued. The MICS-4514 looks like a good alternative and also detects Nitrogen Dioxide.
 ## Components
 #### Pair Digital Grove Ports
 #### Pair Analog Grove Ports
