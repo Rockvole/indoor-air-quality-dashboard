@@ -1,6 +1,6 @@
 # documentation
 
-Documentation discussing the issues with Sensors and Components
+Discussion of the Sensors and Components on the Indoor Air Quality Shield.
 
 <p align="center">
   <img src="iaq-mod-cropped-text.jpg"/>
@@ -24,7 +24,7 @@ To improve the HT readings I suggest :
 
 1. Air Gap around HT sensor - this is used in the <a href="https://acrobotic.com/smart-citizen">Smart Citizen Project</a>
 
-2. Raise HT sensor away from the PCB - this is used in V1 of the Smart Citizen Project and the <a href="http://shop.wickeddevice.com/resources/air-quality-egg/">Air Quality Egg</a>
+2. Raise HT sensor away from the PCB - this is used in V1 of the Smart Citizen Project and the <a href="http://shop.wickeddevice.com/resources/air-quality-egg/">Air Quality Egg</a>. Achieved with the 4-pin female header.
 
 3. Switchable power to the sensors on the board - many of the sensors have heaters so the ability to programmatically turn off the heaters should reduce heat. The sensors would be turned back on a few minutes before taking readings.
 
@@ -42,7 +42,11 @@ Originally I planned to use the MQ-138 sensor in the IAQ shield. Unfortunately t
 The original design called for the MICS-5525 sensor, but this was discontinued. The MICS-4514 looks like a good alternative and also detects Nitrogen Dioxide.
 ## Components
 #### Pair Digital Grove Ports
+The hardware designer used a pair of these ports which share the 2 data lines. This allows for either one sensor requiring 2 data lines, or 2 sensors each requiring 1 data line. This is a good solution which makes the best use of available data lines.
 #### Pair Analog Grove Ports
+I propose adding a pair of analog Grove Ports in the same data line configuration as the existing digital ports. 
+
+If these ports are added I recommend placing them in the same location as the exisiting grove ports, and moving the digital grove ports to the other side of the board. I recommend placing these ports apart from each other since the grove sensors are supplied with short cables and it would be tricky to put 4 sensors on 1 side of the board.
 #### Switches
 #### RGB LED
 
