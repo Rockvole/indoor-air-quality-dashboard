@@ -54,6 +54,8 @@ I plan to put the IAQ shield into an enclosure, I could not find a simple way to
 
 <a href="http://www.digikey.com/product-detail/en/TL1105SF160Q/EG1839-ND/13532">Right-Angled Long Actuator Switches</a>
 #### RGB LED
+The RGB LED could be seen if a transparent enclosure is used, but there is a smaller selection of these enclosures off-the-shelf. I recommend replacing the RGB LED with one which supports a right-angle light pipe - this would allow the LED to poke out the top of the enclosure.
 
+<a href="http://www.digikey.ca/Web%20Export/Supplier%20Content/Dialight_350/PDF/dialight-sg-surface-mount-leds.pdf?redirected=1">LEDs for Light-Pipes</a>
 
 
