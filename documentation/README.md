@@ -14,3 +14,6 @@ Discussion of the Sensors and Components on the Indoor Air Quality Shield.
 
 ## <a href="DATA_LINE_SHORTAGES.md">Data Line Shortages</a>
 
+<hr/>
+
+## <a href="health">Health</a>
