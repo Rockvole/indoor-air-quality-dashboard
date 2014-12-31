@@ -189,11 +189,11 @@ if($type_day) {
     echo "</table>";
     echo "</div>";
   }
-  if(isset($sensor_sewer)) { // ---------------------------------------- Sewer  
+  if(isset($sensor_sewer)) { // ---------------------------------------- VOC's / Sewer Gas
     echo "<div class='container'>\n";  
     echo "<table border=0>\n";      
     echo "<tr>\n";
-    echo "<td align=center colspan=2><h3 style='display:inline;'>Sewer Gas</h3>&nbsp;\n";
+    echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas</h3>&nbsp;\n";
     echo "</td>\n";   
     echo "</tr>\n";
     echo "<tr>\n";  

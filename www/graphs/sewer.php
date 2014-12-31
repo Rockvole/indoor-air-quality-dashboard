@@ -37,7 +37,7 @@ $graph->yaxis->SetWeight(2);
 $graph->yaxis->SetColor('darkgoldenrod');
 $graph->yaxis->SetFont(FF_ARIAL,FS_NORMAL,$font_size-3);
 $graph->yaxis->title->SetColor('darkgoldenrod');
-$graph->yaxis->title->Set('Sewer');
+$graph->yaxis->title->Set("VOC's / Sewer");
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);

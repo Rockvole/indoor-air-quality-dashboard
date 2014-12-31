@@ -185,14 +185,14 @@ if(!isset($row['ts'])) {
     echo "</table>";
     echo "</div>";   
   }
-  if(isset($sensor_sewer)) { // ---------------------------------------- Sewer
+  if(isset($sensor_sewer)) { // ---------------------------------------- VOC's / Sewer
     echo "<div class='container'>";  
     echo "<table border=0>";      
     echo "<tr>";
     if($size==2) {
       echo "<td></td>";
     }  
-    echo "<td align=center colspan=2><h3 style='display:inline;'>Sewer Gas</h3>&nbsp;";
+    echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/sewer.html\"' width=30 height=30 style='cursor:pointer;'>";    
     echo "</td>";   
     echo "</tr>";

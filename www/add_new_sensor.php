@@ -47,7 +47,7 @@
   echo "<td></td>";
   echo "<td colspan=3>";
   echo "<table border=0>";
-  echo "<tr><th>Core Id</th><th width=100>Temperature<br/>& Humidity</th><th width=100>Dust</th><th width=100>Sewer</th><th width=100>Formaldehyde</th></tr>";
+  echo "<tr><th>Core Id</th><th width=100>Temperature<br/>& Humidity</th><th width=100>Dust</th><th width=100>VOC's /<br/>Sewer</th><th width=100>Formaldehyde</th></tr>";
   for($sensor=0;$sensor<5;$sensor++) {
     $check_str="";
     echo "<tr>";

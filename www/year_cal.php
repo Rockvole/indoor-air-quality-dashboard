@@ -36,7 +36,7 @@ switch($sensor) {
     $min_red=3000;
     break;       
   case 3: // Sewer
-    $title_name="Sewer";
+    $title_name="VOC's / Sewer";
     $sensor_column="sewer";
     $default_sensor_3="checked='checked'";
     $min_orange=150;
@@ -101,7 +101,7 @@ $currentYear = $calendar->year($year);
   }
   if(isset($sensor_sewer)) {
     echo "<td>";
-    echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>Sewer";
+    echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>VOC's / Sewer";
     echo "</td>";
   }
   if(isset($sensor_hcho)) {

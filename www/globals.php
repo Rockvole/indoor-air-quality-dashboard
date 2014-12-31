@@ -44,7 +44,7 @@
     if($sensor_count==1) {
       if(isset($sensor_temp)) return "Temperature & Humidity";
       if(isset($sensor_dust)) return "Dust";
-      if(isset($sensor_sewer)) return "Sewer";
+      if(isset($sensor_sewer)) return "VOC's / Sewer";
       if(isset($sensor_hcho)) return "Formaldehyde";
       exit("Unknown sensor type: $sensor_type");
     } else {
