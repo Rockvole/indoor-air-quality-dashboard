@@ -21,6 +21,7 @@ LAMP based Indoor Air Quality Web Dashboard for the Spark Core
 |---------------|-----------------------------------------------------------------|
 |ancillary      |Installation and setup instructions                              |
 |dht22          |Spark Core firmware for dht22 temperature / humidity sensor      |
+|documentation  |Documentation regarding hardware recommendations for V2 of the indoor air quality shield      |
 |firmware       |Spark Core firmware for full suite of indoor air quality sensors |
 |hardware       |Details about the indoor air quality shield hardware             |
 |libs           |firmware libraries for the sensors                               |
