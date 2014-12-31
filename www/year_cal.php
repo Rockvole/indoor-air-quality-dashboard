@@ -32,22 +32,22 @@ switch($sensor) {
     $title_name="Dust";
     $sensor_column="dust";
     $default_sensor_2="checked='checked'";
-    $min_orange=1000;
-    $min_red=2000;
+    $min_orange=1500;
+    $min_red=3000;
     break;       
   case 3: // Sewer
     $title_name="Sewer";
     $sensor_column="sewer";
     $default_sensor_3="checked='checked'";
-    $min_orange=500;
-    $min_red=1000;
+    $min_orange=150;
+    $min_red=300;
     break;  
   case 4: // Formaldehyde
     $title_name="Formaldehyde";
     $sensor_column="hcho";
     $default_sensor_4="checked='checked'";
-    $min_orange=5;
-    $min_red=10;
+    $min_orange=100;
+    $min_red=200;
     break;   
   default: // Humidity
     $title_name="Humidity";
