@@ -37,7 +37,7 @@ echo "</tr>";
 echo "<tr><td></td><td></td><td></td><td></td><td></td><td></td>";
 echo "<th style='text-align:center;'>Last Reading</th><th style='text-align:center;'>Group Type</th></tr>";
 while($row = mysqli_fetch_array($result)) {
-  $result_geo=mysqli_query($conn,"SELECT name from geographical where group_id=".$row['id']);
+  $result_geo=mysqli_query($conn,"SELECT name from geographical where group_id=".$row['id']." order by ts desc");
   $row_geo=mysqli_fetch_array($result_geo);
   echo "<tr>\n";
   echo "<td style='text-align:right;'><div style='font-size:20px;font-weight:bold;'>".$row['name']."</div>";
