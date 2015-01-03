@@ -32,29 +32,29 @@ switch($sensor) {
     $title_name="Dust";
     $sensor_column="dust";
     $default_sensor_2="checked='checked'";
-    $min_orange=1500;
-    $min_red=3000;
+    $min_orange=$MAX_RANGE_GOOD_DUST;
+    $min_red=$MAX_RANGE_OK_DUST;
     break;       
   case 3: // Sewer
     $title_name="VOC's / Sewer";
     $sensor_column="sewer";
     $default_sensor_3="checked='checked'";
-    $min_orange=150;
-    $min_red=300;
+    $min_orange=$MAX_RANGE_GOOD_SEWER;
+    $min_red=$MAX_RANGE_OK_SEWER;
     break;  
   case 4: // Formaldehyde
     $title_name="Formaldehyde";
     $sensor_column="hcho";
     $default_sensor_4="checked='checked'";
-    $min_orange=100;
-    $min_red=200;
+    $min_orange=$MAX_RANGE_GOOD_HCHO;
+    $min_red=$MAX_RANGE_OK_HCHO;
     break;   
   default: // Humidity
     $title_name="Humidity";
     $sensor_column="humidity";
     $default_sensor_1="checked='checked'";
-    $min_orange=40;
-    $min_red=60;
+    $min_orange=$MAX_RANGE_GOOD_HUMIDITY;
+    $min_red=$MAX_RANGE_OK_HUMIDITY;
     break;    
 }
 

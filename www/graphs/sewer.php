@@ -23,7 +23,7 @@ $graph->SetBackgroundImage('background_h_33_66.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,450);
+$graph->SetScale('datlin',0,$MAX_RANGE_SEWER);
 $graph->Add($sewer_plot);
 
 $graph->ygrid->SetColor("azure3");

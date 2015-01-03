@@ -28,7 +28,7 @@ $graph->SetBackgroundImage('background_h_40_60.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,100);
+$graph->SetScale('datlin',0,$MAX_RANGE_HUMIDITY);
 $graph->Add($humidity_plot);
 $graph->SetY2Scale('lin',5,30);
 $graph->AddY2($temperature_plot);

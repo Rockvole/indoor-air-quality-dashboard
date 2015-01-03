@@ -1,5 +1,17 @@
 <?php
   define('TTF_DIR', '/usr/share/fonts/truetype/msttcorefonts/');
+  $MAX_RANGE_HUMIDITY      = 100;
+  $MAX_RANGE_OK_HUMIDITY   = 60;
+  $MAX_RANGE_GOOD_HUMIDITY = 40;  
+  $MAX_RANGE_DUST          = 4500;
+  $MAX_RANGE_OK_DUST       = 3000;
+  $MAX_RANGE_GOOD_DUST     = 1500;  
+  $MAX_RANGE_SEWER         = 600;
+  $MAX_RANGE_OK_SEWER      = 400;
+  $MAX_RANGE_GOOD_SEWER    = 200;
+  $MAX_RANGE_HCHO          = 300;
+  $MAX_RANGE_OK_HCHO       = 200;
+  $MAX_RANGE_GOOD_HCHO     = 100;
   $param_date_format='Y-m-d';
   $user_date_format='l, F jS Y H:i';
   $db_name = 'iaq';
