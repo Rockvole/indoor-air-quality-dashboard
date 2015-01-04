@@ -20,6 +20,7 @@ LAMP based Indoor Air Quality Web Dashboard for the Spark Core
 |Directory      |Description                                                      |
 |---------------|-----------------------------------------------------------------|
 |ancillary      |Installation and setup instructions                              |
+|breadboard     |Diagram to make your own IAQ Monitor on a breadboard             |
 |dht22          |Spark Core firmware for dht22 temperature / humidity sensor      |
 |documentation  |Documentation regarding hardware recommendations for V2 of the indoor air quality shield      |
 |firmware       |Spark Core firmware for full suite of indoor air quality sensors |
