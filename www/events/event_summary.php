@@ -3,6 +3,7 @@ require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
 $clear_location='clear:left';
 
+/*
 // --------------------------------------------------------------------- EVENTS
 $name_arr = array();
 $ts_arr = array();
@@ -53,7 +54,7 @@ if($arr_count>0) {
   echo "</table>";
   echo "</div>";
 }
-
+*/
 // --------------------------------------------------------------------- LOCATIONS
 $loc_arr=get_day_locations();
 $arr_count=count($loc_arr);

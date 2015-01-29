@@ -26,10 +26,8 @@ cell_colors($event_arr);
 $loc_arr = get_day_locations();
 cell_colors($loc_arr);
 
-echo "<hr noshade style='background-color:purple;border: 1px solid purple;border-radius: 7px 7px 7px 7px;clear:left;'/>";
-
+echo "<hr/>";
 echo draw_timetable(false);
-echo draw_timetable(true);
 
 // --------------------------------------------------------------------- FUNCTIONS
 function draw_timetable($is_location) {
@@ -38,9 +36,13 @@ function draw_timetable($is_location) {
   $width_time=40;
   $width_cell=150;
   $font_size="11px";
+  $num_cols=6;
+  $num_rows=4;
   if($size==2) { // Large
     $width_cell=320;
     $font_size="16px";
+    $num_cols=3;
+    $num_rows=8;
   }
   if($is_location) $title="Location";
     else $title="Events";
@@ -52,22 +54,23 @@ function draw_timetable($is_location) {
   $html.="<td colspan=6><h3 style='text-align:center;'>$title</h3></td>";
   $html.="</tr>";   
   $html.="<tr>";
-  $html.="<td><img src='images/transparent.gif' width='$width_time' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='$width_cell' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='$width_time' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='$width_cell' height='1'></td>";  
-  $html.="<td><img src='images/transparent.gif' width='$width_time' height='1'></td>";
-  $html.="<td><img src='images/transparent.gif' width='$width_cell' height='1'></td>";  
+  for($i=0;$i<$num_cols;$i++) {
+    $html.="<td><img src='images/transparent.gif' width='$width_time' height='1'></td>";
+    $html.="<td><img src='images/transparent.gif' width='$width_cell' height='1'></td>";
+  }
   $html.="</tr>";  
   
-  for($inner_loop=0;$inner_loop<8;$inner_loop++)
+  $hour=0;
+  for($inner_loop=0;$inner_loop<$num_rows;$inner_loop++)
   {
     $html.="<tr>";
-    for($column_loop=0;$column_loop<3;$column_loop++) 
+    for($column_loop=0;$column_loop<$num_cols;$column_loop++) 
     {
-      $curr_hour=$inner_loop+($column_loop*8);
+      $curr_hour=$hour;
+      if($size==2) { // Large
+	$curr_hour=$inner_loop+($column_loop*$num_rows);
+      }
       $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
-
 
       $html.="<td style='text-align:right;font-size:$font_size;'>";
       $html.=sprintf("%1$02d:00&nbsp;",$curr_hour);
@@ -76,7 +79,7 @@ function draw_timetable($is_location) {
       if($is_location)
         $html.=location_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
       else $html.=event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size);
-      
+      $hour++;
     } // $column_loop
     $html.="</tr>";
   } // $inner_loop

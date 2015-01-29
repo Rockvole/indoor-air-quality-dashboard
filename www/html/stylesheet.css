@@ -50,3 +50,9 @@ input {
 	font-size: 15px;
 	letter-spacing:1px;
 }
+hr {
+    background-color:purple;
+    border: 1px solid purple;
+    border-radius: 7px 7px 7px 7px;
+    clear:left;
+}
