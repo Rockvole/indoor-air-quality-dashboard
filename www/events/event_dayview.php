@@ -129,7 +129,7 @@ function event_cell($curr_hour,$curr_ts_utc,$start_date_param,$size) {
   }    
   $html ="";
   $html.="<td style='text-align:left;cursor:pointer;$background;font-size:$font_size;' ";
-  $html.="onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";        
+  $html.="onclick='location.href=\"events/manage_location.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";        
   $html.=$event_arr[$curr_hour][0];
   $html.="&nbsp;";
   //$html.="&nbsp;".$curr_hour."||ts=".$curr_ts_utc."||ce=".$curr_event."||ea=".$event_arr[$curr_hour][0]."||pe=".$prev_event."||in=".is_null($curr_event)."||sl=".strlen($curr_event);  
