@@ -267,6 +267,7 @@ if(!isset($row['ts'])) {
   echo "</form>";
   include 'events/event_dayview.php';    
   include 'events/event_summary.php';
+  include 'events/event_timeline.php';
 }
 mysqli_free_result($result);
 ?>

@@ -51,7 +51,7 @@ function draw_timetable($is_location) {
   $html.="<table border=0>";
   
   $html.="<tr>";
-  $html.="<td colspan=6><h3 style='text-align:center;'>$title</h3></td>";
+  $html.="<td colspan=8><h3>$title</h3></td>";
   $html.="</tr>";   
   $html.="<tr>";
   for($i=0;$i<$num_cols;$i++) {

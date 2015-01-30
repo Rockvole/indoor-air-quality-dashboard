@@ -7,6 +7,7 @@ function get_day_locations() {
   global $start_day_utc;
   global $end_day_utc;
   global $id;
+  global $location_id;
 
   // ------------------------------------------------------------------- Fill positions array
   $pos_arr = array_fill(0, 24, '');  
@@ -33,13 +34,15 @@ function get_day_locations() {
     $curr_hour = $event_ts->format('G');
     $room_name = $row['name'];
     $room_arr[$curr_hour] = $room_name;
+    if($curr_hour==0) $location_id=$row['id'];
   }
   // Check first hour is filled  
   if((strlen($room_arr[0])==0)) { // First hour has no room so retrieve last one
-    $room_result=mysqli_query($conn,"SELECT name from locations where ts=".
+    $room_result=mysqli_query($conn,"SELECT * from locations where ts=".
                                     "  (SELECT max(ts) from locations where ts<$start_day_utc AND type=1 AND group_id=$id) AND type=1 AND group_id=$id");
     $room_row = mysqli_fetch_array($room_result);
     $room_arr[0] = $room_row['name'];
+    $location_id = $room_row['id'];    
   }  
   
   // Copy rooms and positions into location array

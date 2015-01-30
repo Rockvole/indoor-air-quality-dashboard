@@ -66,6 +66,23 @@ UNIQUE(group_id, ts),
 PRIMARY KEY (id)
 );
 
+create table state_type (
+id INT NOT NULL AUTO_INCREMENT, 
+name VARCHAR(40), 
+state_on VARCHAR(20), 
+state_off VARCHAR(20),
+PRIMARY KEY (id)
+);
+
+create table state_changes (
+id INT NOT NULL AUTO_INCREMENT, 
+location_id INT NOT NULL,
+state_type_id INT NOT NULL,
+state INT NOT NULL,
+ts INT UNSIGNED NOT NULL,
+PRIMARY KEY (id)
+);
+
 # ---------------------------- change time zone to UTC
 # in /etc/mysql/my.cnf [mysqld] section
 # add :
