@@ -60,10 +60,11 @@ if($arr_count>0) {
 $loc_arr=get_day_locations();
 $arr_count=count($loc_arr);
 if($arr_count>0) {
-  echo "<div class='container' style='background-color:white;$clear_location' >";
+  echo "<div class='container' style='background-color:white;$clear_location;padding:0px;' >";
   echo "<h3 style='text-align:left;'>Location</h3>";
-  echo "<table border=0 style='border-spacing:6px;'>";
+  echo "<table border=0>";
   echo "<tr>";
+  echo "<td>&nbsp;</td>";
   for($i=0;$i<24;$i++) {
     if(!empty($loc_arr[$i][0])) {
       echo "<td style='padding:0px 30px 0px 0px;'>";
