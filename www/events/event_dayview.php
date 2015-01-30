@@ -1,7 +1,6 @@
 <?php
 require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
-include 'event_functions.php';
 
 $loc_back_state=0;
 $color_toggle=0;
@@ -25,8 +24,6 @@ cell_colors($event_arr);
 
 $loc_arr = get_day_locations();
 cell_colors($loc_arr);
-
-echo "<hr/>";
 echo draw_timetable(false);
 
 // --------------------------------------------------------------------- FUNCTIONS
@@ -47,7 +44,7 @@ function draw_timetable($is_location) {
   if($is_location) $title="Location";
     else $title="Events";
   $html="";
-  $html.="<div class='container'>";  
+  $html.="<div class='container' style='padding:0px 0px 10px 0px;'>";  
   $html.="<table border=0>";
   
   $html.="<tr>";

@@ -265,8 +265,9 @@ if(!isset($row['ts'])) {
   echo "<input type='hidden' name='size' value='$size'>";
   echo "<input type='hidden' name='sensor' value=''>";
   echo "</form>";
+  echo "<hr/>";  
+  include 'events/event_summary.php';  
   include 'events/event_dayview.php';    
-  include 'events/event_summary.php';
   include 'events/event_timeline.php';
 }
 mysqli_free_result($result);

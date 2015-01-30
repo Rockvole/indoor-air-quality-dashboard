@@ -116,7 +116,7 @@ echo "</tr>";
 
 echo "</table>";
 // ------------------------------------------------------------------- Form
-echo "<form action='add_state.php' method='get' name='state'>";
+echo "<form action='manage_states.php' method='get' name='state'>";
 echo "<input type='hidden' name='id' value='$id'>";
 echo "<input type='hidden' name='location_id' value='$location_id'>";
 echo "<input type='hidden' name='name' value=''>";

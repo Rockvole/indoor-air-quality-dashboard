@@ -1,6 +1,7 @@
 <?php
 require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
+include 'event_functions.php';
 $clear_location='clear:left';
 
 /*
