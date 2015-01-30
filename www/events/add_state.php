@@ -4,10 +4,16 @@
     <link rel="stylesheet" type="text/css" href="../html/stylesheet.css">
   </head>
   <script> 
-    function add_state() {
-      document.state.name.value=document.getElementById('name').value;	
-      document.state.state_on.value=document.getElementById('state_on').value;
-      document.state.state_off.value=document.getElementById('state_off').value;
+    function add_state(name,state_on,state_off) {
+      if(name==undefined)
+        document.state.name.value=document.getElementById('name').value;	
+      else document.state.name.value=name;
+      if(state_on==undefined)
+        document.state.state_on.value=document.getElementById('state_on').value;
+      else document.state.state_on.value=state_on;
+      if(state_off==undefined)
+        document.state.state_off.value=document.getElementById('state_off').value;
+      else document.state.state_off.value=state_off;
       document.state.op.value=1;
       document.state.submit();      
     }         
@@ -37,6 +43,10 @@ $state_on = htmlspecialchars($_GET["state_on"]);
 $state_off = htmlspecialchars($_GET["state_off"]);
 $start_date_param = htmlspecialchars($_GET["start_date"]);
 $size_param = htmlspecialchars($_GET["size"]);
+if(strlen($op)>0) {
+  if(strlen($state_on)<=0) exit("Must specify On State parameter");
+  if(strlen($state_off)<=0) exit("Must specify Off State parameter");
+}
 
 if(strlen($op)>0) {
   $sql = "INSERT into state_type (location_id, name, state_on, state_off) VALUES ($location_id, '$name', '$state_on', '$state_off')";
@@ -83,7 +93,28 @@ echo "</td>";
 echo "</tr>";
 
 echo "</table>";
+// --------------------------------------------------------------------- COMMON HTML
+echo "<hr/>";
+echo "<table border=0>";
+echo "<tr>";
+echo "<td colspan=4><h2>Common States</h2></td>";
+echo "</tr>";
+echo "<tr>";
+echo "<th style='text-align:left;width:100px;'>Name</th>";
+echo "<th style='text-align:left;width:100px;'>On State</th>";
+echo "<th style='text-align:left;width:100px;'>Off State</th>";
+echo "<tr>";
+echo "<td>Window</td><td>Open</td><td>Closed</td><td><input type='button' value='Add State' onclick='add_state(\"Window\",\"Open\",\"Closed\");'></td>";
+echo "</tr><tr>";
+echo "<td>Door</td><td>Open</td><td>Closed</td><td><input type='button' value='Add State' onclick='add_state(\"Door\",\"Open\",\"Closed\");'></td>";
+echo "</tr><tr>";
+echo "<td>Fan</td><td>On</td><td>Off</td><td><input type='button' value='Add State' onclick='add_state(\"Fan\",\"On\",\"Off\");'></td>";
+echo "</tr><tr>";
+echo "<td>Dehumidifier</td><td>On</td><td>Off</td><td><input type='button' value='Add State' onclick='add_state(\"Dehumidifier\",\"On\",\"Off\");'></td>";
+echo "</tr>";
+echo "</tr>";
 
+echo "</table>";
 // ------------------------------------------------------------------- Form
 echo "<form action='add_state.php' method='get' name='state'>";
 echo "<input type='hidden' name='id' value='$id'>";

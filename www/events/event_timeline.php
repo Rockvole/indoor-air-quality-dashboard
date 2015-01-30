@@ -21,31 +21,40 @@ while($row = mysqli_fetch_array($result)) {
 
 echo "<h3 style='clear:left;'>States</h3>";
 echo "<table border=0 width=100%>";
-echo "<tr>";
-for($i=0;$i<24;$i++) {
-  $background='';
-  if(isset($ts_arr[$i])) {
-    if(!isset($name_arr[$i])) {
-      $background_state=0;
-    } else if($background_state==1) {
-      $background_state=2;
-    } else {
-      $background_state=1;
-    }
-  }
-  if($background_state==1) {
-    $background='background-color:#CC6666;';
-  } else if($background_state==2) {
-    $background='background-color:#3399CC;';
-  }  
-  $curr_ts_utc=$date->copy()->startOfDay()->addHours($i)->format('U');
-  echo "<td style='text-align:center;font-size:11px;cursor:pointer;border:1px solid purple;$background' ";
-  echo "onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";
-  echo sprintf("%1$02d",$i);
-  echo "</td>";
-  
-}
-echo "</tr>";
+echo get_event_row();
 echo "</table>\n"; 
 echo "<img src='images/add.png' onclick='location.href=\"events/add_state.php?id=$id&location_id=$location_id&start_date=".$start_date_param."&size=".$size."\"' height=30 width=30 style='cursor:pointer;'>";
+
+// --------------------------------------------------------------------- FUNCTIONS
+function get_event_row() {
+  global $date;
+  
+  $html="";
+  $html.="<tr>";
+  for($i=0;$i<24;$i++) {
+    $background='';
+    if(isset($ts_arr[$i])) {
+      if(!isset($name_arr[$i])) {
+        $background_state=0;
+      } else if($background_state==1) {
+        $background_state=2;
+      } else {
+        $background_state=1;
+      }
+    }
+    if($background_state==1) {
+      $background='background-color:#CC6666;';
+    } else if($background_state==2) {
+      $background='background-color:#3399CC;';
+    }  
+    $curr_ts_utc=$date->copy()->startOfDay()->addHours($i)->format('U');
+    $html.="<td style='text-align:center;font-size:11px;cursor:pointer;border:1px solid purple;$background' ";
+    $html.="onclick='location.href=\"events/manage_event.php?id=$id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"'>";
+    $html.=sprintf("%1$02d",$i);
+    $html.="</td>";
+  
+  }
+  $html.="</tr>";
+  return $html;
+}
 ?>
