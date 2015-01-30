@@ -47,5 +47,5 @@ for($i=0;$i<24;$i++) {
 }
 echo "</tr>";
 echo "</table>\n"; 
-echo "<img src='images/add.png' onclick='location.href=\"events/add_state.php?id=$id&location_id=$location_id&ts=$curr_ts_utc"."&start_date=".$start_date_param."&size=".$size."\"' height=30 width=30 style='cursor:pointer;'>";
+echo "<img src='images/add.png' onclick='location.href=\"events/add_state.php?id=$id&location_id=$location_id&start_date=".$start_date_param."&size=".$size."\"' height=30 width=30 style='cursor:pointer;'>";
 ?>
