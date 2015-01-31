@@ -69,9 +69,9 @@ PRIMARY KEY (id)
 create table state_type (
 id INT NOT NULL AUTO_INCREMENT, 
 location_id INT NOT NULL,
-name VARCHAR(40), 
-state_on VARCHAR(20), 
-state_off VARCHAR(20),
+name VARCHAR(40) NOT NULL, 
+state_on VARCHAR(20) NOT NULL, 
+state_off VARCHAR(20) NOT NULL,
 UNIQUE(location_id, name),
 PRIMARY KEY (id)
 );
