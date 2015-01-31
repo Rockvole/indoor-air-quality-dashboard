@@ -15,8 +15,12 @@ while($row = mysqli_fetch_array($result)) {
   echo get_event_row($row['id'],$row['name'],$hour_arr);  
 }
 echo "</table>\n"; 
-echo "<img src='images/add.png' onclick='location.href=\"events/manage_states.php?id=$id&location_id=$location_id&start_date=".$start_date_param."&size=".$size."\"' height=30 width=30 style='cursor:pointer;'>";
-
+if(strlen($location_id)<=0) {
+  echo "<i>Cannot add a State without a valid room location for the whole day</i><br/>";
+  echo "<i>Click on Events 00:00 to set a room.</i>";
+} else {
+  echo "<img src='images/add.png' onclick='location.href=\"events/manage_states.php?id=$id&location_id=$location_id&start_date=".$start_date_param."&size=".$size."\"' height=30 width=30 style='cursor:pointer;'>";
+}
 // --------------------------------------------------------------------- FUNCTIONS
 function get_state_changes($state_type_id) {
   global $conn;

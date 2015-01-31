@@ -81,7 +81,7 @@ echo "</tr>";
 echo "</table>";
 
 echo "<div class='container'>";
-echo "<table border=0 class='form_table'>";
+echo "<table border=0 class='form_table' style='padding:0px 30px 0px 0px;'>";
 echo "<tr>";
 echo "<td colspan=4><h2>Add State</h2></td>";
 echo "</tr>";
@@ -105,7 +105,7 @@ echo "<th align=right style='vertical-align:top'>Off State:</th>";
 echo "<td style='vertical-align:top'><input type='text' name='state_off' maxlength=20 size=20 id='state_off' value='$state_off'></td>";
 echo "<td style='font-size:110%;font-style:italic;'>e.g. Closed<br/>";
 echo "<td style='font-size:110%;font-style:italic;'>e.g. Off<br/>";
-echo "</tr>";  
+echo "</tr>";
 
 echo "<tr><td>&nbsp;</td>";
 
@@ -113,6 +113,11 @@ echo "<td colspan=2>";
 echo "<input type='button' value='Add State' onclick='alter_state();'>";
 echo "</td>";
 echo "</tr>";
+
+echo "<tr>";
+echo "<th align=right style='vertical-align:top'></th>";
+echo "<th><b style='color:mediumorchid'>Note: The state applies to the Room location at the beginning of the day.</b></th>";
+echo "</tr>"; 
 
 echo "</table>";
 echo "</div>";
