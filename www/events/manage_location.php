@@ -149,7 +149,8 @@ if($finish_event) {
 } else {
   echo "<th align=right style='vertical-align:top'>Name:</th>";
   echo "<td style='vertical-align:top'><input type='text' name='event_name' maxlength=40 size=40 id='event_name' value='$event_name'></td>";
-  echo "<td style='font-size:110%;font-style:italic;'>e.g. Sealed Bathroom door<br/>";
+  echo "<td style='font-size:110%;font-style:italic;'>e.g. Vacuum<br/>";
+  echo "e.g. Sealed Bathroom door<br/>";
   echo "e.g. Sealed sink with tape";
   echo "</td>";    
 }

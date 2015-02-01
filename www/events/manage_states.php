@@ -109,14 +109,14 @@ echo "</tr>";
 
 echo "<tr><td>&nbsp;</td>";
 
-echo "<td colspan=2>";
+echo "<td>";
 echo "<input type='button' value='Add State' onclick='alter_state();'>";
 echo "</td>";
 echo "</tr>";
 
 echo "<tr>";
 echo "<th align=right style='vertical-align:top'></th>";
-echo "<th><b style='color:mediumorchid'>Note: The state applies to the Room location at the beginning of the day.</b></th>";
+echo "<th colspan=3><b style='color:mediumorchid'>Note: The state applies to the Room location at the beginning of the day.</b></th>";
 echo "</tr>"; 
 
 echo "</table>";
