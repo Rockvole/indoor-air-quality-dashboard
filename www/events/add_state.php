@@ -29,9 +29,14 @@ if(mysqli_num_rows($result)>0) {
   header('Location: ' . $url, true, 302); 
   die();
 } else {
+  $sql = "SELECT * FROM state_changes where ts=".
+	"         (SELECT max(ts) FROM state_changes".
+	"                        WHERE location_id=$location_id".
+	"                          AND state_type_id=$state_type_id".
+	"                          AND ts<$ts)".
+	"          AND location_id=$location_id".
+	"          AND state_type_id=$state_type_id";
   $curr_state=1;
-  $sql = "SELECT * FROM state_changes where id=".
-	"         (SELECT id from state_changes where location_id=$location_id and state_type_id=$state_type_id AND ts<$ts)";	
   $result=mysqli_query($conn,$sql);
   if(mysqli_num_rows($result)>0) { // We found a previous entry
     $row = mysqli_fetch_array($result);  
