@@ -31,7 +31,7 @@
 ReadingSync rs (INTERVAL_MINS, PRE_HEAT_SECS, Time.now());
 SimpleEeprom flash;
 
-struct reading {
+struct reading_struct {
     int    reading_time = 0;    
     double temperature = 0;
     double humidity = 0;
@@ -40,8 +40,8 @@ struct reading {
     float  dust_concentration = 0;    
 };
 
-std::queue<reading> q;
-reading sample;
+std::queue<reading_struct> q;
+reading_struct reading;
 union float2bytes {float f; char b[sizeof(float)]; };
 int unix_time = 0;
 int delay_ms = 0;
@@ -49,6 +49,7 @@ int calibration_count=0;
 int stage=0;
 bool acquired_ip=true;
 int uptime_start=0;
+float temp_float;
 
 // --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
@@ -84,8 +85,12 @@ char ip_display[16];
 
 void setup()
 {
-  wsp2110_Ro = flash.readFloat(0);
-  tgs2602_Ro = flash.readFloat(4);
+  temp_float = flash.readFloat(0);
+  if(temp_float==temp_float) // Valid Number
+    wsp2110_Ro = temp_float;
+  temp_float = flash.readFloat(4);
+  if(temp_float==temp_float) // Valid Number
+    tgs2602_Ro = flash.readFloat(4);
   
   pinMode(CALIBRATE_BTN, INPUT_PULLUP);
   pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
@@ -100,8 +105,8 @@ void setup()
   
   // Register Spark variables
   Spark.variable("ip", &ip_display, STRING);  
-  Spark.variable("temperature", &sample.temperature, DOUBLE);
-  Spark.variable("humidity", &sample.humidity, DOUBLE);
+  Spark.variable("temperature", &reading.temperature, DOUBLE);
+  Spark.variable("humidity", &reading.humidity, DOUBLE);
   Spark.variable("unix_time", &unix_time, INT);
   Spark.variable("stage", &stage, INT);
   //Spark.variable("tgs2602", &tgs2602_sample_avg, INT);
@@ -111,8 +116,11 @@ void setup()
   sprintf(wsp2110_display,"%.3f",wsp2110_Ro);
   Spark.variable("wsp2110", &wsp2110_display, STRING);  
   Spark.variable("url", &url, STRING);
-
-  //Serial.begin(9600);
+  
+  // Register Spark Functions
+  Spark.function("calibrate", calibrate);
+  Spark.function("sample", sample);
+  Serial.begin(9600);
 }
 
 void dht_wrapper() {
@@ -136,7 +144,7 @@ void loop()
           tgs2602.startSampling(current_ms);
           wsp2110.startSampling(current_ms);
           dust.startSampling(current_ms);
-          sample.reading_time = unix_time;
+          reading.reading_time = unix_time;
         }
         if(!tgs2602.isSamplingComplete()) {
           tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
@@ -146,13 +154,13 @@ void loop()
         }
         if(!dust.isSamplingComplete()) {
           unsigned long duration = pulseIn(DUST_PIN, LOW);
-          sample.dust_concentration = dust.getConcentration(duration, current_ms);          
+          reading.dust_concentration = dust.getConcentration(duration, current_ms);          
         }
         if(wsp2110.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
-          sample.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
-          sample.wsp2110_hcho = wsp2110.getFormaldehydeGasPercentage(wsp2110_sample_avg, wsp2110_Ro);
+          reading.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
+          reading.wsp2110_hcho = wsp2110.getFormaldehydeGasPercentage(wsp2110_sample_avg, wsp2110_Ro);
           rs.setSamplingComplete();
-          q.push(sample);
+          q.push(reading);
         }
         delay_ms=0;
       }
@@ -160,20 +168,20 @@ void loop()
     case rs.SEND_READING:
       {
         if(resolveHost()) {
-          reading curr_sample;
+          reading_struct curr_reading;
           bool reading_sent;
           do {
             reading_sent=false;
-            curr_sample = q.front();
+            curr_reading = q.front();
             sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=%i&sewer=%i&dust=%.2f&core_id=%s&uptime=%i", 
-                         curr_sample.reading_time,  
-                         curr_sample.temperature, curr_sample.humidity, curr_sample.wsp2110_hcho, 
-                         curr_sample.tgs2602_sewer, curr_sample.dust_concentration,
+                         curr_reading.reading_time,  
+                         curr_reading.temperature, curr_reading.humidity, curr_reading.wsp2110_hcho, 
+                         curr_reading.tgs2602_sewer, curr_reading.dust_concentration,
                          Spark.deviceID().c_str(), (unix_time-uptime_start));  
             request.path = url;
             http.get(request, response);
             char read_time_chars[12];
-            sprintf(read_time_chars, "%d", curr_sample.reading_time);
+            sprintf(read_time_chars, "%d", curr_reading.reading_time);
             String read_time_str(read_time_chars);
             if(read_time_str.equals(response.body)) {
               q.pop();
@@ -225,10 +233,10 @@ void loop()
   }  
 
   if(digitalRead(CALIBRATE_BTN)==LOW) {
-    rs.startCalibrating(unix_time);
+    calibrate(NULL);
   }
   if(digitalRead(USER_SAMPLING_BTN)==LOW) {
-    rs.startUserSampling(unix_time);
+    sample(NULL);
   }  
 
   rgbLed.setLedColor(delay_ms, 100, 3000, color);  
@@ -239,8 +247,8 @@ void read_dht22() {
   DHT.acquire();
   while (DHT.acquiring());
     
-  sample.humidity = DHT.getHumidity();
-  sample.temperature = DHT.getCelsius(); 
+  reading.humidity = DHT.getHumidity();
+  reading.temperature = DHT.getCelsius(); 
 }
 
 bool resolveHost() {
@@ -260,3 +268,12 @@ void beep(int delay_ms) {
     analogWrite(BUZZER_PIN, 0);
 }
 
+int calibrate(String command) {
+  rs.startCalibrating(unix_time);
+  return 1;
+}
+
+int sample(String command) {
+  rs.startUserSampling(unix_time);
+  return 1;
+}
