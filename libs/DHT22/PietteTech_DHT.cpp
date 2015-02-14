@@ -61,30 +61,33 @@ PietteTech_DHT::PietteTech_DHT(uint8_t sigPin, uint8_t dht_type, void (*callback
 
 void PietteTech_DHT::begin(uint8_t sigPin, uint8_t dht_type, void (*callback_wrapper) ()) {
     _sigPin = sigPin;
-    _type = dht_type;
-    isrCallback_wrapper = callback_wrapper;
+    if(_sigPin!=NOT_CONNECTED) {      
+      _type = dht_type;
+      isrCallback_wrapper = callback_wrapper;
 
-    pinMode(sigPin, OUTPUT);
-    digitalWrite(sigPin, HIGH);
-    _lastreadtime = 0;
-    _state = STOPPED;
-    _status = DHTLIB_ERROR_NOTSTARTED;
+      pinMode(sigPin, OUTPUT);
+      digitalWrite(sigPin, HIGH);
+      _lastreadtime = 0;
+      _state = STOPPED;
+      _status = DHTLIB_ERROR_NOTSTARTED;
+    }
 }
 
 int PietteTech_DHT::acquire() {
-    // Check if sensor was read less than two seconds ago and return early
-    // to use last reading
-    unsigned long currenttime = millis();
-    if (currenttime < _lastreadtime) {
+    if(_sigPin!=NOT_CONNECTED) {
+      // Check if sensor was read less than two seconds ago and return early
+      // to use last reading
+      unsigned long currenttime = millis();
+      if (currenttime < _lastreadtime) {
         // there was a rollover
         _lastreadtime = 0;
-    }
-    if (!_firstreading && ((currenttime - _lastreadtime) < 2000 )) {
+      }
+      if (!_firstreading && ((currenttime - _lastreadtime) < 2000 )) {
         // return last correct measurement, (this read time - last read time) < device limit
         return DHTLIB_ACQUIRED;
-    }
+      }
     
-    if (_state == STOPPED || _state == ACQUIRED) {
+      if (_state == STOPPED || _state == ACQUIRED) {
         /*
          * Setup the initial state machine
          */
@@ -129,8 +132,10 @@ int PietteTech_DHT::acquire() {
         attachInterrupt(_sigPin, isrCallback_wrapper, FALLING);
 
         return DHTLIB_ACQUIRING;
-    } else
+      } else
         return DHTLIB_ERROR_ACQUIRING;
+  }
+  _state=STOPPED;
 }
 
 int PietteTech_DHT::acquireAndWait() {

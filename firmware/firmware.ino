@@ -24,7 +24,7 @@
 #define BLUE_LED                A7
 
 #define DUST_PIN                D1
-#define DHT_PIN                 D0
+#define DHT_PIN                 D2 // use NOT_CONNECTED if needed
 #define USER_SAMPLING_BTN       D3
 #define CALIBRATE_BTN           D4
 
@@ -96,7 +96,6 @@ void setup()
   pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
   pinMode(BUZZER_PIN, OUTPUT); 
   pinMode(DUST_PIN, INPUT);
-  pinMode(DHT_PIN, INPUT_PULLUP);   
 
   request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
   //request.ip = {192, 168, 1, 130}; // davidlub
@@ -245,12 +244,8 @@ void loop()
 
 void read_dht22() {
   DHT.acquire();
-  int cnt=0;   
-  while (DHT.acquiring()) {
-    if(cnt>100) break;
-    delay(30);
-    cnt++;
-  }
+  while (DHT.acquiring());
+    
   reading.humidity = DHT.getHumidity();
   reading.temperature = DHT.getCelsius(); 
 }

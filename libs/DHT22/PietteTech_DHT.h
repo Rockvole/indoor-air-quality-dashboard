@@ -29,6 +29,8 @@
 
 #define DHTLIB_VERSION "0.2"
 
+#define NOT_CONNECTED                       255
+
 // device types
 #define DHT11                               11
 #define DHT21                               21
