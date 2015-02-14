@@ -245,8 +245,12 @@ void loop()
 
 void read_dht22() {
   DHT.acquire();
-  while (DHT.acquiring());
-    
+  int cnt=0;   
+  while (DHT.acquiring()) {
+    if(cnt>100) break;
+    delay(30);
+    cnt++;
+  }
   reading.humidity = DHT.getHumidity();
   reading.temperature = DHT.getCelsius(); 
 }
