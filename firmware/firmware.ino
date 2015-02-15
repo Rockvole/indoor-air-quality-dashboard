@@ -35,14 +35,13 @@ struct reading_struct {
     int    reading_time = 0;    
     double temperature = 0;
     double humidity = 0;
+    int    wsp2110_hcho = 0;    
     int    tgs2602_sewer = 0; 
-    int    wsp2110_hcho = 0;
     float  dust_concentration = 0;    
 };
 
 std::queue<reading_struct> q;
 reading_struct reading;
-union float2bytes {float f; char b[sizeof(float)]; };
 int unix_time = 0;
 int delay_ms = 0;
 int calibration_count=0;
@@ -63,17 +62,17 @@ PietteTech_DHT DHT(DHT_PIN, DHT22, dht_wrapper);
 #define DUST_SAMPLE_INTERVAL_MS 30000
 ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
 
-// --------------------------------------------------------------------- TGS2602
-TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
-float tgs2602_Ro = 10152.715;
-int   tgs2602_sample_avg = 0;
-char  tgs2602_display[10];
-
 // --------------------------------------------------------------------- WSP2110
 WSP2110 wsp2110(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
 float wsp2110_Ro = 97073.305;
 int   wsp2110_sample_avg = 0;
-char  wsp2110_display[10];
+char  wsp2110_display[20];
+
+// --------------------------------------------------------------------- TGS2602
+TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
+float tgs2602_Ro = 10152.715;
+int   tgs2602_sample_avg = 0;
+char  tgs2602_display[20];
 
 // --------------------------------------------------------------------- HTTP
 HttpClient http;
@@ -90,8 +89,9 @@ void setup()
     wsp2110_Ro = temp_float;
   temp_float = flash.readFloat(4);
   if(temp_float==temp_float) // Valid Number
-    tgs2602_Ro = flash.readFloat(4);
+    tgs2602_Ro = temp_float;
   
+  pinMode(D7, OUTPUT);
   pinMode(CALIBRATE_BTN, INPUT_PULLUP);
   pinMode(USER_SAMPLING_BTN, INPUT_PULLUP);
   pinMode(BUZZER_PIN, OUTPUT); 
@@ -108,18 +108,18 @@ void setup()
   Spark.variable("humidity", &reading.humidity, DOUBLE);
   Spark.variable("unix_time", &unix_time, INT);
   Spark.variable("stage", &stage, INT);
-  //Spark.variable("tgs2602", &tgs2602_sample_avg, INT);
-  sprintf(tgs2602_display,"%.3f",tgs2602_Ro);
-  Spark.variable("tgs2602", &tgs2602_display, STRING);  
-  //Spark.variable("mq131", &mq131_sample_avg, INT);
+  Spark.variable("url", &url, STRING);  
+  
   sprintf(wsp2110_display,"%.3f",wsp2110_Ro);
   Spark.variable("wsp2110", &wsp2110_display, STRING);  
-  Spark.variable("url", &url, STRING);
+  //Spark.variable("tgs2602", &tgs2602_sample_avg, INT);
+  sprintf(tgs2602_display,"%.3f",tgs2602_Ro);
+  Spark.variable("tgs2602", &tgs2602_display, STRING);    
   
   // Register Spark Functions
   Spark.function("calibrate", calibrate);
   Spark.function("sample", sample);
-  Serial.begin(9600);
+  //Serial.begin(9600);
 }
 
 void dht_wrapper() {
@@ -140,24 +140,24 @@ void loop()
       {
         unsigned long current_ms = millis();  
         if(rs.isFirstSamplingLoop()) {  
+          wsp2110.startSampling(current_ms);            
           tgs2602.startSampling(current_ms);
-          wsp2110.startSampling(current_ms);
           dust.startSampling(current_ms);
           reading.reading_time = unix_time;
         }
+        if(!wsp2110.isSamplingComplete()) {
+          wsp2110_sample_avg = wsp2110.getResistanceCalculationAverage(analogRead(SENSOR_WSP2110), current_ms);
+        }        
         if(!tgs2602.isSamplingComplete()) {
           tgs2602_sample_avg = tgs2602.getResistanceCalculationAverage(analogRead(SENSOR_TGS2602), current_ms);
         }       
-        if(!wsp2110.isSamplingComplete()) {
-          wsp2110_sample_avg = wsp2110.getResistanceCalculationAverage(analogRead(SENSOR_WSP2110), current_ms);
-        }
         if(!dust.isSamplingComplete()) {
           unsigned long duration = pulseIn(DUST_PIN, LOW);
           reading.dust_concentration = dust.getConcentration(duration, current_ms);          
         }
         if(wsp2110.isSamplingComplete() && dust.isSamplingComplete() && tgs2602.isSamplingComplete()) {
+          reading.wsp2110_hcho = wsp2110.getFormaldehydeGasPercentage(wsp2110_sample_avg, wsp2110_Ro);            
           reading.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_sample_avg, tgs2602_Ro);            
-          reading.wsp2110_hcho = wsp2110.getFormaldehydeGasPercentage(wsp2110_sample_avg, wsp2110_Ro);
           rs.setSamplingComplete();
           q.push(reading);
         }
@@ -198,20 +198,20 @@ void loop()
         delay_ms=CALIBRATION_SAMPLE_INTERVAL;
         calibration_count++;
         if(calibration_count<=1) {
-          tgs2602.startCalibrating();           
-          wsp2110.startCalibrating();
+          wsp2110.startCalibrating();            
+          tgs2602.startCalibrating();
         }
+        wsp2110_Ro = wsp2110.calibrateInCleanAir(analogRead(SENSOR_WSP2110));        
         tgs2602_Ro = tgs2602.calibrateInCleanAir(analogRead(SENSOR_TGS2602));
-        wsp2110_Ro = wsp2110.calibrateInCleanAir(analogRead(SENSOR_WSP2110));
         if(calibration_count==CALIBRATION_SAMPLE_FREQUENCY) { // Calibration Complete
           beep(200);
           rs.setCalibratingComplete();
-          sprintf(wsp2110_display,"%.3f",wsp2110_Ro);         
+          sprintf(wsp2110_display,"%.2f",wsp2110_Ro);         
           flash.writeFloat(wsp2110_Ro, 0);
-          sprintf(tgs2602_display,"%.3f",tgs2602_Ro);         
+          sprintf(tgs2602_display,"%.2f",tgs2602_Ro);         
           flash.writeFloat(tgs2602_Ro, 4);
         }
-        color=rgbLed.BLUE;
+        color=rgbLed.INTERNAL;
       }
       break;
     case rs.PRE_HEAT_CALIBRATING:

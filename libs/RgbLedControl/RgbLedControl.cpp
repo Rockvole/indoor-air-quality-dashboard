@@ -40,11 +40,18 @@ void RgbLedControl::setLedColor(int delay_ms, int led_ms_on, int led_ms_off, Col
           case RED:
             red_rgb=255;
             //Serial.println("red");
-            break;               
+            break; 
+          case INTERNAL:
+            // Onboard LED
+            break;                
         }
       }
     }
-    analogWrite(_red_pin, red_rgb);
-    analogWrite(_green_pin, green_rgb);
-    analogWrite(_blue_pin, blue_rgb);   
+    if(color==INTERNAL) {  
+      digitalWrite(D7, led_state ? HIGH : LOW);
+    } else {
+      analogWrite(_red_pin, red_rgb);
+      analogWrite(_green_pin, green_rgb);
+      analogWrite(_blue_pin, blue_rgb);   
+    }
 }

@@ -8,7 +8,8 @@ class RgbLedControl {
         YELLOW,  // 1
         ORANGE,  // 2
         BLUE,    // 3
-        RED      // 4
+        RED,     // 4
+        INTERNAL
       };
       RgbLedControl(int red_pin, int green_pin, int blue_pin) {
           pinMode(red_pin, OUTPUT);
