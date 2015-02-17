@@ -18,11 +18,11 @@ do
   echo stage
   spark get $1 stage
 
-  echo tgs2602
-  spark get $1 tgs2602
-
   echo wsp2110
   spark get $1 wsp2110
+
+  echo tgs2602
+  spark get $1 tgs2602
 
   echo url
   spark get $1 url
