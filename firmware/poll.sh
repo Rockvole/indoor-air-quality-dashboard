@@ -1,10 +1,9 @@
 #! /bin/bash
 echo ------------------------------------------------------------------- polling
-echo $1
 while true
 do
   echo
-  echo ------------------------------
+  echo ------------------------------ $1
   date
   echo temperature
   spark get $1 temperature

@@ -134,8 +134,7 @@ int PietteTech_DHT::acquire() {
         return DHTLIB_ACQUIRING;
       } else
         return DHTLIB_ERROR_ACQUIRING;
-  }
-  _state=STOPPED;
+  } else _state=STOPPED;
 }
 
 int PietteTech_DHT::acquireAndWait() {
@@ -216,7 +215,9 @@ void PietteTech_DHT::isrCallback() {
 
 void PietteTech_DHT::convert() {
     // Calculate the temperature and humidity based on the sensor type
-    switch (_type) {
+
+    if(_sigPin!=NOT_CONNECTED) {
+      switch (_type) {
         case DHT11:
             _hum = _bits[0];
             _temp = _bits[2];
@@ -228,6 +229,7 @@ void PietteTech_DHT::convert() {
                      -word(_bits[2] & 0x7F, _bits[3]) :
                      word(_bits[2], _bits[3])) * 0.1;
             break;
+      }
     }
     _convert = false;
 }
@@ -243,11 +245,13 @@ int PietteTech_DHT::getStatus() {
 }
 
 float PietteTech_DHT::getCelsius() {
+    if(_sigPin==NOT_CONNECTED) return MIN_FLOAT;
     DHT_CHECK_STATE;
     return _temp;
 }
 
 float PietteTech_DHT::getHumidity() {
+    if(_sigPin==NOT_CONNECTED) return MIN_FLOAT;
     DHT_CHECK_STATE;
     return _hum;
 }

@@ -8,11 +8,13 @@ $humidity=Array();
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
   //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
-  if(strlen($row['temperature'])>0 || strlen($row['humidity'])>0) {
-    $ts[]=$row['ts'];
+  $ts[]=$row['ts'];
+  if(strlen($row['temperature'])>0)
     $temperature[]=$row['temperature'];
+  else $temperature[]=5;
+  if(strlen($row['humidity'])>0)
     $humidity[]=$row['humidity'];
-  }
+  else $humidity[]=0;
 }
 $humidity_plot=new LinePlot($humidity,$ts);
 $humidity_plot->SetColor('dodgerblue');

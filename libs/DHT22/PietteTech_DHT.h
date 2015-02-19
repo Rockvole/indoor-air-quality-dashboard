@@ -55,8 +55,8 @@
 
 #define DHT_CHECK_STATE                         \
         if(_state == STOPPED)                   \
-            return _status;			\
-        else if(_state != ACQUIRED)		\
+            return _status;			            \
+        else if(_state != ACQUIRED)		        \
             return DHTLIB_ERROR_ACQUIRING;      \
         if(_convert) convert();
 
@@ -101,6 +101,7 @@ private:
     int _type;
     unsigned long _lastreadtime;
     bool _firstreading;
+    const float MIN_FLOAT=-4294799872.00;
     float _hum;
     float _temp;
 };

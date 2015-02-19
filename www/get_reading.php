@@ -44,6 +44,8 @@ if (mysqli_connect_errno()) {
       $row = mysqli_fetch_array($result);
       $group_id=$row['id'];
       insert_empty_reading($group_id, $unix_time);
+      if($temp < -100) $temp="NULL";
+      if($hum  < 0)    $hum ="NULL";
       $sql = "UPDATE readings SET temperature=$temp, humidity=$hum WHERE group_id=$group_id AND ts=$unix_time";
       $result=mysqli_query($conn,$sql);
     }    

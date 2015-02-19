@@ -110,15 +110,17 @@ void setup()
   Spark.variable("stage", &stage, INT);
   Spark.variable("url", &url, STRING);  
   
-  sprintf(wsp2110_display,"%.3f",wsp2110_Ro);
+  sprintf(wsp2110_display,"%.2f",wsp2110_Ro);
   Spark.variable("wsp2110", &wsp2110_display, STRING);  
   //Spark.variable("tgs2602", &tgs2602_sample_avg, INT);
-  sprintf(tgs2602_display,"%.3f",tgs2602_Ro);
+  sprintf(tgs2602_display,"%.2f",tgs2602_Ro);
   Spark.variable("tgs2602", &tgs2602_display, STRING);    
   
   // Register Spark Functions
   Spark.function("calibrate", calibrate);
   Spark.function("sample", sample);
+  Spark.function("setWspCalib", setWspCalib);  
+  Spark.function("setTgsCalib", setTgsCalib);
   //Serial.begin(9600);
 }
 
@@ -245,7 +247,7 @@ void loop()
 void read_dht22() {
   DHT.acquire();
   while (DHT.acquiring());
-    
+  
   reading.humidity = DHT.getHumidity();
   reading.temperature = DHT.getCelsius(); 
 }
@@ -275,4 +277,22 @@ int calibrate(String command) {
 int sample(String command) {
   rs.startUserSampling(unix_time);
   return 1;
+}
+
+int setWspCalib(String value) {
+    char buf[20];
+    value.toCharArray(buf,20);
+    float f = atof(buf);
+    flash.writeFloat(f, 0);
+    sprintf(wsp2110_display,"%.2f",f);
+    return value.length();
+}
+
+int setTgsCalib(String value) {
+    char buf[20];
+    value.toCharArray(buf,20);
+    float f = atof(buf);
+    flash.writeFloat(f, 4);
+    sprintf(tgs2602_display,"%.2f",f); 
+    return value.length();
 }
