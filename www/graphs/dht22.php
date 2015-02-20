@@ -5,16 +5,23 @@ $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $
 $ts=Array();
 $temperature=Array();
 $humidity=Array();
+$found_value=false;
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
   //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
-  $ts[]=$row['ts'];
-  if(strlen($row['temperature'])>0)
+  
+  if(strlen($row['temperature'])>0 && strlen($row['humidity'])>0) {
+    $ts[]=$row['ts'];
     $temperature[]=$row['temperature'];
-  else $temperature[]=5;
-  if(strlen($row['humidity'])>0)
     $humidity[]=$row['humidity'];
-  else $humidity[]=0;
+    $found_value=true;
+  } else {
+    if(!$found_value) {
+      $ts[]=$row['ts'];
+      $temperature[]=5;
+      $humidity[]=0;
+    }
+  }
 }
 $humidity_plot=new LinePlot($humidity,$ts);
 $humidity_plot->SetColor('dodgerblue');
