@@ -23,7 +23,7 @@ require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
 include 'globals.php';
 
-$result=mysqli_query($conn,"SELECT * from groups");
+$result=mysqli_query($conn,"SELECT * from groups order by name");
 
 echo "<form action='year_cal.php' method='get' name='aq'>\n";
 echo "<input type='hidden' name='id' value='0'>\n";
@@ -61,7 +61,9 @@ while($row = mysqli_fetch_array($result)) {
   if(!is_null($row_group['ts'])) {
     $curr_date=Carbon::createFromTimeStamp($row_group['ts']);
     $curr_date->setTimezone($user_timezone);
-    echo $curr_date->format("F jS Y H:i")."<br/>(".$user_timezone.")";
+    if($curr_date->isToday()) echo "Today ".$curr_date->format("H:i");
+      else echo $curr_date->format("F jS Y H:i");
+    echo "<br/>(".$user_timezone.")";
   } else echo "&lt;NONE&gt;";
   echo "</td>";
   echo "<td style='text-align:center;'>";
