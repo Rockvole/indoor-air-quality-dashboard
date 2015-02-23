@@ -44,7 +44,7 @@ function draw_timetable($is_location) {
   if($is_location) $title="Location";
     else $title="Events";
   $html="";
-  $html.="<div class='container' style='padding:0px 0px 10px 0px;'>";  
+  $html.="<div class='container' style='padding:0px 0px 10px 0px;clear:left;'>";  
   $html.="<table border=0>";
   
   $html.="<tr>";

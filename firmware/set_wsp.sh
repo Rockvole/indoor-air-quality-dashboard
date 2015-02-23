@@ -1,6 +1,5 @@
 #! /bin/bash
-echo ------------------------------------------------------------------- calibrate
-echo $1
+echo set_wsp $1 $2
 
 spark call $1 setWspCalib $2
   

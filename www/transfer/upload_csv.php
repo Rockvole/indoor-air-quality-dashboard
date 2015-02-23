@@ -15,13 +15,9 @@ if(!is_string($filename) || !is_numeric($group_id)) {
 $row = 1;
 if (($handle = fopen($filename, "r")) !== FALSE) {
   while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-    $all_numeric=true;
     $num_fields = count($data);
     if($row==1) {
-      if(($num_fields==3) && (strcmp($data[0],"temperature")==0)) { // - TEMPERATURE / HUMIDITY
-	echo "Found Temperature / Humidity\n";
-        $type=99;
-      } else if(($num_fields==6) && (strcmp($data[0],"temperature")==0)) { // INDOOR AIR QUALITY
+      if(($num_fields==6) && (strcmp($data[0],"temperature")==0)) { // INDOOR AIR QUALITY
 	echo "Found Readings\n";	
         $type=0;
       } else if(strcmp($data[0],"name")==0) { // ----------------------- EVENTS
@@ -38,31 +34,11 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       for ($i=0; $i < $num_fields; $i++) {
 	if(strlen($data[$i])<=0) {
 	  $data[$i]="NULL";
-        } else if(!is_numeric($data[$i])) {
-	  $all_numeric=false;
         }
         echo $data[$i].",";
       }
       echo "\n";
-      if($all_numeric && $type==99 && $num_fields==3) { // --------------------------- TEMPERATURE / HUMIDITY
-	$ts=$data[2];
-        $sql = "SELECT * from readings where group_id = $group_id and ts = $ts";
-        echo $sql."\n";	      
-      
-        $result=mysqli_query($conn,$sql);
-        $num_rows=mysqli_num_rows($result);
-        if($num_rows==0) {
-          $sql = "INSERT into readings (temperature, humidity, group_id, ts) VALUES ($data[0], $data[1], $group_id, $data[2])";
-          echo "NOT IMPLEMENTED: ".$sql."\n";	
-        } else {
-          $sql = "   UPDATE readings set temperature=$data[0], humidity=$data[1] ".
-	         "    WHERE group_id=$group_id and ts=$ts";
-          if($result=mysqli_query($conn,$sql)) {
-            echo "SUCCESS: ".$sql."\n";		  
-          }
-        }
-      }
-      if($all_numeric && $type==0 && $num_fields==6) { // ---------------------------- INDOOR AIR QUALITY
+      if($type==0 && $num_fields==6) { // ---------------------------- INDOOR AIR QUALITY
 	$ts=$data[5];
         $sql = "SELECT * from readings where group_id = $group_id and ts = $ts";
         echo $sql."\n";	      
@@ -79,7 +55,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
           echo "CANNOT UPDATE INDOOR AIR QUALITY TABLE\n";
         }
       } 
-      if(!$all_numeric && $type==1 && $num_fields==2) { // ---------------------------- EVENTS
+      if($type==1 && $num_fields==2) { // ---------------------------- EVENTS
 	$ts=$data[1];
         $sql = "SELECT * from events where group_id = $group_id and ts = $ts";
         echo $sql."\n";	      
@@ -87,8 +63,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $result=mysqli_query($conn,$sql);
         $num_rows=mysqli_num_rows($result);
         if($num_rows==0) {
-	  if(strlen($data[0])>0) $event_name="\"".$data[0]."\"";
-	    else $event_name="NULL";	  
+	  if(strcmp($data[0],"NULL")==0) $event_name=$data[0];
+	    else $event_name="\"".$data[0]."\"";
           $sql = "INSERT into events (name, group_id, ts) ".
 	         "VALUES ($event_name, $group_id, $ts)";
           if($result=mysqli_query($conn,$sql)) {
@@ -98,9 +74,9 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
           echo "CANNOT UPDATE EVENT TABLE\n";
         }
       }
-      if(!$all_numeric && $type==2 && $num_fields==3) { // ---------------------------- LOCATIONS
+      if($type==2 && $num_fields==3) { // ---------------------------- LOCATIONS
 	$ts=$data[2];
-        $sql = "SELECT * from locations WHERE group_id = $group_id AND ts = $ts";
+        $sql = "SELECT * from locations WHERE type = ".$data[0]." AND group_id = $group_id AND ts = $ts";
         echo $sql."\n";	      
       
         $result=mysqli_query($conn,$sql);
