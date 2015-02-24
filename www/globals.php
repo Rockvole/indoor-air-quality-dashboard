@@ -6,9 +6,9 @@
   $MAX_RANGE_DUST          = 4500;
   $MAX_RANGE_OK_DUST       = 3000;
   $MAX_RANGE_GOOD_DUST     = 1500;  
-  $MAX_RANGE_SEWER         = 600;
-  $MAX_RANGE_OK_SEWER      = 400;
-  $MAX_RANGE_GOOD_SEWER    = 200;
+  $MAX_RANGE_SEWER         = 1200;
+  $MAX_RANGE_OK_SEWER      = 800;
+  $MAX_RANGE_GOOD_SEWER    = 400;
   $MAX_RANGE_HCHO          = 300;
   $MAX_RANGE_OK_HCHO       = 200;
   $MAX_RANGE_GOOD_HCHO     = 100;

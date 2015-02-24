@@ -69,6 +69,7 @@ echo "<input type='hidden' name='end_time' value='$end_time'>\n";
 echo "<input type='hidden' name='type' value=''>\n";
 echo "</form>\n";
    
+echo "<a href='http://www.epochconverter.com/' target='_blank'>Convert between Unix Time</a>";
 ?>
   </body>  
 </html>

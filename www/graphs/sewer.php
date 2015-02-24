@@ -9,7 +9,8 @@ while($row = mysqli_fetch_array($result)) {
   //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
   if(strlen($row['sewer'])>0) {
     $ts[]=$row['ts'];
-    $sewer[]=$row['sewer'];
+    if($row['ts']<1424722800) $sewer[]=$row['sewer']*2; // Temporary hack to deal with incorrect resistance in original IAQ shield
+      else $sewer[]=$row['sewer'];
   }
 }
 $sewer_plot=new LinePlot($sewer,$ts);

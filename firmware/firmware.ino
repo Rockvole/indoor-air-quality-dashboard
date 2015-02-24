@@ -64,13 +64,13 @@ ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
 
 // --------------------------------------------------------------------- WSP2110
 WSP2110 wsp2110(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
-float wsp2110_Ro = 97073.305;
+float wsp2110_Ro = 80000.0;
 int   wsp2110_sample_avg = 0;
 char  wsp2110_display[20];
 
 // --------------------------------------------------------------------- TGS2602
 TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
-float tgs2602_Ro = 10152.715;
+float tgs2602_Ro = 110000.0;
 int   tgs2602_sample_avg = 0;
 char  tgs2602_display[20];
 
@@ -285,6 +285,7 @@ int setWspCalib(String value) {
     float f = atof(buf);
     flash.writeFloat(f, 0);
     sprintf(wsp2110_display,"%.2f",f);
+    wsp2110_Ro=f;
     return value.length();
 }
 
@@ -294,5 +295,6 @@ int setTgsCalib(String value) {
     float f = atof(buf);
     flash.writeFloat(f, 4);
     sprintf(tgs2602_display,"%.2f",f); 
+    tgs2602_Ro=f;
     return value.length();
 }
