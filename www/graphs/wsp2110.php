@@ -9,7 +9,9 @@ while($row = mysqli_fetch_array($result)) {
   //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
   if(strlen($row['hcho'])>0) {
     $ts[]=$row['ts'];
-    $hcho[]=$row['hcho'];
+    
+    if($row['ts']<1424989200 && $id=5) $hcho[]=$row['hcho']/2; // 26 Feb 2015 2:20pm - Temporary hack to deal with ADC change
+      else $hcho[]=$row['hcho'];
   }
 }
 $hcho_plot=new LinePlot($hcho,$ts);
@@ -42,7 +44,7 @@ $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
 add_plotlines($start_ts, $ts);
-//$graph->yaxis->SetTickPositions(array(0,10,20,30,40,50,60,70,80,90,100), null);
+$graph->yaxis->SetTickPositions(array(0,10,20,30,40,50,60,70,80,90), null);
 
 // Display the graph
 $graph->Stroke();

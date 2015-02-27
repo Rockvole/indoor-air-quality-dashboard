@@ -36,9 +36,10 @@ Remarks: The sensor and the load resistor forms a voltage divider. Given the vol
          across the load resistor and its resistance, the resistance of the sensor
          could be derived.
 ************************************************************************************/ 
+#define MAX_ADC_VALUE 4096 // Maximum value from the ADC (Arduino = 1024 / Spark = 4096)
 float SensorBase::getResistanceCalculation(int raw_adc)
 {
-  return (1024 * 1000 * _rl_value) / (raw_adc - _rl_value);
+  return (MAX_ADC_VALUE * 1000 * _rl_value) / (raw_adc - _rl_value);
 }
 
 /*****************************  getPercentage **********************************
