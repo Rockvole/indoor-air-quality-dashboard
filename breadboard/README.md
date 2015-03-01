@@ -41,7 +41,7 @@ Breadboard schematics to make an indoor air quality monitor with the most import
 |Assorted 22 AWG solid jumper wire           |        | -      |     |           |
 |2.1A USB Wall Charger                       |EB      |$2      |     |           |
 
-<i>Optional items - can solder components directly instead</i>
+<i>Optional items - solder components directly instead. If you wish to use a solderless breadboard then the optional items are not needed</i>
 
 ### Sensors
 |Name               |Type                   |Source  |Price   |
