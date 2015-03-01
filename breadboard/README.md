@@ -23,15 +23,32 @@ Breadboard schematics to make an indoor air quality monitor with the most import
 </p>
 
 ### Parts List
-|Part                                      |Source  |Price   |
-|------------------------------------------|--------|--------|
-|Spark Core                                |AF      |$40     |
-|(or new Spark Photon = $20)               |        | -      |
-|Adafruit Perma-Proto Full Size breadboard |AF      |$6.50   |
-|Micro USB B Female Breakout Board	       |EB      |$3      |
+|Part                                        |Source  |Price   |Qty  |
+|--------------------------------------------|--------|--------|-----|
+|Spark Core                                  |AF      |$40     |     |
+|(alternatively new Spark Photon = $20)      |        | -      |     |
+|Adafruit Perma-Proto Full Size breadboard   |AF      |$6.50   |     |
+|Micro USB B Female Breakout Board	         |EB      |$3      |     |
+|Figaro SR6 Socket                           |FI      |$6.50   |2    |
+|(alternatively Figaro SR7 Socket = $1.50)   |        | -      |     |
+|RGB LED                                     |        | -      |     |
+|4-pin 2.54mm Pitch Female Single Row Header |EB      | -      |     |
+|12-pin 2.54mm Pitch Female Single Row Header|EB      | -      |2    |
+|Grove Universal 4-pin connector             |SS      | -      |     |
+|1K resistor                                 |        | -      |4    |
+|10K resistor                                |        | -      |     |
+|4.7K resistor                               |        | -      |     |
+|Assorted 22 AWG solid jumper wire           |        | -      |     |
 
+### Sensors
+|Name               |Type                   |Source  |Price   |
+|-------------------------------------------|--------|--------|
+|Figaro TGS2602     |VOCs / Sewer Gas       |AE      |$6.50   |
+|WSP2110            |Formaldehyde           |AE      |$15     |
+|Grove Dust Sensor  |Dust                   |SS      |$16     |
+|DHT22              |Temperature / Humidity |AE      |$3.50   |
 
-<i>AF = Adafruit EB = Ebay
+<i>AF = Adafruit EB = Ebay FI = Figaro  AE = AliExpress  SS = Seeedstudio
 </i>
 
 ### Files
