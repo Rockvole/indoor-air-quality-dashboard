@@ -9,12 +9,12 @@ LAMP based Indoor Air Quality Web Dashboard for the Spark Core
 3. Scripts and instructions to set-up the website and install on Ubuntu 14.04
 
 ### Supported Sensors
-|Sensor         |Type                         |
-|---------------|-----------------------------|
-|DHT22          |Temperature/Humidity         |
-|Shinyei PPD42NS|Dust Particles               |
-|Figaro TGS2602 |Hydrogen Sulfide (Sewer Gas) |
-|WSP2110        |Formaldehyde                 |
+|Sensor         |Type                                  |
+|---------------|--------------------------------------|
+|DHT22          |Temperature/Humidity                  |
+|Shinyei PPD42NS|Dust Particles                        |
+|Figaro TGS2602 |VOCs and Hydrogen Sulfide (Sewer Gas) |
+|WSP2110        |Formaldehyde                          |
 
 ### Directories
 |Directory      |Description                                                      |
