@@ -22,6 +22,18 @@ Breadboard schematics to make an indoor air quality monitor with the most import
   Indoor Air Quality Monitor Protoboard Top View
 </p>
 
+### Parts List
+|Part                                      |Source  |Price   |
+|------------------------------------------|--------|--------|
+|Spark Core                                |AF      |$40     |
+|(or new Spark Photon = $20)               |        | -      |
+|Adafruit Perma-Proto Full Size breadboard |AF      |$6.50   |
+|Micro USB B Female Breakout Board	       |EB      |$3      |
+
+
+<i>AF = Adafruit EB = Ebay
+</i>
+
 ### Files
 |File                        |Description                                                              |
 |----------------------------|-------------------------------------------------------------------------|
