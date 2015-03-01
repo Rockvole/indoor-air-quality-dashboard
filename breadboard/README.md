@@ -39,10 +39,11 @@ Breadboard schematics to make an indoor air quality monitor with the most import
 |10K resistor                                |        | -      |     |
 |4.7K resistor                               |        | -      |     |
 |Assorted 22 AWG solid jumper wire           |        | -      |     |
+|2.1A USB Wall Charger                       |EB      |$2      |     |
 
 ### Sensors
 |Name               |Type                   |Source  |Price   |
-|-------------------------------------------|--------|--------|
+|-------------------|-----------------------|--------|--------|
 |Figaro TGS2602     |VOCs / Sewer Gas       |AE      |$6.50   |
 |WSP2110            |Formaldehyde           |AE      |$15     |
 |Grove Dust Sensor  |Dust                   |SS      |$16     |
