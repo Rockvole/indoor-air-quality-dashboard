@@ -4,13 +4,27 @@ include 'graph_base.php';
 $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $dust=Array();
+$found=false;
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
-  //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+  //error_log("dust=".$row['dust']."||ts=".$row['ts']."||ts=".$ts_str);
   if(strlen($row['dust'])>0) {
     $ts[]=$row['ts'];
     $dust[]=$row['dust'];
+    $found=true;
   }
+}
+if(!$found) {
+  $name = 'no_data.png';
+  $fp = fopen($name, 'rb');
+
+  // send the right headers
+  header("Content-Type: image/png");
+  header("Content-Length: " . filesize($name));
+
+  // dump the picture and stop the script
+  fpassthru($fp);
+  exit;
 }
 $dust_plot=new LinePlot($dust,$ts);
 $dust_plot->SetColor('darkgray');

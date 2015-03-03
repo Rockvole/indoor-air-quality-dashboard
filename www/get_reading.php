@@ -60,9 +60,11 @@ if (mysqli_connect_errno()) {
     if(mysqli_num_rows($result)>0) {
       $row = mysqli_fetch_array($result);
       $group_id=$row['id'];
-      insert_empty_reading($group_id, $unix_time);
-      $sql = "UPDATE readings SET dust=$dust WHERE group_id=$group_id AND ts=$unix_time";
-      $result=mysqli_query($conn,$sql);
+      if(($dust > 1) && ($dust < 70000)) { // Dust sensor is connected
+	insert_empty_reading($group_id, $unix_time);
+        $sql = "UPDATE readings SET dust=$dust WHERE group_id=$group_id AND ts=$unix_time";
+        $result=mysqli_query($conn,$sql);
+      }
     }    
   }
   // ------------------------------------------------------------------- Sewer

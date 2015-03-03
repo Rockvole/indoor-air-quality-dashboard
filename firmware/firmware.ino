@@ -24,7 +24,7 @@
 #define BLUE_LED                A7
 
 #define DUST_PIN                D1
-#define DHT_PIN                 D2 // use NOT_CONNECTED if needed
+#define DHT_PIN                 D2 // D0 // use NOT_CONNECTED if needed  
 #define USER_SAMPLING_BTN       D3
 #define CALIBRATE_BTN           D4
 
@@ -246,7 +246,13 @@ void loop()
 
 void read_dht22() {
   DHT.acquire();
-  while (DHT.acquiring());
+  int cnt=0;
+  while (DHT.acquiring())
+  {
+    if(cnt>100) break;
+    delay(30);
+    cnt++;
+  }
   
   reading.humidity = DHT.getHumidity();
   reading.temperature = DHT.getCelsius(); 
