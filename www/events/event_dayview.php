@@ -69,8 +69,8 @@ function draw_timetable($is_location) {
       }
       $curr_ts_utc=$date->copy()->startOfDay()->addHours($curr_hour)->format('U');
 
-      $html.="<td style='text-align:right;font-size:$font_size;'>";
-      $html.=sprintf("%1$02d:00&nbsp;",$curr_hour);
+      $html.="<td style='text-align:right;font-size:$font_size;' nowrap>";
+      $html.=sprintf("%1$02d&nbsp;",$curr_hour);
       $html.="</td>";
       
       if($is_location)
