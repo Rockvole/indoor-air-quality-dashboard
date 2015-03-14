@@ -1,7 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
-$range_interval=10;
-$range_count=10;
+$INTERVAL_COUNT=10;
+$range_interval=($MAX_RANGE_HUMIDITY/$INTERVAL_COUNT);
 
 $ts=Array();
 $humidity=Array();
@@ -17,13 +17,13 @@ if($result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>
 $bucket=Array();
 $tick_labels=Array();
 // Initialize bucket with 0's
-for($i=0;$i<$range_count;$i++) {
+for($i=0;$i<$INTERVAL_COUNT;$i++) {
   $bucket[$i]=0;
   $tick_labels[$i]=($i*$range_interval)."+"; //.((($i+1)*$range_interval)-1);
 }
 foreach($humidity as $value) {
   $bucket_pos=floor($value / $range_interval);
-  if($bucket_pos>=$range_count) $bucket_pos=($range_count-1);  
+  if($bucket_pos>=$INTERVAL_COUNT) $bucket_pos=($INTERVAL_COUNT-1);  
   $bucket[$bucket_pos]++;
   //error_log("item=".$value."||bucket_pos=".$bucket_pos."||count=".$bucket[$bucket_pos]);  
 }
