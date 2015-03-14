@@ -38,6 +38,7 @@
     global $sensor_sewer;
     global $sensor_hcho;
     global $sensor_count;
+    global $sensor_type;
     
     $result=mysqli_query($conn,"SELECT * FROM groups WHERE id=$id");
     $row = mysqli_fetch_array($result);
@@ -54,10 +55,22 @@
     if(isset($sensor_hcho)) $sensor_count++;
    
     if($sensor_count==1) {
-      if(isset($sensor_temp)) return "Temperature & Humidity";
-      if(isset($sensor_dust)) return "Dust";
-      if(isset($sensor_sewer)) return "VOC's / Sewer";
-      if(isset($sensor_hcho)) return "Formaldehyde";
+      if(isset($sensor_temp)) {
+	$sensor_type=0;
+	return "Temperature & Humidity";
+      }
+      if(isset($sensor_dust)) {
+	$sensor_type=2;
+	return "Dust";
+      }
+      if(isset($sensor_sewer)) {
+	$sensor_type=3;
+	return "VOC's / Sewer";
+      }
+      if(isset($sensor_hcho)) {
+	$sensor_type=4;
+	return "Formaldehyde";
+      }
       exit("Unknown sensor type: $sensor_type");
     } else {
       return "Indoor Air Quality";
