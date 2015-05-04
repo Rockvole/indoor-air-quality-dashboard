@@ -131,8 +131,19 @@ if(!isset($row['ts'])) {
     if($size==2) {
       echo "<td></td>";
     }
+    echo "<td>";
+    
+    echo "<table border=0 width=100%>";
+    echo "<tr>";
+    echo "<td>";
+    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";
     echo "<td align=center><h3 style='display:inline;'>Temperature & Humidity</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+    
     echo "</td>";
     echo "</tr>";
     echo "<tr>";
@@ -161,8 +172,19 @@ if(!isset($row['ts'])) {
     if($size==2) {
       echo "<td></td>";
     }  
+    echo "<td>";
+    
+    echo "<table border=0 width=100%>";
+    echo "<tr>";
+    echo "<td>";
+    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";    
     echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/dust.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+        
     echo "</td>";  
     echo "</tr>";
     echo "<tr>";  
@@ -192,8 +214,19 @@ if(!isset($row['ts'])) {
     if($size==2) {
       echo "<td></td>";
     }  
+    echo "<td>";
+    
+    echo "<table border=0 width=100%>";
+    echo "<tr>";
+    echo "<td>";
+    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";    
     echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/sewer.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+        
     echo "</td>";   
     echo "</tr>";
     echo "<tr>";  
@@ -222,9 +255,20 @@ if(!isset($row['ts'])) {
     echo "<tr>";
     if($size==2) {
       echo "<td></td>";
-    }  
+    } 
+    echo "<td>";
+    
+    echo "<table border=0 width=100%>";
+    echo "<tr>";
+    echo "<td>";
+    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";
     echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+        
     echo "</td>";  
     echo "</tr>";
     echo "<tr>";  
