@@ -1,4 +1,6 @@
 <?php
+  require_once ("Carbon/Carbon.php");
+  use Carbon\Carbon;
   define('TTF_DIR', '/usr/share/fonts/truetype/msttcorefonts/');
   $MAX_RANGE_HUMIDITY      = 100;
   $MAX_RANGE_OK_HUMIDITY   = 60;
@@ -75,5 +77,48 @@
     } else {
       return "Indoor Air Quality";
     }
+  }
+  
+  function get_zoom_levels($ts) {
+    global $id;
+    global $conn;
+    global $zoom_temp_hum;
+    global $zoom_sewer;
+    
+    if(!isset($zoom_temp_hum)) {
+      $result=mysqli_query($conn,"SELECT * from geographical WHERE group_id=$id and ts <= $ts");
+      $row=mysqli_fetch_array($result);
+      $zoom_temp_hum=$row['zoom_temp_hum'];
+      $zoom_sewer=$row['zoom_sewer'];
+    }    
+  }
+  
+  function get_ts_today($start_date_param,$direction_param) {
+    global $conn;
+    global $param_date_format;
+    global $id;
+    
+    if(strlen($start_date_param)<=0) { // get latest available date as user got here fresh
+	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
+    } else if(strcmp($direction_param, "next")==0) { // Next button pressed
+	$dt = Carbon::createFromFormat($param_date_format, $start_date_param);
+	$dt_utc = $dt->startOfDay()->format('U');
+	$result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE group_id=$id and ts > $dt_utc");
+    } else { // previous button pressed   
+	$dt = Carbon::createFromFormat($param_date_format, $start_date_param);
+	$dt_utc = $dt->endOfDay()->format('U');
+	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id and ts < $dt_utc");
+    }
+    if(mysql_errno()) {
+      exit('Error: '.mysqli_error($conn));
+    }
+    
+    $today_ts=NULL;    
+    $row = mysqli_fetch_array($result);
+    if(isset($row['ts'])) {
+      $today_ts=$row['ts'];
+    }
+    mysqli_free_result($result);
+    return $today_ts;
   }
 ?>

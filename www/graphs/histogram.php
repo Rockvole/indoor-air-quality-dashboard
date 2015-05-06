@@ -59,25 +59,13 @@ if($size==2) $default_size_2="selected='selected'";
 
 if($type_day) {
   $title="Entire Day";
-  if(strlen($day_param)<=0) {
-    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
-  } else if(strcmp($direction_param, "next")==0) { // Next button pressed
-    $dt = Carbon::createFromDate($year,$month,$day_param);
-    $dt_utc = $dt->startOfDay()->format('U');
-    $result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE group_id=$id and ts > $dt_utc");
-  } else { // previous button pressed
-    $dt = Carbon::createFromDate($year,$month,$day_param);
-    $dt_utc = $dt->endOfDay()->format('U');
-    $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id and ts < $dt_utc");
-  }  
-  if(mysql_errno()) {
-    exit('Error: '.mysqli_error($conn));
-  }
-  $row = mysqli_fetch_array($result);
-  if(!isset($row['ts'])) {
+  $start_date_param=$year."-".$month."-".$day_param;
+  $today_ts=get_ts_today($start_date_param,$direction_param);
+
+  if(!isset($today_ts)) {
     echo "No records found";
   } else {  
-    $date=Carbon::createFromTimeStamp($row['ts']);
+    $date=Carbon::createFromTimeStamp($today_ts);
     $prev_date=$date->copy()->subDay();
     $next_date=$date->copy()->addDay();
     $start_day_utc = $date->startOfDay()->format('U');
@@ -243,8 +231,7 @@ if($type_day) {
   echo "<input type='hidden' name='size' value='$size'>\n";  
   echo "</form>\n";
   include '../events/event_dayview.php';  
-  
-mysqli_free_result($result);
+
 ?>
   </body>  
 </html>

@@ -42,6 +42,10 @@ create table geographical (
 id INT NOT NULL AUTO_INCREMENT,
 name VARCHAR(40),
 group_id INT NOT NULL,
+zoom_temp_hum DECIMAL(1,0),
+zoom_dust DECIMAL(1,0),
+zoom_sewer DECIMAL(1,0),
+zoom_hcho DECIMAL(1,0),
 ts INT UNSIGNED NOT NULL,
 UNIQUE(group_id, ts), 
 PRIMARY KEY (id)

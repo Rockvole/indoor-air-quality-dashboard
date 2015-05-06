@@ -15,6 +15,11 @@
       document.dash.direction.value=direction;
       document.dash.submit();
     }
+    function change_zoom(zoom_type) {
+      document.dash.action = "zoom_level_change.php";
+      document.dash.zoom_type.value=zoom_type;
+      document.dash.submit();
+    }
     function go_calendar(sensor) {
       document.dash.action = "year_cal.php";
       document.dash.sensor.value=sensor;
@@ -49,31 +54,14 @@ if($size==0) $default_size_0="selected='selected'";
 if($size==1) $default_size_1="selected='selected'";
 if($size==2) $default_size_2="selected='selected'";
 
-$conn=mysqli_connect("", "", "", $db_name);
-if (mysqli_connect_errno()) {
-  exit('Failed to connect to MySQL: ' . mysqli_connect_error());
-} 
+$today_ts=get_ts_today($start_date_param,$direction_param);
 
-if(strlen($start_date_param)<=0) {
-	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
-} else if(strcmp($direction_param, "next")==0) { // Next button pressed
-	$dt = Carbon::createFromFormat($param_date_format, $start_date_param);
-	$dt_utc = $dt->startOfDay()->format('U');
-	$result=mysqli_query($conn,"SELECT MIN(ts) as ts from readings WHERE group_id=$id and ts > $dt_utc");
-} else { // previous button pressed
-	$dt = Carbon::createFromFormat($param_date_format, $start_date_param);
-	$dt_utc = $dt->endOfDay()->format('U');
-	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id and ts < $dt_utc");
-}
-if(mysql_errno()) {
-  exit('Error: '.mysqli_error($conn));
-}
-$row = mysqli_fetch_array($result);
-if(!isset($row['ts'])) {
+if(!isset($today_ts)) {
   echo "No records found";
 } else {
-  $date = Carbon::createFromTimeStamp($row['ts']);
+  $date = Carbon::createFromTimeStamp($today_ts);
   $start_day_utc = $date->startOfDay()->format('U');
+  get_zoom_levels($start_day_utc);
   $prev_day_str = $date->copy()->subDay()->format($param_date_format);
   $next_day_str = $date->copy()->addDay()->format($param_date_format);
   $end_day_utc = $date->endOfDay()->format('U');
@@ -136,7 +124,7 @@ if(!isset($row['ts'])) {
     echo "<table border=0 width=100%>";
     echo "<tr>";
     echo "<td>";
-    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    echo "<img src='images/zoom_large.png' onclick='change_zoom(1);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";
     echo "<td align=center><h3 style='display:inline;'>Temperature & Humidity</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";  
@@ -176,8 +164,8 @@ if(!isset($row['ts'])) {
     
     echo "<table border=0 width=100%>";
     echo "<tr>";
-    echo "<td>";
-    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    echo "<td>"; 
+    //echo "<img src='images/zoom_large.png' onclick='change_zoom(2);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";    
     echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/dust.html\"' width=30 height=30 style='cursor:pointer;'>";    
@@ -219,7 +207,7 @@ if(!isset($row['ts'])) {
     echo "<table border=0 width=100%>";
     echo "<tr>";
     echo "<td>";
-    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    echo "<img src='images/zoom_large.png' onclick='change_zoom(3);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";    
     echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/sewer.html\"' width=30 height=30 style='cursor:pointer;'>";    
@@ -261,7 +249,7 @@ if(!isset($row['ts'])) {
     echo "<table border=0 width=100%>";
     echo "<tr>";
     echo "<td>";
-    //echo "<img src='images/zoom_large.png' width=30 height=30 style='cursor:pointer;'>";  
+    //echo "<img src='images/zoom_large.png' onclick='change_zoom(4);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";
     echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";    
@@ -308,13 +296,13 @@ if(!isset($row['ts'])) {
   echo "<input type='hidden' name='direction' value=''>";
   echo "<input type='hidden' name='size' value='$size'>";
   echo "<input type='hidden' name='sensor' value=''>";
+  echo "<input type='hidden' name='zoom_type' value=''>";
   echo "</form>";
   echo "<hr/>";  
   include 'events/event_summary.php';  
   include 'events/event_dayview.php';    
   include 'events/event_timeline.php';
 }
-mysqli_free_result($result);
 ?>
   </body>  
 </html>
