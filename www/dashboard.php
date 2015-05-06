@@ -61,10 +61,10 @@ if(!isset($today_ts)) {
 } else {
   $date = Carbon::createFromTimeStamp($today_ts);
   $start_day_utc = $date->startOfDay()->format('U');
-  get_zoom_levels($start_day_utc);
   $prev_day_str = $date->copy()->subDay()->format($param_date_format);
   $next_day_str = $date->copy()->addDay()->format($param_date_format);
   $end_day_utc = $date->endOfDay()->format('U');
+  $geo_row = get_current_geographical($end_day_utc);  
 
   echo "<div style='padding:10px;'>";
   echo "<table border=0>";
@@ -75,9 +75,6 @@ if(!isset($today_ts)) {
   echo "<h2>$sensor_type_name Dashboard</h2>";
   echo "</td><td width='400' style='vertical-align:top'>";
 
-  $geo_result=mysqli_query($conn,"SELECT name from geographical WHERE group_id=$id and ts = ".
-				  "(SELECT MAX(ts) as ts from geographical WHERE group_id=$id and ts <= $end_day_utc)");
-  $geo_row = mysqli_fetch_array($geo_result);  
   $geo_name=$geo_row['name'];
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>";
   echo $group_name;  
@@ -293,7 +290,7 @@ if(!isset($today_ts)) {
   echo "<input type='hidden' name='start_date' value='$start_date_param'>";
   echo "<input type='hidden' name='end_date' value='$end_date_param'>";
   echo "<input type='hidden' name='period' value='day'>";
-  echo "<input type='hidden' name='direction' value=''>";
+  echo "<input type='hidden' name='direction' value='$direction_param'>";
   echo "<input type='hidden' name='size' value='$size'>";
   echo "<input type='hidden' name='sensor' value=''>";
   echo "<input type='hidden' name='zoom_type' value=''>";

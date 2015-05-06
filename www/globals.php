@@ -79,18 +79,18 @@
     }
   }
   
-  function get_zoom_levels($ts) {
+  function get_current_geographical($ts) {
     global $id;
     global $conn;
     global $zoom_temp_hum;
     global $zoom_sewer;
     
-    if(!isset($zoom_temp_hum)) {
-      $result=mysqli_query($conn,"SELECT * from geographical WHERE group_id=$id and ts <= $ts");
-      $row=mysqli_fetch_array($result);
-      $zoom_temp_hum=$row['zoom_temp_hum'];
-      $zoom_sewer=$row['zoom_sewer'];
-    }    
+    $result=mysqli_query($conn,"SELECT * FROM geographical WHERE group_id=$id AND ts = ".
+	        	       "(SELECT MAX(ts) as ts from geographical WHERE group_id=$id AND ts <= $ts )");
+    $row=mysqli_fetch_array($result);
+    $zoom_temp_hum=$row['zoom_temp_hum'];
+    $zoom_sewer=$row['zoom_sewer'];
+    return $row;
   }
   
   function get_ts_today($start_date_param,$direction_param) {
