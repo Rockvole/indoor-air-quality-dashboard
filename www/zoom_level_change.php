@@ -27,12 +27,17 @@ if(!isset($today_ts)) {
 
   switch($zoom_type) {
     case 1: // Humidity
-  
+      $field_name="zoom_temp_hum";
+      $field_value=$row['zoom_temp_hum'] == 1 ? 0 : 1;
       break;
     case 3: // Sewer
-  
+      $field_name="zoom_sewer";
+      $field_value=$row['zoom_sewer'] == 1 ? 0 : 1;
       break;
   }
+  $sql = "   UPDATE geographical set ".$field_name."=".$field_value .
+	 "    WHERE group_id=$id AND ts=".$row['ts'];	 
+  $result=mysqli_query($conn,$sql);
 
   header('Location: '.$_SERVER['HTTP_REFERER']);
   die();

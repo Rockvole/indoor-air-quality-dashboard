@@ -121,7 +121,8 @@ if(!isset($today_ts)) {
     echo "<table border=0 width=100%>";
     echo "<tr>";
     echo "<td>";
-    echo "<img src='images/zoom_large.png' onclick='change_zoom(1);' width=30 height=30 style='cursor:pointer;'>";  
+    $zoom_image=($geo_row['zoom_temp_hum']==0) ? "zoom_small.png" : "zoom_large.png";
+    echo "<img src='images/$zoom_image' onclick='change_zoom(1);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";
     echo "<td align=center><h3 style='display:inline;'>Temperature & Humidity</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";  
@@ -204,7 +205,8 @@ if(!isset($today_ts)) {
     echo "<table border=0 width=100%>";
     echo "<tr>";
     echo "<td>";
-    echo "<img src='images/zoom_large.png' onclick='change_zoom(3);' width=30 height=30 style='cursor:pointer;'>";  
+    $zoom_image=($geo_row['zoom_sewer']==0) ? "zoom_small.png" : "zoom_large.png";
+    echo "<img src='images/$zoom_image' onclick='change_zoom(3);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";    
     echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/sewer.html\"' width=30 height=30 style='cursor:pointer;'>";    
