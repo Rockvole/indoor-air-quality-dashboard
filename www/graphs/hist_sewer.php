@@ -1,7 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
 $INTERVAL_COUNT=24;
-$range_interval=($MAX_RANGE_SEWER/$INTERVAL_COUNT);
+$range_interval=($SEWER_MAX[0]/$INTERVAL_COUNT);
 
 $ts=Array();
 $sewer=Array();

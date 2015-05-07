@@ -1,7 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
 $INTERVAL_COUNT=10;
-$range_interval=($MAX_RANGE_HUMIDITY/$INTERVAL_COUNT);
+$range_interval=($HUMIDITY_MAX[1]/$INTERVAL_COUNT);
 
 $ts=Array();
 $humidity=Array();

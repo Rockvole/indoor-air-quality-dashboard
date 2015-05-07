@@ -1,7 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
 $INTERVAL_COUNT=18;
-$range_interval=($MAX_RANGE_DUST/$INTERVAL_COUNT);
+$range_interval=($DUST_MAX/$INTERVAL_COUNT);
 
 $ts=Array();
 $dust=Array();

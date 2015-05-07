@@ -1,6 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
 
+$zoom_level=$geo_row['zoom_temp_hum'];
 $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $temperature=Array();
@@ -33,13 +34,17 @@ $temperature_plot->SetWeight(2);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
-$graph->SetBackgroundImage('background_h_40_60.png',BGIMG_FILLPLOT);
+if($zoom_level==0)
+  $graph->SetBackgroundImage('background_h_25_75.png',BGIMG_FILLPLOT);
+else
+  $graph->SetBackgroundImage('background_h_40_60.png',BGIMG_FILLPLOT);
+  
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,$MAX_RANGE_HUMIDITY);
+$graph->SetScale('datlin',$HUMIDITY_MIN[$zoom_level],$HUMIDITY_MAX[$zoom_level]);
 $graph->Add($humidity_plot);
-$graph->SetY2Scale('lin',5,30);
+$graph->SetY2Scale('lin',$TEMPERATURE_MIN[$zoom_level],$TEMPERATURE_MAX[$zoom_level]);
 $graph->AddY2($temperature_plot);
 
 $graph->ygrid->SetColor("azure3");

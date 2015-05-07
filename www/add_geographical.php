@@ -34,14 +34,6 @@ use Carbon\Carbon;
 require('calendar/calendar.php');
 include 'globals.php';
 
-$conn=mysqli_connect("", "", "", $db_name);
-
-// Check connection
-if (mysqli_connect_errno()) {
-  exit('Failed to connect to MySQL: ' . mysqli_connect_error());
-} 
-if(!isset($_GET["id"])) exit("Must specify id parameter");
-$id = htmlspecialchars($_GET["id"]);
 $add_param = htmlspecialchars($_GET["add"]);
 $ts = htmlspecialchars($_GET["ts"]);
 $year  = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
@@ -64,7 +56,8 @@ if(strlen($ts)>0) {
   $dt = Carbon::createFromFormat($param_date_format, $start_date_param);
   $dt->startOfDay()->addHours($hour);
   $dt_utc = $dt->format('U');
-  $sql = "INSERT into geographical (name, group_id, ts) VALUES ('$name', '$id', '$dt_utc')";
+  $sql = "INSERT into geographical (name, group_id, zoom_temp_hum, zoom_dust, zoom_sewer, zoom_hcho, ts) ".
+         "VALUES ('$name', '$id', 0, 0, 0, 0, '$dt_utc')";
   if(!mysqli_query($conn,$sql)) {
      exit('Error: '.mysqli_error($conn));
   }

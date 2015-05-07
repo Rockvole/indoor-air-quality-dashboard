@@ -1,7 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
 $INTERVAL_COUNT=9;
-$range_interval=($MAX_RANGE_HCHO/$INTERVAL_COUNT);
+$range_interval=($HCHO_MAX/$INTERVAL_COUNT);
 
 $ts=Array();
 $hcho=Array();

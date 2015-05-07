@@ -2,18 +2,33 @@
   require_once ("Carbon/Carbon.php");
   use Carbon\Carbon;
   define('TTF_DIR', '/usr/share/fonts/truetype/msttcorefonts/');
-  $MAX_RANGE_HUMIDITY      = 100;
-  $MAX_RANGE_OK_HUMIDITY   = 60;
-  $MAX_RANGE_GOOD_HUMIDITY = 40;  
-  $MAX_RANGE_DUST          = 4500;
-  $MAX_RANGE_OK_DUST       = 3000;
-  $MAX_RANGE_GOOD_DUST     = 1500;  
-  $MAX_RANGE_SEWER         = 600;
-  $MAX_RANGE_OK_SEWER      = 400;
-  $MAX_RANGE_GOOD_SEWER    = 200;
-  $MAX_RANGE_HCHO          = 90;
-  $MAX_RANGE_OK_HCHO       = 60;
-  $MAX_RANGE_GOOD_HCHO     = 30;
+  $HUMIDITY_MAX[0] = 70;
+  $HUMIDITY_MAX[1] = 100;
+  $HUMIDITY_OK     = 60;
+  $HUMIDITY_GOOD   = 40;  
+  $HUMIDITY_MIN[0] = 30;
+  $HUMIDITY_MIN[1] = 0;
+  
+  $TEMPERATURE_MAX[0] = 25;
+  $TEMPERATURE_MAX[1] = 30;
+  $TEMPERATURE_MIN[0] = 10;
+  $TEMPERATURE_MIN[1] = 5;
+  
+  $DUST_MAX        = 4500;
+  $DUST_OK         = 3000;
+  $DUST_GOOD       = 1500;  
+  $DUST_MIN        = 0;
+  
+  $SEWER_MAX[0]    = 600;
+  $SEWER_MAX[1]    = 2000;
+  $SEWER_OK        = 400;
+  $SEWER_GOOD      = 200;
+  $SEWER_MIN       = 0;
+  
+  $HCHO_MAX        = 90;
+  $HCHO_OK         = 60;
+  $HCHO_GOOD       = 30;
+  $HCHO_MIN        = 0;
   $param_date_format='Y-m-d';
   $user_date_format='l, F jS Y H:i';
   $db_name = 'iaq';

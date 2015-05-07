@@ -1,6 +1,7 @@
 <?php // content="text/plain; charset=utf-8"
 include 'graph_base.php';
 
+$zoom_level=$geo_row['zoom_sewer'];
 $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $sewer=Array();
@@ -22,11 +23,14 @@ $sewer_plot->SetFillColor($line_fill_color);
 
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
-$graph->SetBackgroundImage('background_h_33_66.png',BGIMG_FILLPLOT);
+if($zoom_level==0)
+  $graph->SetBackgroundImage('background_h_33_66.png',BGIMG_FILLPLOT);
+else  
+  $graph->SetBackgroundImage('background_h_10_20.png',BGIMG_FILLPLOT);
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
-$graph->SetScale('datlin',0,$MAX_RANGE_SEWER);
+$graph->SetScale('datlin',$SEWER_MIN,$SEWER_MAX[$zoom_level]);
 $graph->Add($sewer_plot);
 
 $graph->ygrid->SetColor("azure3");
@@ -44,6 +48,8 @@ $graph->yaxis->title->Set("VOC's / Sewer");
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_BOLD,$font_size);
 $graph->yaxis->title->SetAngle(90);
 $graph->yaxis->title->SetMargin(10);
+$graph->yaxis->SetTickPositions(array(0,200,400,600,800,1000,1200,1400,1600,1800,2000), null);
+
 add_plotlines($start_ts, $ts);
 
 // Display the graph
