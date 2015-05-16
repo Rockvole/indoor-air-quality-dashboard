@@ -6,7 +6,7 @@ $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $
 $ts=Array();
 $temperature=Array();
 $humidity=Array();
-$found_value=false;
+$found=false;
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
   //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
@@ -15,14 +15,26 @@ while($row = mysqli_fetch_array($result)) {
     $ts[]=$row['ts'];
     $temperature[]=$row['temperature'];
     $humidity[]=$row['humidity'];
-    $found_value=true;
+    $found=true;
   } else {
-    if(!$found_value) {
+    if(!$found) {
       $ts[]=$row['ts'];
       $temperature[]=5;
       $humidity[]=0;
     }
   }
+}
+if(!$found) {
+  $name = 'no_data.png';
+  $fp = fopen($name, 'rb');
+
+  // send the right headers
+  header("Content-Type: image/png");
+  header("Content-Length: " . filesize($name));
+
+  // dump the picture and stop the script
+  fpassthru($fp);
+  exit;
 }
 $humidity_plot=new LinePlot($humidity,$ts);
 $humidity_plot->SetColor('dodgerblue');

@@ -4,6 +4,7 @@ include 'graph_base.php';
 $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $hcho=Array();
+$found=false;
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
   //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
@@ -12,7 +13,20 @@ while($row = mysqli_fetch_array($result)) {
     
     if($row['ts']<1424989200 && $id=5) $hcho[]=$row['hcho']/2; // 26 Feb 2015 2:20pm - Temporary hack to deal with ADC change
       else $hcho[]=$row['hcho'];
+    $found=true;  
   }
+}
+if(!$found) {
+  $name = 'no_data.png';
+  $fp = fopen($name, 'rb');
+
+  // send the right headers
+  header("Content-Type: image/png");
+  header("Content-Length: " . filesize($name));
+
+  // dump the picture and stop the script
+  fpassthru($fp);
+  exit;
 }
 $hcho_plot=new LinePlot($hcho,$ts);
 $hcho_plot->SetColor('firebrick4');

@@ -5,6 +5,7 @@ $zoom_level=$geo_row['zoom_sewer'];
 $result=mysqli_query($conn,"SELECT * from readings WHERE group_id=$id and ts>= $start_ts and ts<= ($end_ts + 1) order by ts"); 
 $ts=Array();
 $sewer=Array();
+$found=false;
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
   //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
@@ -14,7 +15,20 @@ while($row = mysqli_fetch_array($result)) {
     if($row['ts']<1424722800 && $id==5) $sewer[]=$row['sewer']; // $sewer[]=$row['sewer']/2; // 23 Feb 2015 12:20pm - Temporary hack to deal with incorrect resistance in original IAQ shield
       else if($row['ts']<1424989200 && $id==5) $sewer[]=$row['sewer']/2; // 26 Feb 2015 2:20pm - Temporary hack to deal with ADC change
         else $sewer[]=$row['sewer'];
+    $found=true;	
   }
+}
+if(!$found) {
+  $name = 'no_data.png';
+  $fp = fopen($name, 'rb');
+
+  // send the right headers
+  header("Content-Type: image/png");
+  header("Content-Length: " . filesize($name));
+
+  // dump the picture and stop the script
+  fpassthru($fp);
+  exit;
 }
 $sewer_plot=new LinePlot($sewer,$ts);
 $sewer_plot->SetColor('darkgoldenrod');
