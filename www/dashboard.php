@@ -251,7 +251,7 @@ if(!isset($today_ts)) {
     //echo "<img src='images/zoom_large.png' onclick='change_zoom(4);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";
     echo "<td align=center colspan=2><h3 style='display:inline;'>Formaldehyde Gas</h3>&nbsp;";
-    echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "<img src='health/mask.png' onclick='location.href=\"health/formaldehyde.html\"' width=30 height=30 style='cursor:pointer;'>";    
     echo "</td>";
     echo "</tr>";
     echo "</table>";
