@@ -209,7 +209,7 @@ if(!isset($today_ts)) {
     echo "<img src='images/$zoom_image' onclick='change_zoom(3);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";    
     echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas</h3>&nbsp;";
-    echo "<img src='health/mask.png' onclick='location.href=\"health/sewer.html\"' width=30 height=30 style='cursor:pointer;'>";    
+    echo "<img src='health/mask.png' onclick='location.href=\"health/tgs2602.html\"' width=30 height=30 style='cursor:pointer;'>";    
     echo "</td>";
     echo "</tr>";
     echo "</table>";
