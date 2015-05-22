@@ -4,6 +4,17 @@ body {
   margin: 0;
   padding: 0 15px;
 }
+table {
+  border-collapse:collapse;
+}
+th {
+  padding:5px;
+  background-color:blueviolet;
+  color:white;
+}
+td {
+  padding:5px;
+}
 h2 {
   text-align:left;
   color:blueviolet;
@@ -55,4 +66,7 @@ hr {
     border: 1px solid purple;
     border-radius: 7px 7px 7px 7px;
     clear:left;
+}
+a {
+  font-weight:bold;
 }
