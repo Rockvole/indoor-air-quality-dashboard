@@ -13,6 +13,8 @@ static const char* HTTP_METHOD_POST   = "POST";
 static const char* HTTP_METHOD_PUT    = "PUT";
 static const char* HTTP_METHOD_DELETE = "DELETE";
 
+static const uint16_t kHttpBufferSize = 1024;
+
 /**
  * This struct is used to pass additional HTTP headers such as API-keys.
  * Normally you pass this as an array. The last entry must have NULL as key.
@@ -58,7 +60,8 @@ public:
     * Public references to variables.
     */
     TCPClient client;
-    char buffer[1024];
+
+    char buffer[kHttpBufferSize];
 
     /**
     * Constructor.

@@ -180,6 +180,7 @@ void loop()
                          curr_reading.tgs2602_sewer, curr_reading.dust_concentration,
                          Spark.deviceID().c_str(), (unix_time-uptime_start));  
             request.path = url;
+            response.body = "";
             http.get(request, response);
             char read_time_chars[12];
             sprintf(read_time_chars, "%d", curr_reading.reading_time);

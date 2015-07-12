@@ -1,4 +1,4 @@
-# include "ReadingSync.h"
+#include "ReadingSync.h"
 // Determine if its time to take a reading 
 // Determine if its time to send a reading
 
@@ -28,7 +28,7 @@ bool ReadingSync::isTimeToSample(int currentTime) {
     int secsSinceStartOfDay = getSecsSinceStartOfDay(currentTime);  
     int remainingSecs = getRemainingSecsUntilSample(currentTime);
     bool timeToSample = (remainingSecs == 0) && (secsSinceStartOfDay!=last_read_secs);
-//std::cout << "tts=" << timeToSample << "||sssod=" << secsSinceStartOfDay << "|rs=" << remainingSecs << "\n\n";        
+//std::cout << "tts=" << timeToSample << "||sssod=" << secsSinceStartOfDay << "||rs=" << remainingSecs << "||lrs=" << last_read_secs << "\n\n";        
     if(timeToSample) {
         last_read_secs = secsSinceStartOfDay;   
     }
@@ -78,7 +78,12 @@ void ReadingSync::startUserSampling(int currentTime) {
 
 // --------------------------------------------------------------------- SCHEDULED SAMPLING
 void ReadingSync::setSamplingComplete() {
-    if(_stage==SAMPLING) next_send_secs = last_read_secs + (rand() % (secs_between_readings-120));   
+    if(_stage==SAMPLING) {
+      int rand_secs = (secs_between_readings > pre_heat_secs) ? (secs_between_readings - pre_heat_secs) : (secs_between_readings-1);
+      int secs_until_read = (rand() % rand_secs);
+      next_send_secs = last_read_secs + secs_until_read;   
+//std::cout << "nss=" << next_send_secs << "||sbr=" << secs_between_readings << "||sur=" << secs_until_read << "\n";
+    }
     _is_first_sampling_loop=true;
     _is_first_pre_heat_loop=true;
     _stage=CONTINUE;

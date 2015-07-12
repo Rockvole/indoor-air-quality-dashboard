@@ -34,6 +34,13 @@ echo "<tr>";
 echo "<td colspan=6><h2>Sensor Groups</h2></td>";
 echo "<td colspan=2 style='text-align:right;'><input type='button' value='Add New Sensor Group' onclick='click_button(null,\"add_new_sensor.php\");'></td>";
 echo "</tr>";
+echo "<tr>";
+echo "<td colspan=8 style='text-align:center;'>";
+echo "<div style='display:inline-block;border:2px solid darkmagenta;padding:10px;font-weight:bold;'>";
+echo "<a href='help/resources.html'>Resources / Help</a>";
+echo "</div>";
+echo "</td>";
+echo "</tr>";
 echo "<tr><td></td><td></td><td></td><td></td><td></td><td></td>";
 echo "<th style='text-align:center;'>Last Reading</th><th style='text-align:center;'>Group Type</th></tr>";
 while($row = mysqli_fetch_array($result)) {

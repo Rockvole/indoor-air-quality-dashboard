@@ -4,15 +4,15 @@ body {
   margin: 0;
   padding: 0 15px;
 }
-table {
+.point_table {
   border-collapse:collapse;
 }
-th {
+.point_table th {
   padding:5px;
   background-color:blueviolet;
   color:white;
 }
-td {
+.point_table td {
   padding:5px;
 }
 h2 {
@@ -50,16 +50,16 @@ input {
     padding:10px 10px;
     display:block;
 }
-
 .alerthead {
     font-size:16px;
     text-align:center;
     border:#FFED73 1px solid;
 }
 .content {
-	padding:5px 15px 5px 20px;
-	font-size: 15px;
-	letter-spacing:1px;
+    vertical-align:top;
+    padding:5px 15px 5px 20px;
+    font-size: 15px;
+    letter-spacing:1px;
 }
 hr {
     background-color:purple;
@@ -68,5 +68,10 @@ hr {
     clear:left;
 }
 a {
+  font-weight:bold;
+}
+a.titlelink {
+  color:darkmagenta;
+  font-size:20px;
   font-weight:bold;
 }
