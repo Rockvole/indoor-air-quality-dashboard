@@ -6,24 +6,24 @@ Output:  ppm of the target gas
 Remarks: This function passes different curves to the getPercentage function which 
          calculates the ppm (parts per million) of the target gas.
 ************************************************************************************/ 
-int TGS2602::getSewerGasPercentage(float rs_ro_ratio, float ro)
+int TGS2602::getSewerGasPercentage(float ro)
 {
-  return getPercentage(rs_ro_ratio,ro,H2S_Curve);
+  return getPercentage(ro,H2S_Curve);
 }
 
-int TGS2602::getTolueneGasPercentage(float rs_ro_ratio, float ro)
+int TGS2602::getTolueneGasPercentage(float ro)
 {
-  return getPercentage(rs_ro_ratio,ro,C7H8_Curve);
+  return getPercentage(ro,C7H8_Curve);
 }
 
-int TGS2602::getEthanolGasPercentage(float rs_ro_ratio, float ro)
+int TGS2602::getEthanolGasPercentage(float ro)
 {
-  return getPercentage(rs_ro_ratio,ro,C2H5OH_quarCurve);
+  return getPercentage(ro,C2H5OH_quarCurve);
 }
 
-int TGS2602::getAmmoniaGasPercentage(float rs_ro_ratio, float ro)
+int TGS2602::getAmmoniaGasPercentage(float ro)
 {
-  return getPercentage(rs_ro_ratio,ro,NH3_Curve);
+  return getPercentage(ro,NH3_Curve);
 }
 
 float TGS2602::calibrateInCleanAir(int raw_adc) {

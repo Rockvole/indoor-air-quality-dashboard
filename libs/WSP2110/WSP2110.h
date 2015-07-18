@@ -23,8 +23,8 @@ class WSP2110: public SensorBase {
     : SensorBase(sampling_frequency, sampling_interval_ms, 6)
     {
     }  
-    int getFormaldehydeGasPercentage(float rs_ro_ratio, float ro);
-    int getHydrogenGasPercentage(float rs_ro_ratio, float ro);
+    int getFormaldehydeGasPercentage(float ro);
+    int getHydrogenGasPercentage(float ro);
     float calibrateInCleanAir(int raw_adc);
   private:
     float HCHOCurve[2] =    {1.478772974, -2.224808489}; 

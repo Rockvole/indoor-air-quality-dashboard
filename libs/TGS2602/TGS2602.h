@@ -23,10 +23,10 @@ class TGS2602: public SensorBase {
     : SensorBase(sampling_frequency, sampling_interval_ms, 1)
     {
     }
-    int getSewerGasPercentage(float rs_ro_ratio, float ro);
-    int getTolueneGasPercentage(float rs_ro_ratio, float ro);
-    int getEthanolGasPercentage(float rs_ro_ratio, float ro); 
-    int getAmmoniaGasPercentage(float rs_ro_ratio, float ro);
+    int getSewerGasPercentage(float ro);
+    int getTolueneGasPercentage(float ro);
+    int getEthanolGasPercentage(float ro); 
+    int getAmmoniaGasPercentage(float ro);
     float calibrateInCleanAir(int raw_adc);    
   private:
     float C7H8_Curve[2]    =  {37.22590719,   2.078062258}; //TGS2602     (0.3;1)( 0.8;10) (0.4;30)

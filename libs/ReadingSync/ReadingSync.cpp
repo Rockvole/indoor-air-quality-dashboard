@@ -82,7 +82,7 @@ void ReadingSync::setSamplingComplete() {
       int rand_secs = (secs_between_readings > pre_heat_secs) ? (secs_between_readings - pre_heat_secs) : (secs_between_readings-1);
       int secs_until_read = (rand() % rand_secs);
       next_send_secs = last_read_secs + secs_until_read;   
-//std::cout << "nss=" << next_send_secs << "||sbr=" << secs_between_readings << "||sur=" << secs_until_read << "\n";
+//std::cout << "rs=" << rand_secs << "||nss=" << next_send_secs << "||sbr=" << secs_between_readings << "||sur=" << secs_until_read << "\n";
     }
     _is_first_sampling_loop=true;
     _is_first_pre_heat_loop=true;

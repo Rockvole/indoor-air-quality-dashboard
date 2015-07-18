@@ -6,23 +6,31 @@ void SensorBase::startSampling(unsigned long start_time_ms)
   _sample_sum = 0;
   _sampling_count = 0;
   _is_sampling_complete = false;
+  _sampling_average = 0;
 }
 
-float SensorBase::getResistanceCalculationAverage(int raw_adc, unsigned long current_time_ms)
+bool SensorBase::isTimeToRead(unsigned long current_time_ms)
 {
-  float sampling_average = 0;
+    if((current_time_ms - _start_time_ms) > _sampling_interval_ms)
+    {
+		return true;
+	}	
+	return false;
+}
+
+void SensorBase::setAnalogRead(int raw_adc, unsigned long current_time_ms)
+{
   if(!_is_sampling_complete) 
   {
-    if((current_time_ms - _start_time_ms) > _sampling_interval_ms)
+    if(isTimeToRead(current_time_ms))
     {
       _sample_sum += getResistanceCalculation(raw_adc);
       _start_time_ms = current_time_ms;
       _sampling_count++;      
-      sampling_average = _sample_sum / _sampling_count;
+      _sampling_average = _sample_sum / _sampling_count;
       if(_sampling_count >= _sampling_frequency) _is_sampling_complete = true;
     }
   }
-  return sampling_average;
 }
 
 bool SensorBase::isSamplingComplete() {
@@ -51,9 +59,9 @@ Remarks: By using the slope and a point of the line. The x(logarithmic value of 
          logarithmic coordinate, power of 10 is used to convert the result to non-logarithmic 
          value.
 ************************************************************************************/
-int SensorBase::getPercentage(float rs_ro_ratio, float ro, float *pcurve)
+int SensorBase::getPercentage(float ro, float *pcurve)
 {
-  return (double)(pcurve[0] * pow(((double)rs_ro_ratio/ro), pcurve[1]));
+  return (double)(pcurve[0] * pow(((double)_sampling_average/ro), pcurve[1]));
 }
 
 void SensorBase::startCalibrating() {

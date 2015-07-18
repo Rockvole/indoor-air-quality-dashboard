@@ -23,8 +23,8 @@ class SensorBase {
     }  
     void startSampling(unsigned long start_time_ms);
     bool isSamplingComplete();
-    float getResistanceCalculation(int raw_adc);
-    float getResistanceCalculationAverage(int raw_adc, unsigned long current_time_ms); 
+    bool isTimeToRead(unsigned long current_time_ms);
+    void setAnalogRead(int raw_adc, unsigned long current_time_ms); 
     void startCalibrating();      
   protected:
     bool _is_sampling_complete;
@@ -32,13 +32,15 @@ class SensorBase {
     int _sampling_frequency;      
     int _sampling_count;    
     int _rl_value;
-    float _sample_sum;  
+    float _sample_sum; 
+    float _sampling_average; 
     unsigned long _start_time_ms;
     int calibration_count;  
     float calibration_total;        
     SensorBase() {};
-    int getPercentage(float rs_ro_ratio, float ro, float *pcurve);    
+    int getPercentage(float ro, float *pcurve);    
     float calibrateInCleanAir(int raw_adc, int ppm, float *pcurve);     
+    float getResistanceCalculation(int raw_adc);
 };
 
 #endif //Included_SensorBase_H

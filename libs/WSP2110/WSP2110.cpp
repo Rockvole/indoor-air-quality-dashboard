@@ -6,9 +6,9 @@ Output:  ppm of the target gas
 Remarks: This function passes different curves to the getPercentage function which 
          calculates the ppm (parts per million) of the target gas.
 ************************************************************************************/ 
-int WSP2110::getFormaldehydeGasPercentage(float rs_ro_ratio, float ro)
+int WSP2110::getFormaldehydeGasPercentage(float ro)
 {
-  return getPercentage(rs_ro_ratio,ro,HCHOCurve);
+  return getPercentage(ro,HCHOCurve);
 }
 
 /*****************************  getFormaldehydeGasPercentage **********************************
@@ -17,9 +17,9 @@ Output:  ppm of the target gas
 Remarks: This function passes different curves to the getPercentage function which 
          calculates the ppm (parts per million) of the target gas.
 ************************************************************************************/ 
-int WSP2110::getHydrogenGasPercentage(float rs_ro_ratio, float ro)
+int WSP2110::getHydrogenGasPercentage(float ro)
 {
-  return getPercentage(rs_ro_ratio,ro,H2Curve);
+  return getPercentage(ro,H2Curve);
 }
 
 float WSP2110::calibrateInCleanAir(int raw_adc) {
