@@ -259,9 +259,13 @@ void read_dht22() {
 
 bool resolveHost() {
   if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) {
-    uint32_t ip_addr = 0;
+#if PLATFORM_ID == 0 // CORE
+    uint32_t ip_addr = 0; 
     gethostbyname(hostname, strlen(hostname), &ip_addr);
-    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};    
+    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};
+#elif PLATFORM_ID == 6 // PHOTON   
+    request.ip = WiFi.resolve(hostname);   
+#endif    
     sprintf(ip_display,"%d.%d.%d.%d",request.ip[0],request.ip[1],request.ip[2],request.ip[3]);
     if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) return false;
   }
