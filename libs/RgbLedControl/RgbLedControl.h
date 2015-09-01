@@ -10,6 +10,7 @@ class RgbLedControl {
         BLUE,    // 3
         RED,     // 4
         GREEN,   // 5
+        WHITE,   // 6
         INTERNAL
       };
       RgbLedControl(int red_pin, int green_pin, int blue_pin) {
