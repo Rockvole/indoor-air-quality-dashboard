@@ -11,7 +11,6 @@ firmware.ino
 ../libs/SimpleEeprom/SimpleEeprom.h
 ../libs/ShinyeiPPD42NS/ShinyeiPPD42NS.cpp
 ../libs/ShinyeiPPD42NS/ShinyeiPPD42NS.h
-../libs/ShinyeiPPD42NS/function_pulseIn.h
 ../libs/SensorBase/SensorBase.cpp
 ../libs/SensorBase/SensorBase.h
 ../libs/TGS2602/TGS2602.cpp

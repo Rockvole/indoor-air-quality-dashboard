@@ -7,7 +7,6 @@
 #include "TGS2602.h"
 #include "WSP2110.h"
 #include "ShinyeiPPD42NS.h"
-#include "function_pulseIn.h"
 
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
@@ -101,24 +100,24 @@ void setup()
   resolveHost();
   
   // Register Spark variables
-  Spark.variable("ip", &ip_display, STRING);  
-  Spark.variable("temperature", &reading.temperature, DOUBLE);
-  Spark.variable("humidity", &reading.humidity, DOUBLE);
-  Spark.variable("unix_time", &unix_time, INT);
-  Spark.variable("stage", &stage, INT);
-  Spark.variable("url", &url, STRING);  
+  Particle.variable("ip", ip_display, STRING);  
+  Particle.variable("temperature", &reading.temperature, DOUBLE);
+  Particle.variable("humidity", &reading.humidity, DOUBLE);
+  Particle.variable("unix_time", &unix_time, INT);
+  Particle.variable("stage", &stage, INT);
+  Particle.variable("url", url, STRING);  
   
   sprintf(wsp2110_display,"%.2f",wsp2110_Ro);
-  Spark.variable("wsp2110", &wsp2110_display, STRING);  
-  //Spark.variable("tgs2602", &tgs2602_sample_avg, INT);
+  Particle.variable("wsp2110", wsp2110_display, STRING);  
+  //Particle.variable("tgs2602", &tgs2602_sample_avg, INT);
   sprintf(tgs2602_display,"%.2f",tgs2602_Ro);
-  Spark.variable("tgs2602", &tgs2602_display, STRING);    
+  Particle.variable("tgs2602", tgs2602_display, STRING);    
   
   // Register Spark Functions
-  Spark.function("calibrate", calibrate);
-  Spark.function("sample", sample);
-  Spark.function("setWspCalib", setWspCalib);  
-  Spark.function("setTgsCalib", setTgsCalib);
+  Particle.function("calibrate", calibrate);
+  Particle.function("sample", sample);
+  Particle.function("setWspCalib", setWspCalib);  
+  Particle.function("setTgsCalib", setTgsCalib);
   //Serial.begin(9600);
 }
 

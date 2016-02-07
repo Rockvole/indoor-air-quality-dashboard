@@ -25,34 +25,34 @@ void RgbLedControl::setLedColor(int delay_ms, int led_ms_on, int led_ms_off, Col
           case YELLOW:
             red_rgb=255;
             green_rgb=255;
-            Serial.println("yellow");
+            //Serial.println("yellow");
             break;
           case ORANGE:
             red_rgb=237;
             green_rgb=120;
             blue_rgb=6;
-            Serial.println("orange");
+            //Serial.println("orange");
             break;
           case BLUE:
             blue_rgb=255;
-            Serial.println("blue");
+            //Serial.println("blue");
             break;        
           case RED:
             red_rgb=255;
-            Serial.println("red");
+            //Serial.println("red");
             break; 
           case GREEN:
             green_rgb=255;
-            Serial.println("green");
+            //Serial.println("green");
             break;            
           case WHITE:
             red_rgb=255;
             green_rgb=255;
             blue_rgb=255;
-            Serial.println("white");
+            //Serial.println("white");
             break;            
           case INTERNAL:
-            Serial.println("internal");
+            //Serial.println("internal");
             // Onboard LED
             break;                
         }

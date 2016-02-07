@@ -24,6 +24,7 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <application.h>
+// STM32_Pin_Info* PIN_MAP = HAL_Pin_Map();
 /* 
  * pulseIn Function for the Spark Core - Version 0.1.1 (Beta)
  * Copyright (2014) Timothy Brown - See: LICENSE
