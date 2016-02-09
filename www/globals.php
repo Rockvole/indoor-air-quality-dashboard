@@ -25,9 +25,9 @@
   $SEWER_GOOD      = 200;
   $SEWER_MIN       = 0;
   
-  $HCHO_MAX        = 90;
-  $HCHO_OK         = 60;
-  $HCHO_GOOD       = 30;
+  $HCHO_MAX        = 30;
+  $HCHO_OK         = 20;
+  $HCHO_GOOD       = 10;
   $HCHO_MIN        = 0;
   $param_date_format='Y-m-d';
   $user_date_format='l, F jS Y H:i';

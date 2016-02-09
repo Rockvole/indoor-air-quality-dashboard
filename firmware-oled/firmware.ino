@@ -1,10 +1,13 @@
 #include <queue>
+#include "IntervalTiming.h"
 #include "ReadingSync.h"
 #include "RgbLedControl.h"
 #include "HttpClient.h"
 #include "SimpleEeprom.h"
 #include "PietteTech_DHT.h"
 #include "TGS2602.h"
+#include "Adafruit_SSD1306.h"
+#include "images.h"
 
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
@@ -14,8 +17,8 @@
 #define SAMPLING_INTERVAL_MS 50   // Number of ms between samples
 
 #define SENSOR_TGS2602          A0
-#define RED_LED                 A5
-#define GREEN_LED               A6
+#define RED_LED                 A4
+#define GREEN_LED               A5
 #define BLUE_LED                A7
 
 #define DHT_PIN                 D2 // D0 // use NOT_CONNECTED if needed 
@@ -39,6 +42,9 @@ int stage=0;
 bool acquired_ip=true;
 int uptime_start=0;
 float temp_float;
+int temp_int;
+bool first_sampling_loop=true;
+int display_sewer = 0;
 
 // --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
@@ -52,6 +58,12 @@ PietteTech_DHT DHT(DHT_PIN, DHT22, dht_wrapper);
 TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
 float tgs2602_Ro = 340000.0;
 char  tgs2602_display[20];
+
+// --------------------------------------------------------------------- OLED
+#define OLED_RESET D4
+Adafruit_SSD1306 oled(OLED_RESET);
+IntervalTiming oledInterval(2000);
+bool first_display_loop = true;
 
 // --------------------------------------------------------------------- HTTP
 HttpClient http;
@@ -71,6 +83,8 @@ void setup()
   //request.ip = {192, 168, 1, 130}; // davidlub
   request.port = 80;  
   resolveHost();
+  oled.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  oled.display(); 
   
   // Register Spark variables
   Spark.variable("ip", ip_display, STRING);  
@@ -100,26 +114,69 @@ void loop()
   unix_time=Time.now();
   if(uptime_start<1000000000) uptime_start = unix_time;  
   stage=rs.getStage(unix_time);
-  delay_ms=200;  
-
+  unsigned long current_ms = millis();
+  
+  // ------------------------------------------------------------------- TGS2602
+  if(first_sampling_loop) {
+    first_sampling_loop = false;
+    tgs2602.startSampling(current_ms);
+  }
+  if(!tgs2602.isSamplingComplete() && tgs2602.isTimeToRead(current_ms)) {
+    tgs2602.setAnalogRead(analogRead(SENSOR_TGS2602), current_ms);
+  }       
+  if(tgs2602.isSamplingComplete()) {
+    first_sampling_loop = true;
+    display_sewer = tgs2602.getSewerGasPercentage(tgs2602_Ro);
+  }
+  // ------------------------------------------------------------------- OLED DISPLAY
+  if(first_display_loop) {
+    first_display_loop = false;
+    oledInterval.startIntervalTime(current_ms);
+    oled.clearDisplay();
+    oled.setTextColor(WHITE);
+    // ------------------------ TEMPERATURE
+    oled.setTextSize(2);
+    oled.setCursor(0,0);
+    temp_int = reading.temperature;
+    oled.print(temp_int);
+    oled.print("C");
+    // ------------------------ HUMIDITY
+    oled.setTextSize(2);
+    oled.setCursor(90,0);
+    temp_int = reading.humidity;    
+    oled.print(temp_int);
+    oled.print("%");
+    // ------------------------ SEWER    
+    oled.setTextSize(3);
+    oled.setCursor(0,30);
+    oled.print(display_sewer);
+    // ------------------------ EMOTICON
+    if(display_sewer>=400)
+        oled.drawBitmap(100, 30, face_frown, 24, 24, WHITE);
+    else if(display_sewer>=200)
+        oled.drawBitmap(100, 30, face_ok, 24, 24, WHITE);
+    else 
+        oled.drawBitmap(100, 30, face_smile, 24, 24, WHITE);
+    // ------------------------ DISPLAY
+    oled.display();
+  }
+  if(oledInterval.isIntervalTimeComplete(current_ms)) {
+    first_display_loop = true;
+  }
+  // ------------------------------------------------------------------- STAGES
+  delay_ms=SAMPLING_INTERVAL_MS;
   switch(stage) {
     case rs.USER_SAMPLING:
     case rs.SAMPLING:
       {
-        unsigned long current_ms = millis();  
         if(rs.isFirstSamplingLoop()) {
-          tgs2602.startSampling(current_ms);
           reading.reading_time = unix_time;
         }
-        if(!tgs2602.isSamplingComplete() && tgs2602.isTimeToRead(current_ms)) {
-          tgs2602.setAnalogRead(analogRead(SENSOR_TGS2602), current_ms);
-        }       
         if(tgs2602.isSamplingComplete()) {
           reading.tgs2602_sewer = tgs2602.getSewerGasPercentage(tgs2602_Ro);            
           rs.setSamplingComplete();
           q.push(reading);
         }
-        delay_ms=0;
       }
       break;
     case rs.SEND_READING:
@@ -204,9 +261,13 @@ void read_dht22() {
 
 bool resolveHost() {
   if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) {
-    uint32_t ip_addr = 0;
+#if PLATFORM_ID == 0 // CORE
+    uint32_t ip_addr = 0; 
     gethostbyname(hostname, strlen(hostname), &ip_addr);
-    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};    
+    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};
+#elif PLATFORM_ID == 6 // PHOTON   
+    request.ip = WiFi.resolve(hostname);   
+#endif    
     sprintf(ip_display,"%d.%d.%d.%d",request.ip[0],request.ip[1],request.ip[2],request.ip[3]);
     if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) return false;
   }
