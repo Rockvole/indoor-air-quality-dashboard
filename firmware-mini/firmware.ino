@@ -14,11 +14,11 @@
 #define SAMPLING_INTERVAL_MS 50   // Number of ms between samples
 
 #define SENSOR_TGS2602          A0
-#define RED_LED                 A5
-#define GREEN_LED               A6
-#define BLUE_LED                A7
+#define RED_LED                 D0
+#define GREEN_LED               D1
+#define BLUE_LED                D2
 
-#define DHT_PIN                 D2 // D0 // use NOT_CONNECTED if needed 
+#define DHT_PIN                 D4 // D0 // use NOT_CONNECTED if needed 
 
 ReadingSync rs (INTERVAL_MINS, PRE_HEAT_SECS, Time.now());
 SimpleEeprom flash;
@@ -204,9 +204,13 @@ void read_dht22() {
 
 bool resolveHost() {
   if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) {
-    uint32_t ip_addr = 0;
+#if PLATFORM_ID == 0 // CORE
+    uint32_t ip_addr = 0; 
     gethostbyname(hostname, strlen(hostname), &ip_addr);
-    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};    
+    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};
+#elif PLATFORM_ID == 6 // PHOTON   
+    request.ip = WiFi.resolve(hostname);   
+#endif    
     sprintf(ip_display,"%d.%d.%d.%d",request.ip[0],request.ip[1],request.ip[2],request.ip[3]);
     if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) return false;
   }

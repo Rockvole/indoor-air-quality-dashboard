@@ -29,8 +29,8 @@ class TGS2602: public SensorBase {
     int getAmmoniaGasPercentage(float ro);
     float calibrateInCleanAir(int raw_adc);    
   private:
-    float C7H8_Curve[2]    =  {37.22590719,   2.078062258}; //TGS2602     (0.3;1)( 0.8;10) (0.4;30)
     float H2S_Curve[2]    =  {0.05566582614,-2.954075758}; //TGS2602     (0.8,0.1) (0.4,1) (0.25,3)
+    float C7H8_Curve[2]    =  {37.22590719,   2.078062258}; //TGS2602     (0.3;1)( 0.8;10) (0.4;30)
     float C2H5OH_quarCurve[2]  =  {0.5409499131,-2.312489623}; //TGS2602   (0.75,1) (0.3,10) (0.17,30)  
     float NH3_Curve[2]  =  {0.585030495,  -3.448654502  }; //TGS2602    (0.8,1) (0.5,10) (0.3,30) 
     TGS2602() {};

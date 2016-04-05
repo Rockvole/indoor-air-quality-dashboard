@@ -80,27 +80,27 @@ void setup()
     tgs2602_Ro = temp_float;
 
   request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
-  //request.ip = {192, 168, 1, 130}; // davidlub
+  //request.ip = {192, 168, 1, 110}; // david-mint
   request.port = 80;  
   resolveHost();
   oled.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   oled.display(); 
   
-  // Register Spark variables
-  Spark.variable("ip", ip_display, STRING);  
-  Spark.variable("temperature", &reading.temperature, DOUBLE);
-  Spark.variable("humidity", &reading.humidity, DOUBLE);
-  Spark.variable("unix_time", &unix_time, INT);
-  Spark.variable("stage", &stage, INT);
-  Spark.variable("url", url, STRING);  
+  // Register Particle variables
+  Particle.variable("ip", ip_display, STRING);  
+  Particle.variable("temperature", &reading.temperature, DOUBLE);
+  Particle.variable("humidity", &reading.humidity, DOUBLE);
+  Particle.variable("unix_time", &unix_time, INT);
+  Particle.variable("stage", &stage, INT);
+  Particle.variable("url", url, STRING);  
   
   sprintf(tgs2602_display,"%.2f",tgs2602_Ro);
-  Spark.variable("tgs2602", tgs2602_display, STRING);    
+  Particle.variable("tgs2602", tgs2602_display, STRING);    
   
   // Register Spark Functions
-  Spark.function("calibrate", calibrate);
-  Spark.function("sample", sample);
-  Spark.function("setTgsCalib", setTgsCalib);
+  Particle.function("calibrate", calibrate);
+  Particle.function("sample", sample);
+  Particle.function("set2602Calib", set2602Calib);
   //Serial.begin(9600);
 }
 
@@ -284,7 +284,7 @@ int sample(String command) {
   return 1;
 }
 
-int setTgsCalib(String value) {
+int set2602Calib(String value) {
     char buf[20];
     value.toCharArray(buf,20);
     float f = atof(buf);
