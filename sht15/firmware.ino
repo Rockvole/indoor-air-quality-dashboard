@@ -2,17 +2,7 @@
 #include "ReadingSync.h"
 #include "HttpClient.h"
 #include "SHT1x.h" 
-/**
- * ReadSHT1xValues
- *
- * Read temperature and humidity values from an SHT1x-series (SHT10,
- * SHT11, SHT15) sensor.
- *
- * Copyright 2009 Jonathan Oxer <jon@oxer.com.au>
- * www.practicalarduino.com
- *
- * Ported to Spark Core by Anurag Chugh (https://github.com/lithiumhead) on 2014-10-15
- */
+
 // -----------------
 // Read temperature & humidity and send to server
 // -----------------
@@ -52,12 +42,12 @@ void setup()
   request.port = 80;  
   resolveHost();
 
-  // Register Spark variables
-  Spark.variable("ip", &ip_display, STRING);   
-  Spark.variable("temperature", &sample.temperature, DOUBLE);
-  Spark.variable("humidity", &sample.humidity, DOUBLE);
-  Spark.variable("url", &url, STRING); 
-  Spark.variable("stage", &stage, INT);
+  // Register Particle variables
+  Particle.variable("ip", ip_display, STRING);   
+  Particle.variable("temperature", &sample.temperature, DOUBLE);
+  Particle.variable("humidity", &sample.humidity, DOUBLE);
+  Particle.variable("url", url, STRING); 
+  Particle.variable("stage", &stage, INT);
     
   //Serial.begin(9600); // Open serial connection to report values to host    
 }
@@ -116,12 +106,12 @@ void read_ht() {
 
 bool resolveHost() {
   if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) {
-    uint32_t ip_addr = 0;
-    gethostbyname(hostname, strlen(hostname), &ip_addr);
-    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};    
+    request.ip = WiFi.resolve(hostname);   
     sprintf(ip_display,"%d.%d.%d.%d",request.ip[0],request.ip[1],request.ip[2],request.ip[3]);
     if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) return false;
   }
   return true;
 }
+
+
 

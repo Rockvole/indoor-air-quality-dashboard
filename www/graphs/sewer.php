@@ -8,8 +8,9 @@ $sewer=Array();
 $found=false;
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
-  //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+  //error_log("||ts=".$row['ts']."||ts=".$ts_str."||sewer=".$row['sewer']);
   if(strlen($row['sewer'])>0) {
+    //error_log("-------------------------------------");
     $ts[]=$row['ts'];
     
     if($row['ts']<1424722800 && $id==5) $sewer[]=$row['sewer']; // $sewer[]=$row['sewer']/2; // 23 Feb 2015 12:20pm - Temporary hack to deal with incorrect resistance in original IAQ shield
