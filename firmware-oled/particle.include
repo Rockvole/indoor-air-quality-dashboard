@@ -1,5 +1,5 @@
 firmware.ino
-images.h
+../libs/smileys.h
 ../libs/IntervalTiming/IntervalTiming.cpp
 ../libs/IntervalTiming/IntervalTiming.h
 ../libs/HttpClient/HttpClient.cpp

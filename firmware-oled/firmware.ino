@@ -7,7 +7,7 @@
 #include "PietteTech_DHT.h"
 #include "TGS2602.h"
 #include "Adafruit_SSD1306.h"
-#include "images.h"
+#include "smileys.h"
 
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
