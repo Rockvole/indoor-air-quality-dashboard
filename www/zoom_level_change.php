@@ -15,7 +15,7 @@ if(!isset($today_ts)) {
   $date = Carbon::createFromTimeStamp($today_ts);
   $start_day_utc = $date->startOfDay()->format('U');
   $end_day_utc = $date->endOfDay()->format('U');  
-  $row = get_current_geographical($end_day_utc);  
+  $row = get_current_geographical($end_day_utc,$id);  
   
   error_log("||referer=".$_SERVER['HTTP_REFERER']);
   error_log("||today_ts=".$today_ts);

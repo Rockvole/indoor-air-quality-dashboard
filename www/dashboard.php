@@ -64,7 +64,7 @@ if(!isset($today_ts)) {
   $prev_day_str = $date->copy()->subDay()->format($param_date_format);
   $next_day_str = $date->copy()->addDay()->format($param_date_format);
   $end_day_utc = $date->endOfDay()->format('U');
-  $geo_row = get_current_geographical($end_day_utc);  
+  $geo_row = get_current_geographical($end_day_utc,$id);  
 
   echo "<div style='padding:10px;'>";
   echo "<table border=0>";
