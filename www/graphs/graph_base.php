@@ -32,7 +32,7 @@ $width = htmlspecialchars($_GET["width"]);
 $height = htmlspecialchars($_GET["height"]);
 $start_ts = htmlspecialchars($_GET["start_ts"]);
 $end_ts = htmlspecialchars($_GET["end_ts"]);
-$geo_row = get_current_geographical($end_ts);
+$geo_row = get_current_geographical($end_ts,$id);
 
 $font_size=11;
 $line_fill_color='white@0.65';

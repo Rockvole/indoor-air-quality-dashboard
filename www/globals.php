@@ -94,8 +94,7 @@
     }
   }
   
-  function get_current_geographical($ts) {
-    global $id;
+  function get_current_geographical($ts,$id) {
     global $conn;
     global $zoom_temp_hum;
     global $zoom_sewer;

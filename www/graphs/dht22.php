@@ -9,7 +9,7 @@ $humidity=Array();
 $found=false;
 while($row = mysqli_fetch_array($result)) {
   $ts_str=gmdate('r', $row['ts']);
-  //error_log("temp=".$row['temperature']."||humidity=".$row['humidity']."||ts=".$row['ts']."||ts=".$ts_str);
+  //error_log("||ts=".$row['ts']."||ts=".$ts_str."||temp=".$row['temperature']."||humidity=".$row['humidity']);
   
   if(strlen($row['temperature'])>0 && strlen($row['humidity'])>0) {
     $ts[]=$row['ts'];
@@ -24,6 +24,7 @@ while($row = mysqli_fetch_array($result)) {
     }
   }
 }
+
 if(!$found) {
   $name = 'no_data.png';
   $fp = fopen($name, 'rb');

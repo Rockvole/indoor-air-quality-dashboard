@@ -46,38 +46,48 @@ echo "<th style='text-align:center;'>Last Reading</th><th style='text-align:cent
 while($row = mysqli_fetch_array($result)) {
   $result_geo=mysqli_query($conn,"SELECT name from geographical where group_id=".$row['id']." order by ts desc");
   $row_geo=mysqli_fetch_array($result_geo);
+  $result_group=mysqli_query($conn,"SELECT max(ts) as ts from readings where group_id=".$row['id']); 
+  $row_group=mysqli_fetch_array($result_group);
+  $geo_row = get_current_geographical($row_group['ts'],$row['id']);
+  
   echo "<tr>\n";
   echo "<td style='text-align:right;'><div style='font-size:20px;font-weight:bold;'>".$row['name']."</div>";
   echo "</td>\n";
-  echo "<td><img src='images/calendar.png' onclick='click_button(".$row['id'].");' height=40 width=40 style='cursor:pointer;'></td>";
-  echo "<td><img src='images/graph.png' onclick='click_button(".$row['id'].",\"dashboard.php\");' height=40 width=40 style='cursor:pointer;'></td>";
-  echo "<td><img src='images/barchart.png' onclick='click_button(".$row['id'].",\"events/event_monthly.php\");' height=40 width=40 style='cursor:pointer;'></td>";
-  echo "<td><img src='images/download.png' onclick='click_button(".$row['id'].",\"transfer/download.php\");' height=40 width=40 style='cursor:pointer;'></td>";
-  $name=get_sensor_type_name($row['id']);
-  echo "<td style='text-align:center'>";
-  echo "<img src='images/location.png' onclick='click_button(".$row['id'].",\"add_geographical.php\");' height=30 width=30 style='cursor:pointer;'><br/>";
-  if(strlen($row_geo['name'])>0) {
-    echo "<i>(".$row_geo['name'].")</i>";
+  if(strlen($geo_row['zoom_temp_hum'])>0 && strlen($geo_row['zoom_sewer'])>0) {
+    echo "<td><img src='images/calendar.png' onclick='click_button(".$row['id'].");' height=40 width=40 style='cursor:pointer;'></td>";
+    echo "<td><img src='images/graph.png' onclick='click_button(".$row['id'].",\"dashboard.php\");' height=40 width=40 style='cursor:pointer;'></td>";
+    echo "<td><img src='images/barchart.png' onclick='click_button(".$row['id'].",\"events/event_monthly.php\");' height=40 width=40 style='cursor:pointer;'></td>";
+    echo "<td><img src='images/download.png' onclick='click_button(".$row['id'].",\"transfer/download.php\");' height=40 width=40 style='cursor:pointer;'></td>";
+    $name=get_sensor_type_name($row['id']);
+    echo "<td style='text-align:center'>";
+    echo "<img src='images/location.png' onclick='click_button(".$row['id'].",\"add_geographical.php\");' height=30 width=30 style='cursor:pointer;'><br/>";
+    if(strlen($row_geo['name'])>0) {
+      echo "<i>(".$row_geo['name'].")</i>";
+    } else {
+      echo "<i>&lt;Not Set&gt;</i>";
+    }  
+    echo "</td>";  
+    echo "<td style='text-align:center;'>";
+    if(!is_null($row_group['ts'])) {
+      $curr_date=Carbon::createFromTimeStamp($row_group['ts']);
+      $curr_date->setTimezone($user_timezone);
+      if($curr_date->isToday()) echo "Today ".$curr_date->format("H:i");
+        else echo $curr_date->format("F jS Y H:i");
+      echo "<br/>(".$user_timezone.")";
+    } else echo "&lt;NONE&gt;";
+    echo "</td>";
+    echo "<td style='text-align:center;'>";
+    if($sensor_count==1) {
+      echo "(".$name.")";
+    }
+    echo "</td>";  
   } else {
-    echo "<i>&lt;Not Set&gt;</i>";
-  }  
-  echo "</td>";  
-  echo "<td style='text-align:center;'>";
-  $result_group=mysqli_query($conn,"SELECT max(ts) as ts from readings where group_id=".$row['id']);  
-  $row_group=mysqli_fetch_array($result_group);
-  if(!is_null($row_group['ts'])) {
-    $curr_date=Carbon::createFromTimeStamp($row_group['ts']);
-    $curr_date->setTimezone($user_timezone);
-    if($curr_date->isToday()) echo "Today ".$curr_date->format("H:i");
-      else echo $curr_date->format("F jS Y H:i");
-    echo "<br/>(".$user_timezone.")";
-  } else echo "&lt;NONE&gt;";
-  echo "</td>";
-  echo "<td style='text-align:center;'>";
-  if($sensor_count==1) {
-    echo "(".$name.")";
+	  echo "<td colspan=4>Enter Current Location</td>";
+	  echo "<td style='text-align:center'>";
+	  echo "<img src='images/location.png' onclick='click_button(".$row['id'].",\"add_geographical.php\");' height=30 width=30 style='cursor:pointer;'><br/>";
+	  echo "&nbsp;";
+	  echo "</td>";
   }
-  echo "</td>";  
   echo "</tr>\n";
 
 }
