@@ -82,11 +82,15 @@ while($row = mysqli_fetch_array($result)) {
     }
     echo "</td>";  
   } else {
-	  echo "<td colspan=4>Enter Current Location</td>";
-	  echo "<td style='text-align:center'>";
-	  echo "<img src='images/location.png' onclick='click_button(".$row['id'].",\"add_geographical.php\");' height=30 width=30 style='cursor:pointer;'><br/>";
-	  echo "&nbsp;";
-	  echo "</td>";
+	  if(strlen($row_group['ts'])==0) {
+		echo "<td colspan=6>No Readings Found</td>";  
+	  } else { 
+	    echo "<td colspan=4>Enter Current Location</td>";
+	    echo "<td style='text-align:center'>";
+	    echo "<img src='images/location.png' onclick='click_button(".$row['id'].",\"add_geographical.php\");' height=30 width=30 style='cursor:pointer;'><br/>";
+	    echo "&nbsp;";
+	    echo "</td>";
+      }
   }
   echo "</tr>\n";
 
