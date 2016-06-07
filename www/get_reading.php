@@ -11,6 +11,7 @@ $temp = htmlspecialchars($_GET["temp"]);
 $hum = htmlspecialchars($_GET["hum"]);
 $sewer = htmlspecialchars($_GET["sewer"]);
 $hcho = htmlspecialchars($_GET["hcho"]);
+$co = htmlspecialchars($_GET["co"]);
 $error=false;
 $conn=mysqli_connect("", "", "", $db_name);
 
@@ -97,7 +98,22 @@ if (mysqli_connect_errno()) {
       $result=mysqli_query($conn,$sql);
     }    
   }
-  
+  // ------------------------------------------------------------------- CO
+  if(strlen($co)>0) {
+    $result=mysqli_query($conn,"SELECT id from groups where co=".$id);	   
+    if(mysql_errno()) {
+      exit('Error: '.mysqli_error($conn));
+      $error=true;
+    }    
+    if(mysqli_num_rows($result)>0) {
+      $row = mysqli_fetch_array($result);
+      $group_id=$row['id'];
+      insert_empty_reading($group_id, $unix_time);
+      $sql = "UPDATE readings SET co=$co WHERE group_id=$group_id AND ts=$unix_time";
+      $result=mysqli_query($conn,$sql);
+    }    
+  }
+    
   mysqli_close($conn);
   if($error!=true) {
     echo $unix_time;

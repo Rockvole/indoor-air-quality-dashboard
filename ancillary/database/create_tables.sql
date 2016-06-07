@@ -9,12 +9,14 @@ temp_hum INT DEFAULT NULL, -- id of core in cores table
 dust INT DEFAULT NULL, -- id of core in cores table
 sewer INT DEFAULT NULL, -- id of core in cores table
 hcho INT DEFAULT NULL, -- id of core in cores table
+co INT DEFAULT NULL, -- id of core in cores table
 tz VARCHAR(40), 
 UNIQUE(name),
 UNIQUE(temp_hum),
 UNIQUE(dust),
 UNIQUE(sewer),
 UNIQUE(hcho),
+UNIQUE(co),
 PRIMARY KEY (id)
 );
 
@@ -32,6 +34,7 @@ humidity INT,
 dust INT, 
 sewer INT, 
 hcho INT, 
+co INT,
 group_id INT, 
 ts INT UNSIGNED, 
 PRIMARY KEY (id), 
