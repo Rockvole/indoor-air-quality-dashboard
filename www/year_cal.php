@@ -49,6 +49,13 @@ switch($sensor) {
     $min_orange=$HCHO_GOOD;
     $min_red=$HCHO_OK;
     break;   
+  case 5: // Carbon Monoxide
+    $title_name="Carbon Monoxide";
+    $sensor_column="co";
+    $default_sensor_5="checked='checked'";
+    $min_orange=$CO_GOOD;
+    $min_red=$CO_OK;
+    break;      
   default: // Humidity
     $title_name="Humidity";
     $sensor_column="humidity";
@@ -107,6 +114,11 @@ $currentYear = $calendar->year($year);
   if(isset($sensor_hcho)) {
     echo "<td>";
     echo "<input type='radio' onclick='change_sensor(4);' $default_sensor_4>Formaldehyde";
+    echo "</td>";  
+  }
+  if(isset($sensor_co)) {
+    echo "<td>";
+    echo "<input type='radio' onclick='change_sensor(5);' $default_sensor_5>Carbon Monoxide";
     echo "</td>";  
   }
   echo "<td align=right><img src='images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  

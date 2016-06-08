@@ -29,6 +29,12 @@
   $HCHO_OK         = 20;
   $HCHO_GOOD       = 10;
   $HCHO_MIN        = 0;
+  
+  $CO_MAX          = 30;
+  $CO_OK           = 20;
+  $CO_GOOD         = 10;
+  $CO_MIN          = 0;
+  
   $param_date_format='Y-m-d';
   $user_date_format='l, F jS Y H:i';
   $db_name = 'iaq';
@@ -54,6 +60,7 @@
     global $sensor_dust;
     global $sensor_sewer;
     global $sensor_hcho;
+    global $sensor_co;
     global $sensor_count;
     global $sensor_type;
     
@@ -65,28 +72,34 @@
     $sensor_dust=$row['dust'];  
     $sensor_sewer=$row['sewer'];  
     $sensor_hcho=$row['hcho']; 
+    $sensor_co=$row['co']; 
     $sensor_count=0;
     if(isset($sensor_temp)) $sensor_count++;
     if(isset($sensor_dust)) $sensor_count++; 
     if(isset($sensor_sewer)) $sensor_count++;
     if(isset($sensor_hcho)) $sensor_count++;
+    if(isset($sensor_co)) $sensor_count++;
    
     if($sensor_count==1) {
       if(isset($sensor_temp)) {
-	$sensor_type=0;
-	return "Temperature & Humidity";
+	    $sensor_type=0;
+	    return "Temperature & Humidity";
       }
       if(isset($sensor_dust)) {
-	$sensor_type=2;
-	return "Dust";
+	    $sensor_type=2;
+	    return "Dust";
       }
       if(isset($sensor_sewer)) {
-	$sensor_type=3;
-	return "VOC's / Sewer";
+	    $sensor_type=3;
+	    return "VOC's / Sewer";
       }
       if(isset($sensor_hcho)) {
-	$sensor_type=4;
-	return "Formaldehyde";
+	    $sensor_type=4;
+	    return "Formaldehyde";
+      }
+      if(isset($sensorco)) {
+	    $sensor_type=5;
+	    return "Carbon Monoxide";
       }
       exit("Unknown sensor type: $sensor_type");
     } else {
