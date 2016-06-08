@@ -13,6 +13,7 @@ LAMP based Indoor Air Quality Web Dashboard for the Spark Core
 |---------------|--------------------------------------|
 |DHT22          |Temperature/Humidity                  |
 |Shinyei PPD42NS|Dust Particles                        |
+|Figaro TGS2600 |Carbon Monoxide and Air Contaminants) |
 |Figaro TGS2602 |VOCs and Hydrogen Sulfide (Sewer Gas) |
 |WSP2110        |Formaldehyde                          |
 
