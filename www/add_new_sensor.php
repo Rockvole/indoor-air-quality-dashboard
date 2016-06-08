@@ -47,8 +47,9 @@
   echo "<td></td>";
   echo "<td colspan=3>";
   echo "<table border=0>";
-  echo "<tr><th>Core Id</th><th width=100>Temperature<br/>& Humidity</th><th width=100>Dust</th><th width=100>VOC's /<br/>Sewer</th><th width=100>Formaldehyde</th></tr>";
-  for($sensor=0;$sensor<5;$sensor++) {
+  echo "<tr><th>Core Id</th><th width=100>Temperature<br/>& Humidity</th><th width=100>Dust</th><th width=100>VOC's /<br/>Sewer</th>";
+  echo "<th width=100>Formaldehyde</th><th width=100>Carbon<br/>Monoxide</th></tr>";
+  for($sensor=0;$sensor<=5;$sensor++) {
     $check_str="";
     echo "<tr>";
     if($sensor==0) {
@@ -63,6 +64,7 @@
     echo "<td align=center><input type='radio' name='dust' $check_str value=$sensor></td>";
     echo "<td align=center><input type='radio' name='sewer' $check_str value=$sensor></td>";
     echo "<td align=center><input type='radio' name='hcho' $check_str value=$sensor></td>";
+    echo "<td align=center><input type='radio' name='co' $check_str value=$sensor></td>";
     echo "</tr>";
   }
   echo "<tr>";

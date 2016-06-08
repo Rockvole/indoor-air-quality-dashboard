@@ -49,9 +49,11 @@ while($row = mysqli_fetch_array($result)) {
   $result_group=mysqli_query($conn,"SELECT max(ts) as ts from readings where group_id=".$row['id']); 
   $row_group=mysqli_fetch_array($result_group);
   $geo_row = get_current_geographical($row_group['ts'],$row['id']);
+  $result_location=mysqli_query($conn,"select name from locations where type=1 and ts=(select max(ts) as ts from locations where group_id=".$row['id'].")"); 
+  $row_location=mysqli_fetch_array($result_location);
   
   echo "<tr>\n";
-  echo "<td style='text-align:right;'><div style='font-size:20px;font-weight:bold;'>".$row['name']."</div>";
+  echo "<td style='text-align:right;'><span style='font-size:20px;font-weight:bold;'>".$row['name']."</span><br/><i>".$row_location['name']."</i>";
   echo "</td>\n";
   if(strlen($geo_row['zoom_temp_hum'])>0 && strlen($geo_row['zoom_sewer'])>0) {
     echo "<td><img src='images/calendar.png' onclick='click_button(".$row['id'].");' height=40 width=40 style='cursor:pointer;'></td>";

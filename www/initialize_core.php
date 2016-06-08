@@ -7,6 +7,7 @@ $temp_hum = filter_input(INPUT_GET, 'temp_hum', FILTER_VALIDATE_INT);
 $dust = filter_input(INPUT_GET, 'dust', FILTER_VALIDATE_INT);
 $sewer = filter_input(INPUT_GET, 'sewer', FILTER_VALIDATE_INT);
 $hcho = filter_input(INPUT_GET, 'hcho', FILTER_VALIDATE_INT);
+$co = filter_input(INPUT_GET, 'co', FILTER_VALIDATE_INT);
 
 if(strlen($name)<=0) exit("Must specify name parameter");
 if(strlen($tz)<=0) exit("Must specify tz parameter");
@@ -14,6 +15,7 @@ if(strlen($temp_hum)<=0) exit("Must specify temp_hum parameter");
 if(strlen($dust)<=0) exit("Must specify dust parameter");
 if(strlen($sewer)<=0) exit("Must specify sewer parameter");
 if(strlen($hcho)<=0) exit("Must specify formaldehyde parameter");
+if(strlen(co)<=0) exit("Must specify carbon monoxide parameter");
 
 if(!date_default_timezone_set($tz)) {
   exit("Must specify valid php TimeZone");	
@@ -50,20 +52,24 @@ if (mysqli_connect_errno()) {
       $row = mysqli_fetch_array($result);  
       $id=$row['id'];
       if($temp_hum==$sensor) {
-	$sql = "UPDATE groups SET temp_hum=$id WHERE name='$name'";
-	$result=mysqli_query($conn,$sql);
+	    $sql = "UPDATE groups SET temp_hum=$id WHERE name='$name'";
+	    $result=mysqli_query($conn,$sql);
       }
       if($dust==$sensor) {
-	$sql = "UPDATE groups SET dust=$id WHERE name='$name'";
-	$result=mysqli_query($conn,$sql);
+	    $sql = "UPDATE groups SET dust=$id WHERE name='$name'";
+	    $result=mysqli_query($conn,$sql);
       }
       if($sewer==$sensor) {
-	$sql = "UPDATE groups SET sewer=$id WHERE name='$name'";
-	$result=mysqli_query($conn,$sql);
+	    $sql = "UPDATE groups SET sewer=$id WHERE name='$name'";
+	    $result=mysqli_query($conn,$sql);
       }
       if($hcho==$sensor) {
-	$sql = "UPDATE groups SET hcho=$id WHERE name='$name'";
-	$result=mysqli_query($conn,$sql);
+	    $sql = "UPDATE groups SET hcho=$id WHERE name='$name'";
+	    $result=mysqli_query($conn,$sql);
+      }
+      if($co==$sensor) {
+	    $sql = "UPDATE groups SET co=$id WHERE name='$name'";
+	    $result=mysqli_query($conn,$sql);
       }
     }
   }
