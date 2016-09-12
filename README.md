@@ -25,10 +25,11 @@ LAMP based Indoor Air Quality Web Dashboard for the Spark Core
 |dht22               |Spark Core firmware for dht22 temperature / humidity sensor      |
 |documentation       |Documentation regarding hardware recommendations for V2 of the indoor air quality shield      |
 |firmware            |Spark Core firmware supporting full suite of indoor air quality sensors |
-|firmware-mini       |Spark Core firmware supporting cut down hardware with TGS2602 & DHT22 only |
-|firmware-oled       |Particle Photon firmware supporting TGS2602, DHT22 & IIC I2C 128X64 OLED LCD Display Module Arduino/STM32 |
-|firmware-oled-co    |Particle Photon firmware supporting TGS2600, DHT22 & IIC I2C 128X64 OLED LCD Display Module Arduino/STM32 |
 |hardware            |Details about the indoor air quality shield hardware             |
+|firmware-mini       |Spark Core firmware supporting cut down hardware with TGS2602 & DHT22 only |
+|firmware-oled       |Particle Photon firmware supporting TGS2602, DHT22 & I2C 128X64 OLED LCD Display |
+|hardware-oled       |Details of the PCB hardware for the TGS2602, DHT22 & IIC I2C 128X64 OLED LCD Display Module Arduino/STM32 |
+|firmware-oled-co    |Particle Photon firmware supporting TGS2600, DHT22 & IIC I2C 128X64 OLED LCD Display Module Arduino/STM32 |
 |libs                |firmware libraries for the sensors                               |
 |sht15               |Spark Core firmware for sht15 temperature / humidity sensor      |
 |www                 |PHP Web pages to view graphs of collected data                   |
