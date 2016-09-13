@@ -17,8 +17,7 @@
 |10mH Ferrite Core (106)                                    |        | -      |     |           |
 |RGB LED                                                    |        | -      |     |           |
 |1K resistor                                                |        | -      |6    |           |
-|10K resistor                                               |        | -      |     |           |
-|4.7K resistor                                              |        | -      |     |For DHT22  |
+|10K resistor                                               |        | -      |     |For DHT22  |
 |22 AWG solid jumper wire                                   |        | -      |     |           |
 |Genuine Apple USB Wall Charger (A1401 / A1357)             |AP      |$20     |     |For accurate readings |
 |USB Battery Pack                                           |        |$30     |     |(Only needed when finding source of odors) |
