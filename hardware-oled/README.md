@@ -10,6 +10,7 @@
 |12-pin 2.54mm Pitch Female Double Row Header               |EB      | -      |2    |(single row can also be used) |
 |4-pin 2.54mm Pitch Female Single Row Header                |EB      | -      |     |For Screen |
 |4-pin 2.54mm Pitch Female Tall Stackable Single Row Header |EB      | -      |     |For Screen |
+|2.54mm Pitch Single Row Right Angle Male Pin Header        |EB      | -      |8    |           |
 |1000uF Electrolytic Capacitor                              |        | -      |     |           |
 |10uF Electrolytic Capacitor                                |        | -      |     |           |
 |0.1uF Electrolytic Capacitor                               |        | -      |     |           |
@@ -19,10 +20,8 @@
 |10K resistor                                               |        | -      |     |           |
 |4.7K resistor                                              |        | -      |     |For DHT22  |
 |22 AWG solid jumper wire                                   |        | -      |     |           |
-|Genuine Apple USB Wall Charger                             |AP      |$20     |     |           |
-|USB Battery Pack                                           |        |$30     |     |Only needed for finding source of odors |
-
-<i>Optional items - solder components directly instead. If you wish to use a solderless breadboard then the optional items are not needed</i>
+|Genuine Apple USB Wall Charger (A1401 / A1357)             |AP      |$20     |     |For accurate readings |
+|USB Battery Pack                                           |        |$30     |     |(Only needed when finding source of odors) |
 
 ### Sensors
 |Name               |Type                   |Source  |Price   |Notes
