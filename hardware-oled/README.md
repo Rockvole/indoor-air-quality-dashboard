@@ -2,7 +2,7 @@
 |Part                                                       |Source  |Price   |Qty  |Note       |
 |-----------------------------------------------------------|--------|--------|-----|-----------|
 |Particle Photon                                            |AF      |$20     |     |           |
-|Network Switch Enclosure szomk ak-nw-06                    |AE      |$10     |     |           |
+|Network Switch Enclosure szomk ak-nw-06                    |AE      |$10     |     |Be sure to get the model with an opaque round window (some models are solid)|
 |IIC I2C 128X64 OLED LCD Display Module Arduino/STM32       |EB      |$4.00   |     |           |
 |Micro USB B Female Breakout Board	                        |EB      |$3      |     |           |
 |Figaro SR7 Socket                                          |FI      |$1.50   |1    |(optional) |
