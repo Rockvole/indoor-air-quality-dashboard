@@ -110,6 +110,7 @@ if(!isset($today_ts)) {
   echo "</div>";
   
   if(isset($sensor_temp)) { // ----------------------------------------- Temperature / Humidity
+/*
     echo "<div class='container'>";
     echo "<table border=0>";    
     echo "<tr>";
@@ -150,6 +151,89 @@ if(!isset($today_ts)) {
     echo "</tr>";
     echo "</table>";
     echo "</div>";
+*/
+	// ----------------------------------------------------------------- Humidity
+    echo "<div class='container'>";
+    echo "<table border=0>";    
+    echo "<tr>";
+    if($size==2) {
+      echo "<td></td>";
+    }
+    echo "<td>";
+    
+    echo "<table border=0 width=100%>";
+    echo "<tr>";
+    echo "<td width='50px'>";
+    $zoom_image=($geo_row['zoom_temp_hum']==0) ? "zoom_small.png" : "zoom_large.png";
+    echo "<img src='images/$zoom_image' onclick='change_zoom(1);' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";
+    echo "<td align=center><h3 style='display:inline;'>Humidity</h3>&nbsp;";
+    echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+    
+    echo "</td>";
+    echo "</tr>";
+    echo "<tr>";
+    if($size==2) {
+      echo "<td rowspan=2 width=$range_width style='height:100%;'>";
+      echo "  <div style='height:100%;overflow:auto;'>";  
+      echo "  <table style='width:100%;height:100%;' border=0>";
+      echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+      echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+      echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+      echo "  </table>";
+      echo "  </div>";  
+      echo "</td>"; 
+    }
+    echo "<td>";
+    echo "<img src='graphs/humidity.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+    echo "</div>";    
+    // ----------------------------------------------------------------- Temperature
+    echo "<div class='container'>";
+    echo "<table border=0>";    
+    echo "<tr>";
+    if($size==2) {
+      echo "<td></td>";
+    }
+    echo "<td>";
+    
+    echo "<table border=0 width=100%>";
+    echo "<tr>";
+    echo "<td width='50px'>";
+    $zoom_image=($geo_row['zoom_temp_hum']==0) ? "zoom_small.png" : "zoom_large.png";
+    echo "<img src='images/$zoom_image' onclick='change_zoom(1);' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";
+    echo "<td align=center><h3 style='display:inline;'>Temperature</h3>&nbsp;";
+    echo "<img src='health/mask.png' onclick='location.href=\"health/mold.html\"' width=30 height=30 style='cursor:pointer;'>";  
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+    
+    echo "</td>";
+    echo "</tr>";
+    echo "<tr>";
+    if($size==2) {
+      echo "<td rowspan=2 width=$range_width style='height:100%;'>";
+      echo "  <div style='height:100%;overflow:auto;'>";  
+      echo "  <table style='width:100%;height:100%;' border=0>";
+      echo "  <tr><td align=right><font color=red>Bad</font></td></tr>";    
+      echo "  <tr><td align=right><font color=orange>Okay</font></td></tr>";
+      echo "  <tr><td align=right><font color=green>Good</font></td></tr>";
+      echo "  </table>";
+      echo "  </div>";  
+      echo "</td>"; 
+    }
+    echo "<td>";
+    echo "<img src='graphs/temperature.php?id=$id&width=$width_pix[$size]&height=$height_pix[$size]&start_ts=$start_day_utc&end_ts=$end_day_utc' width='$width_pix[$size]' height='$height_pix[$size]' onclick='go_calendar(1);' style='cursor:pointer;'>";
+    echo "</td>";
+    echo "</tr>";
+    echo "</table>";
+    echo "</div>";        
   }
   if(isset($sensor_dust)) { // ----------------------------------------- Dust
     echo "<div class='container'>";  

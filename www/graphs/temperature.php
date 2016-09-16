@@ -42,9 +42,9 @@ $temperature_plot->SetFillColor($line_fill_color);
 $graph = new Graph($width,$height);
 $graph->SetFrame(false);
 if($zoom_level==0)
-  $graph->SetBackgroundImage('background_h_25_75.png',BGIMG_FILLPLOT);
+  $graph->SetBackgroundImage('background_h_30_36.png',BGIMG_FILLPLOT);
 else
-  $graph->SetBackgroundImage('background_h_40_60.png',BGIMG_FILLPLOT);
+  $graph->SetBackgroundImage('background_h_28_32.png',BGIMG_FILLPLOT);
   
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);

@@ -42,6 +42,7 @@ if($zoom_level==0)
   $graph->SetBackgroundImage('background_h_33_66.png',BGIMG_FILLPLOT);
 else  
   $graph->SetBackgroundImage('background_h_10_20.png',BGIMG_FILLPLOT);
+
 $graph->SetBackgroundImageMix(35);
 $graph->SetMargin(60,60,40,50);
 $graph->SetMarginColor('white');
