@@ -191,7 +191,7 @@ void loop()
                          curr_reading.reading_time,
                          curr_reading.temperature, curr_reading.humidity,  
                          curr_reading.tgs2602_sewer, 
-                         Spark.deviceID().c_str(), (unix_time-uptime_start));  
+                         Particle.deviceID().c_str(), (unix_time-uptime_start));  
             request.path = url;
             response.body = "";
             http.get(request, response);
