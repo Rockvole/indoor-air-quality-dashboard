@@ -13,7 +13,7 @@ $sewer = htmlspecialchars($_GET["sewer"]);
 $hcho = htmlspecialchars($_GET["hcho"]);
 $co = htmlspecialchars($_GET["co"]);
 $error=false;
-$conn=mysqli_connect("", "", "", $db_name);
+$conn=mysqli_connect("", $db_user, $db_pass, $db_name);
 
 // Check connection
 if (mysqli_connect_errno()) {

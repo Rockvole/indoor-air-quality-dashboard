@@ -18,3 +18,5 @@ sudo apt-get install ttf-mscorefonts-installer
 
 # download Carbon from git
 
+# install php mysql 
+sudo apt-get install php5-mysql

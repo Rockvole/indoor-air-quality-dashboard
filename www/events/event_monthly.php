@@ -40,7 +40,7 @@ use Carbon\Carbon;
 require('../calendar/calendar.php');
 include '../globals.php';
 
-$conn=mysqli_connect("", "", "", $db_name);
+$conn=mysqli_connect("", $db_user, $db_pass, $db_name);
 
 // Check connection
 if (mysqli_connect_errno()) {

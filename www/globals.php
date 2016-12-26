@@ -37,9 +37,11 @@
   
   $param_date_format='Y-m-d';
   $user_date_format='l, F jS Y H:i';
+  $db_user = 'aversions';
+  $db_pass = 'aversions';
   $db_name = 'iaq';
   
-  $conn=mysqli_connect("", "", "", $db_name);
+  $conn=mysqli_connect("", $db_user, $db_pass, $db_name);
   if (mysqli_connect_errno()) {
     exit('Failed to connect to MySQL: ' . mysqli_connect_error());
   }  
