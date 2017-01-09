@@ -1,5 +1,6 @@
 create database iaq;
-grant all on iaq.* to ''@'localhost';
+create user 'php_iaq'@'localhost' identified by 'php_iaq';
+grant all on iaq.* to 'php_iaq'@'localhost' with max_user_connections 20;
 use iaq;
 
 create table groups (
