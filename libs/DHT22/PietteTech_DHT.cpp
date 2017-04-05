@@ -1,6 +1,6 @@
 /*
  * FILE:        PietteTech_DHT.cpp
- * VERSION:     0.2
+ * VERSION:     0.4
  * PURPOSE:     Spark Interrupt driven lib for DHT sensors
  * LICENSE:     GPL v3 (http://www.gnu.org/licenses/gpl.html)
  *
@@ -8,6 +8,9 @@
  *      January 2014        Original Spark Port
  *      October 2014        Added support for DHT21/22 sensors
  *                          Improved timing, moved FP math out of ISR
+ *      September 2016      Updated for Particle and removed dependency
+ *                          on callback_wrapper.  Use of callback_wrapper
+ *                          is still for backward compatibility but not used
  *
  * Based on adaptation by niesteszeck (github/niesteszeck)
  * Based on original DHT11 library (http://playgroudn.adruino.cc/Main/DHT11Lib)
@@ -22,7 +25,7 @@
 /*
     Timing of DHT22 SDA signal line after MCU pulls low for 1ms
     https://github.com/mtnscott/Spark_DHT/AM2302.pdf
- 
+
   - - - -            -----           -- - - --            ------- - -
          \          /     \         /  \      \          /
           +        /       +       /    +      +        /
@@ -30,7 +33,7 @@
             ------           -----        -- - --------
  ^        ^                ^                   ^          ^
  |   Ts   |        Tr      |        Td         |    Te    |
- 
+
     Ts : Start time from MCU changing SDA from Output High to Tri-State (Hi-Z)
          Spec: 20-200us             Tested: < 65us
     Tr : DHT response to MCU controlling SDA and pulling Low and High to
@@ -47,47 +50,44 @@
 #include "math.h"
 #include "PietteTech_DHT.h"
 
-// Thanks to Paul Kourany for this word type conversion function
-uint16_t word(uint8_t high, uint8_t low) {
-    uint16_t ret_val = low;
-    ret_val += (high << 8);
-    return ret_val;
-}
-
+/*
+ * NOTE:  callback_wrapper is only here for backwards compatibility with v0.3 and earlier
+ *        it is no longer used or needed
+ */
 PietteTech_DHT::PietteTech_DHT(uint8_t sigPin, uint8_t dht_type, void (*callback_wrapper)()) {
-    begin(sigPin, dht_type, callback_wrapper);
+    begin(sigPin, dht_type);
     _firstreading = true;
 }
 
-void PietteTech_DHT::begin(uint8_t sigPin, uint8_t dht_type, void (*callback_wrapper) ()) {
+/*
+ * NOTE:  callback_wrapper is only here for backwards compatibility with v0.3 and earlier
+ *        it is no longer used or needed
+ */
+void PietteTech_DHT::begin(uint8_t sigPin, uint8_t dht_type, void (*callback_wrapper)()) {
     _sigPin = sigPin;
-    if(_sigPin!=NOT_CONNECTED) {      
-      _type = dht_type;
-      isrCallback_wrapper = callback_wrapper;
+    _type = dht_type;
 
-      pinMode(sigPin, OUTPUT);
-      digitalWrite(sigPin, HIGH);
-      _lastreadtime = 0;
-      _state = STOPPED;
-      _status = DHTLIB_ERROR_NOTSTARTED;
-    }
+    pinMode(sigPin, OUTPUT);
+    digitalWrite(sigPin, HIGH);
+    _lastreadtime = 0;
+    _state = STOPPED;
+    _status = DHTLIB_ERROR_NOTSTARTED;
 }
 
 int PietteTech_DHT::acquire() {
-    if(_sigPin!=NOT_CONNECTED) {
-      // Check if sensor was read less than two seconds ago and return early
-      // to use last reading
-      unsigned long currenttime = millis();
-      if (currenttime < _lastreadtime) {
+    // Check if sensor was read less than two seconds ago and return early
+    // to use last reading
+    unsigned long currenttime = millis();
+    if (currenttime < _lastreadtime) {
         // there was a rollover
         _lastreadtime = 0;
-      }
-      if (!_firstreading && ((currenttime - _lastreadtime) < 2000 )) {
+    }
+    if (!_firstreading && ((currenttime - _lastreadtime) < 2000 )) {
         // return last correct measurement, (this read time - last read time) < device limit
         return DHTLIB_ACQUIRED;
-      }
-    
-      if (_state == STOPPED || _state == ACQUIRED) {
+    }
+
+    if (_state == STOPPED || _state == ACQUIRED) {
         /*
          * Setup the initial state machine
          */
@@ -129,21 +129,38 @@ int PietteTech_DHT::acquire() {
          * starts to send us data
          */
         _us = micros();
-        attachInterrupt(_sigPin, isrCallback_wrapper, FALLING);
+        attachInterrupt(_sigPin, &PietteTech_DHT::_isrCallback, this, FALLING);
 
         return DHTLIB_ACQUIRING;
-      } else
+    } else
         return DHTLIB_ERROR_ACQUIRING;
-  } else _state=STOPPED;
 }
 
-int PietteTech_DHT::acquireAndWait() {
+int PietteTech_DHT::acquireAndWait(uint32_t timeout) {
     acquire();
-    while(acquiring()) ;
+    uint32_t start = millis();
+    uint32_t wrapper;
+    while(acquiring() && (timeout == 0 || (millis() > start && (millis()-start) < timeout)));
+    if (timeout)
+    {
+        if (millis() < start) // millis counter wrapped
+        {
+            wrapper = (~start)+1;   // Compute elapsed seconds between "start" and counter-wrap to 0
+            timeout -= wrapper;     // Subtract elapsed seconds to 0 from timeout
+        }
+        // If millis counter didn't wrap, the next line will be a no-op.
+        while(acquiring() && (millis() < timeout));
+    }
     return getStatus();
 }
 
-void PietteTech_DHT::isrCallback() {
+/*
+ * NOTE:  isrCallback is only here for backwards compatibility with v0.3 and earlier
+ *        it is no longer used or needed
+ */
+void PietteTech_DHT::isrCallback() { }
+
+void PietteTech_DHT::_isrCallback() {
     unsigned long newUs = micros();
     unsigned long delta = (newUs - _us);
     _us = newUs;
@@ -215,9 +232,7 @@ void PietteTech_DHT::isrCallback() {
 
 void PietteTech_DHT::convert() {
     // Calculate the temperature and humidity based on the sensor type
-
-    if(_sigPin!=NOT_CONNECTED) {
-      switch (_type) {
+    switch (_type) {
         case DHT11:
             _hum = _bits[0];
             _temp = _bits[2];
@@ -229,7 +244,6 @@ void PietteTech_DHT::convert() {
                      -word(_bits[2] & 0x7F, _bits[3]) :
                      word(_bits[2], _bits[3])) * 0.1;
             break;
-      }
     }
     _convert = false;
 }
@@ -245,13 +259,11 @@ int PietteTech_DHT::getStatus() {
 }
 
 float PietteTech_DHT::getCelsius() {
-    if(_sigPin==NOT_CONNECTED) return MIN_FLOAT;
     DHT_CHECK_STATE;
     return _temp;
 }
 
 float PietteTech_DHT::getHumidity() {
-    if(_sigPin==NOT_CONNECTED) return MIN_FLOAT;
     DHT_CHECK_STATE;
     return _hum;
 }
