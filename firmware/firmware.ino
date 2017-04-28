@@ -76,7 +76,7 @@ HttpClient http;
 char url[200];
 http_request_t request;
 http_response_t response;
-char hostname[] = "foodaversions.com";
+char hostname[] = "www.foodaversions.com";
 char ip_display[16];
 
 void setup()
@@ -95,25 +95,24 @@ void setup()
   pinMode(DUST_PIN, INPUT);
 
   request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
-  //request.ip = {192, 168, 1, 130}; // davidlub
-  request.port = 80;  
-  resolveHost();
+  //request.ip = {192, 168, 1, 110}; // david-mint
+  request.hostname = "www.foodaversions.com";
+  request.port = 80;
   
-  // Register Spark variables
+  // Register Particle variables
   Particle.variable("ip", ip_display, STRING);  
   Particle.variable("temperature", &reading.temperature, DOUBLE);
   Particle.variable("humidity", &reading.humidity, DOUBLE);
-  Particle.variable("unix_time", &unix_time, INT);
+  Particle.variable("url", url, STRING);
   Particle.variable("stage", &stage, INT);
-  Particle.variable("url", url, STRING);  
+  Particle.variable("unix_time", &unix_time, INT);
   
-  sprintf(wsp2110_display,"%.2f",wsp2110_Ro);
-  Particle.variable("wsp2110", wsp2110_display, STRING);  
-  //Particle.variable("tgs2602", &tgs2602_sample_avg, INT);
   sprintf(tgs2602_display,"%.2f",tgs2602_Ro);
-  Particle.variable("tgs2602", tgs2602_display, STRING);    
+  Particle.variable("tgs2602", tgs2602_display, STRING);
+  sprintf(wsp2110_display,"%.2f",wsp2110_Ro);
+  Particle.variable("wsp2110", wsp2110_display, STRING);    
   
-  // Register Spark Functions
+  // Register Particle Functions
   Particle.function("calibrate", calibrate);
   Particle.function("sample", sample);
   Particle.function("setWspCalib", setWspCalib);  
@@ -165,31 +164,29 @@ void loop()
       break;
     case rs.SEND_READING:
       {
-        if(resolveHost()) {
-          reading_struct curr_reading;
-          bool reading_sent;
-          do {
-            reading_sent=false;
-            curr_reading = q.front();
-            sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=%i&sewer=%i&dust=%.2f&core_id=%s&uptime=%i", 
-                         curr_reading.reading_time,  
-                         curr_reading.temperature, curr_reading.humidity, curr_reading.wsp2110_hcho, 
-                         curr_reading.tgs2602_sewer, curr_reading.dust_concentration,
-                         Spark.deviceID().c_str(), (unix_time-uptime_start));  
-            request.path = url;
-            response.body = "";
-            http.get(request, response);
-            char read_time_chars[12];
-            sprintf(read_time_chars, "%d", curr_reading.reading_time);
-            String read_time_str(read_time_chars);
-            if(read_time_str.equals(response.body)) {
-              q.pop();
-              reading_sent=true;
-            }
-          } while(reading_sent && !q.empty());
-        } else { // Cant resolve host
-            color=rgbLed.RED;
-        }
+        reading_struct curr_reading;
+        bool reading_sent;
+        int retry = 3;
+        do {
+          reading_sent=false;
+          curr_reading = q.front();
+          sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=%i&sewer=%i&dust=%.2f&core_id=%s&uptime=%i", 
+                       curr_reading.reading_time,
+                       curr_reading.temperature, curr_reading.humidity, curr_reading.wsp2110_hcho, 
+                       curr_reading.tgs2602_sewer, curr_reading.dust_concentration,
+                       Particle.deviceID().c_str(), (unix_time-uptime_start));  
+          request.path = url;
+          response.body = "";
+          http.get(request, response);
+          char read_time_chars[12];
+          sprintf(read_time_chars, "%d", curr_reading.reading_time);
+          String read_time_str(read_time_chars);
+          if(read_time_str.equals(response.body)) {
+            q.pop();
+            reading_sent=true;
+          }
+          retry--;
+        } while(reading_sent && !q.empty() && retry>0);
         rs.setReadingSent();        
       }
       break;        
@@ -251,24 +248,8 @@ void read_dht22() {
     delay(30);
     cnt++;
   }
-  
   reading.humidity = DHT.getHumidity();
   reading.temperature = DHT.getCelsius(); 
-}
-
-bool resolveHost() {
-  if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) {
-#if PLATFORM_ID == 0 // CORE
-    uint32_t ip_addr = 0; 
-    gethostbyname(hostname, strlen(hostname), &ip_addr);
-    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};
-#elif PLATFORM_ID == 6 // PHOTON   
-    request.ip = WiFi.resolve(hostname);   
-#endif    
-    sprintf(ip_display,"%d.%d.%d.%d",request.ip[0],request.ip[1],request.ip[2],request.ip[3]);
-    if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) return false;
-  }
-  return true;
 }
 
 void beep(int delay_ms) {

@@ -12,14 +12,14 @@
 
 ReadingSync rs (INTERVAL_MINS, 0, Time.now());
 
-struct reading {
+struct reading_struct {
     int    reading_time = 0;    
     double temperature = 0;
     double humidity = 0;
 };
 
-std::queue<reading> q;
-reading sample;
+std::queue<reading_struct> q;
+reading_struct reading;
 int unix_time = 0;
 int stage=0;
 int uptime_start=0;
@@ -32,24 +32,24 @@ HttpClient http;
 char url[200];
 http_request_t request;
 http_response_t response;
-char hostname[] = "foodaversions.com";
+char hostname[] = "www.foodaversions.com";
 char ip_display[16];
 
 void setup()
 {
   request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
-  //request.ip = {192, 168, 1, 130}; // davidlub
-  request.port = 80;  
-  resolveHost();
+  //request.ip = {192, 168, 1, 110}; // david-mint
+  request.hostname = "www.foodaversions.com";
+  request.port = 80;
 
   // Register Particle variables
-  Particle.variable("ip", ip_display, STRING);   
-  Particle.variable("temperature", &sample.temperature, DOUBLE);
-  Particle.variable("humidity", &sample.humidity, DOUBLE);
-  Particle.variable("url", url, STRING); 
+  Particle.variable("ip", ip_display, STRING);  
+  Particle.variable("temperature", &reading.temperature, DOUBLE);
+  Particle.variable("humidity", &reading.humidity, DOUBLE);
+  Particle.variable("url", url, STRING);
   Particle.variable("stage", &stage, INT);
-    
-  //Serial.begin(9600); // Open serial connection to report values to host    
+  
+  //Serial.begin(9600);
 }
 
 void loop()
@@ -61,35 +61,36 @@ void loop()
   switch(stage) {
     case rs.SAMPLING:
       {
-        sample.reading_time = unix_time;   
+        reading.reading_time = unix_time;   
         read_ht();
         rs.setSamplingComplete();
-        q.push(sample);
+        q.push(reading);
       }
       break;
     case rs.SEND_READING:
       {
-        if(resolveHost()) {
-          reading curr_sample;
-          bool reading_sent;
-          do {
-            reading_sent=false;
-            curr_sample = q.front();  
-            sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&core_id=%s&uptime=%i", 
-                         curr_sample.reading_time,  
-                         curr_sample.temperature, curr_sample.humidity, 
-                         Spark.deviceID().c_str(), (unix_time-uptime_start));  
-            request.path = url;
-            http.get(request, response);
-            char read_time_chars[12];
-            sprintf(read_time_chars, "%d", curr_sample.reading_time);
-            String read_time_str(read_time_chars);
-            if(read_time_str.equals(response.body)) {
-              q.pop();
-              reading_sent=true;
-            }      
-          } while(reading_sent && !q.empty());
-        }
+        reading_struct curr_reading;
+        bool reading_sent;
+        int retry = 3;
+        do {
+          reading_sent=false;
+          curr_reading = q.front();
+          sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&core_id=%s&uptime=%i", 
+                       curr_reading.reading_time,
+                       curr_reading.temperature, curr_reading.humidity, 
+                       Particle.deviceID().c_str(), (unix_time-uptime_start));  
+          request.path = url;
+          response.body = "";
+          http.get(request, response);
+          char read_time_chars[12];
+          sprintf(read_time_chars, "%d", curr_reading.reading_time);
+          String read_time_str(read_time_chars);
+          if(read_time_str.equals(response.body)) {
+            q.pop();
+            reading_sent=true;
+          }
+          retry--;
+        } while(reading_sent && !q.empty() && retry>0);
         rs.setReadingSent();      
       }
       break;
@@ -100,18 +101,7 @@ void loop()
 }
 
 void read_ht() {
-  sample.humidity = sht1x.readHumidity();
-  sample.temperature = sht1x.readTemperatureC();
+  reading.humidity = sht1x.readHumidity();
+  reading.temperature = sht1x.readTemperatureC();
 }
-
-bool resolveHost() {
-  if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) {
-    request.ip = WiFi.resolve(hostname);   
-    sprintf(ip_display,"%d.%d.%d.%d",request.ip[0],request.ip[1],request.ip[2],request.ip[3]);
-    if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) return false;
-  }
-  return true;
-}
-
-
 
