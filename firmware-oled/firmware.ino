@@ -9,7 +9,6 @@
 #include "Adafruit_SSD1306.h"
 #include "smileys.h"
 
-
 SYSTEM_MODE(SEMI_AUTOMATIC);
 SYSTEM_THREAD(ENABLED);
 
@@ -50,7 +49,6 @@ bool reading_sent=false;
 int temp_int;
 bool first_sampling_loop=true;
 int display_sewer = 0;
-
 
 // --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);

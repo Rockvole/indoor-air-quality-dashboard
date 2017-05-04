@@ -9,6 +9,9 @@
 #include "Adafruit_SSD1306.h"
 #include "smileys.h"
 
+SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
 #define CALIBRATION_SAMPLE_FREQUENCY 50
@@ -42,6 +45,7 @@ int stage=0;
 bool acquired_ip=true;
 int uptime_start=0;
 float temp_float;
+bool reading_sent=false;
 int temp_int;
 bool first_sampling_loop=true;
 int display_co = 0;
@@ -59,19 +63,20 @@ TGS2600 tgs2600(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
 float tgs2600_Ro = 60000.0;
 char  tgs2600_display[20];
 
-// --------------------------------------------------------------------- OLED
-#define OLED_RESET D4
-Adafruit_SSD1306 oled(OLED_RESET);
-IntervalTiming oledInterval(2000);
-bool first_display_loop = true;
 
 // --------------------------------------------------------------------- HTTP
 HttpClient http;
 char url[200];
 http_request_t request;
 http_response_t response;
-char hostname[] = "foodaversions.com";
+char hostname[] = "www.foodaversions.com";
 char ip_display[16];
+
+// --------------------------------------------------------------------- OLED
+#define OLED_RESET D4
+Adafruit_SSD1306 oled(OLED_RESET);
+IntervalTiming oledInterval(2000);
+bool first_display_loop = true;
 
 void setup()
 {
@@ -79,29 +84,30 @@ void setup()
   if(temp_float==temp_float) // Valid Number
     tgs2600_Ro = temp_float;
 
-  request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
   //request.ip = {192, 168, 1, 110}; // david-mint
-  request.port = 80;  
-  resolveHost();
+  request.hostname = "www.foodaversions.com";
+  request.port = 80;
   oled.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   oled.display(); 
-  
+
   // Register Particle variables
   Particle.variable("ip", ip_display, STRING);  
   Particle.variable("temperature", &reading.temperature, DOUBLE);
   Particle.variable("humidity", &reading.humidity, DOUBLE);
-  Particle.variable("unix_time", &unix_time, INT);
+  Particle.variable("url", url, STRING);
   Particle.variable("stage", &stage, INT);
-  Particle.variable("url", url, STRING);  
+  Particle.variable("unix_time", &unix_time, INT);
   
   sprintf(tgs2600_display,"%.2f",tgs2600_Ro);
-  Particle.variable("tgs2600", tgs2600_display, STRING);    
+  Particle.variable("tgs2600", tgs2600_display, STRING);
   
-  // Register Spark Functions
+  // Register Particle Functions
   Particle.function("calibrate", calibrate);
   Particle.function("sample", sample);
   Particle.function("set2600Calib", set2600Calib);
+
   //Serial.begin(9600);
+  Particle.connect();
 }
 
 void dht_wrapper() {
@@ -110,6 +116,7 @@ void dht_wrapper() {
 
 void loop()
 {
+  Particle.process();
   if(color!=rgbLed.RED) color=rgbLed.OFF;
   unix_time=Time.now();
   if(uptime_start<1000000000) uptime_start = unix_time;  
@@ -181,17 +188,16 @@ void loop()
       break;
     case rs.SEND_READING:
       {
-        if(resolveHost()) {
+        if(Particle.connected()) {
           reading_struct curr_reading;
-          bool reading_sent;
           do {
             reading_sent=false;
             curr_reading = q.front();
             sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=0&sewer=0&co=%i&dust=0&core_id=%s&uptime=%i", 
-                         curr_reading.reading_time,
-                         curr_reading.temperature, curr_reading.humidity,  
-                         curr_reading.tgs2600_co, 
-                         Particle.deviceID().c_str(), (unix_time-uptime_start));  
+                       curr_reading.reading_time,
+                       curr_reading.temperature, curr_reading.humidity,  
+                       curr_reading.tgs2600_co, 
+                       Particle.deviceID().c_str(), (unix_time-uptime_start));  
             request.path = url;
             response.body = "";
             http.get(request, response);
@@ -203,17 +209,15 @@ void loop()
               reading_sent=true;
             }
           } while(reading_sent && !q.empty());
-        } else { // Cant resolve host
-            color=rgbLed.RED;
         }
-        rs.setReadingSent();        
+        rs.setReadingSent();      
       }
       break;        
     case rs.CALIBRATING:
       {
         delay_ms=CALIBRATION_SAMPLE_INTERVAL;
         calibration_count++;
-        if(calibration_count<=1) {       
+        if(calibration_count<=1) {
           tgs2600.startCalibrating();
         }
         tgs2600_Ro = tgs2600.calibrateInCleanAir(analogRead(SENSOR_TGS2600));
@@ -241,7 +245,8 @@ void loop()
     default:  
       delay(1);
   }
-  rgbLed.setLedColor(delay_ms, 100, 3000, color);  
+  rgbLed.setLedColor(delay_ms, 100, 3000, color);
+  if(!Particle.connected() && reading_sent) color=rgbLed.RED;
   delay(delay_ms);  
 }
 
@@ -254,24 +259,8 @@ void read_dht22() {
     delay(30);
     cnt++;
   }
-  
   reading.humidity = DHT.getHumidity();
   reading.temperature = DHT.getCelsius(); 
-}
-
-bool resolveHost() {
-  if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) {
-#if PLATFORM_ID == 0 // CORE
-    uint32_t ip_addr = 0; 
-    gethostbyname(hostname, strlen(hostname), &ip_addr);
-    request.ip = {BYTE_N(ip_addr, 3),BYTE_N(ip_addr, 2),BYTE_N(ip_addr, 1),BYTE_N(ip_addr, 0)};
-#elif PLATFORM_ID == 6 // PHOTON   
-    request.ip = WiFi.resolve(hostname);   
-#endif    
-    sprintf(ip_display,"%d.%d.%d.%d",request.ip[0],request.ip[1],request.ip[2],request.ip[3]);
-    if((request.ip[0]+request.ip[1]+request.ip[2]+request.ip[3])==0) return false;
-  }
-  return true;
 }
 
 int calibrate(String command) {
