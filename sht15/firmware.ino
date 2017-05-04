@@ -3,6 +3,9 @@
 #include "HttpClient.h"
 #include "SHT1x.h" 
 
+SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+
 // -----------------
 // Read temperature & humidity and send to server
 // -----------------
@@ -37,7 +40,6 @@ char ip_display[16];
 
 void setup()
 {
-  request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
   //request.ip = {192, 168, 1, 110}; // david-mint
   request.hostname = "www.foodaversions.com";
   request.port = 80;
@@ -48,16 +50,20 @@ void setup()
   Particle.variable("humidity", &reading.humidity, DOUBLE);
   Particle.variable("url", url, STRING);
   Particle.variable("stage", &stage, INT);
+  Particle.variable("unix_time", &unix_time, INT);
   
   //Serial.begin(9600);
+  Particle.connect();
 }
 
 void loop()
 {
+  Particle.process();
   unix_time=Time.now();
   if(uptime_start<1000000000) uptime_start = unix_time;  
   stage=rs.getStage(unix_time);  
 
+  // ------------------------------------------------------------------- STAGES
   switch(stage) {
     case rs.SAMPLING:
       {
@@ -69,28 +75,28 @@ void loop()
       break;
     case rs.SEND_READING:
       {
-        reading_struct curr_reading;
-        bool reading_sent;
-        int retry = 3;
-        do {
-          reading_sent=false;
-          curr_reading = q.front();
-          sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&core_id=%s&uptime=%i", 
+		if(Particle.connected()) { 
+          reading_struct curr_reading;
+          bool reading_sent;
+          do {
+            reading_sent=false;
+            curr_reading = q.front();
+            sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&core_id=%s&uptime=%i", 
                        curr_reading.reading_time,
                        curr_reading.temperature, curr_reading.humidity, 
                        Particle.deviceID().c_str(), (unix_time-uptime_start));  
-          request.path = url;
-          response.body = "";
-          http.get(request, response);
-          char read_time_chars[12];
-          sprintf(read_time_chars, "%d", curr_reading.reading_time);
-          String read_time_str(read_time_chars);
-          if(read_time_str.equals(response.body)) {
-            q.pop();
-            reading_sent=true;
-          }
-          retry--;
-        } while(reading_sent && !q.empty() && retry>0);
+            request.path = url;
+            response.body = "";
+            http.get(request, response);
+            char read_time_chars[12];
+            sprintf(read_time_chars, "%d", curr_reading.reading_time);
+            String read_time_str(read_time_chars);
+            if(read_time_str.equals(response.body)) {
+              q.pop();
+              reading_sent=true;
+            }
+          } while(reading_sent && !q.empty());
+        }
         rs.setReadingSent();      
       }
       break;

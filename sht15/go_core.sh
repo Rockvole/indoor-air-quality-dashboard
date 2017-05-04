@@ -1,12 +1,12 @@
 #! /bin/bash
 echo ------------------------------------------------------------------- build
-spark compile . --saveTo firmware.bin
+particle compile c . --saveTo firmware.bin
 
 echo ------------------------------------------------------------------- check usb
 sudo dfu-util -l
 
 echo ------------------------------------------------------------------- flash
-sudo spark flash --usb firmware.bin
+sudo particle flash --usb firmware.bin
 rm firmware.bin
 
 

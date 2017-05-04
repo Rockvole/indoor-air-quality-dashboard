@@ -9,6 +9,10 @@
 #include "Adafruit_SSD1306.h"
 #include "smileys.h"
 
+
+SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
 #define CALIBRATION_SAMPLE_FREQUENCY 50
@@ -45,6 +49,7 @@ float temp_float;
 int temp_int;
 bool first_sampling_loop=true;
 int display_sewer = 0;
+bool reading_sent=false;
 
 // --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
@@ -79,7 +84,6 @@ void setup()
   if(temp_float==temp_float) // Valid Number
     tgs2602_Ro = temp_float;
 
-  request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
   //request.ip = {192, 168, 1, 110}; // david-mint
   request.hostname = "www.foodaversions.com";
   request.port = 80;
@@ -101,7 +105,9 @@ void setup()
   Particle.function("calibrate", calibrate);
   Particle.function("sample", sample);
   Particle.function("set2602Calib", set2602Calib);
+
   //Serial.begin(9600);
+  Particle.connect();
 }
 
 void dht_wrapper() {
@@ -110,6 +116,7 @@ void dht_wrapper() {
 
 void loop()
 {
+  Particle.process();
   if(color!=rgbLed.RED) color=rgbLed.OFF;
   unix_time=Time.now();
   if(uptime_start<1000000000) uptime_start = unix_time;  
@@ -181,29 +188,28 @@ void loop()
       break;
     case rs.SEND_READING:
       {
-        reading_struct curr_reading;
-        bool reading_sent;
-        int retry = 3;
-        do {
-          reading_sent=false;
-          curr_reading = q.front();
-          sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=0&sewer=%i&dust=0&core_id=%s&uptime=%i", 
+		if(Particle.connected()) {
+          reading_struct curr_reading;
+          do {
+            reading_sent=false;
+            curr_reading = q.front();
+            sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=0&sewer=%i&dust=0&core_id=%s&uptime=%i", 
                        curr_reading.reading_time,
                        curr_reading.temperature, curr_reading.humidity,  
                        curr_reading.tgs2602_sewer, 
                        Particle.deviceID().c_str(), (unix_time-uptime_start));  
-          request.path = url;
-          response.body = "";
-          http.get(request, response);
-          char read_time_chars[12];
-          sprintf(read_time_chars, "%d", curr_reading.reading_time);
-          String read_time_str(read_time_chars);
-          if(read_time_str.equals(response.body)) {
-            q.pop();
-            reading_sent=true;
-          }
-          retry--;
-        } while(reading_sent && !q.empty() && retry>0);
+            request.path = url;
+            response.body = "";
+            http.get(request, response);
+            char read_time_chars[12];
+            sprintf(read_time_chars, "%d", curr_reading.reading_time);
+            String read_time_str(read_time_chars);
+            if(read_time_str.equals(response.body)) {
+              q.pop();
+              reading_sent=true;
+            }
+          } while(reading_sent && !q.empty());
+        }
         rs.setReadingSent();      
       }
       break;        
@@ -211,7 +217,7 @@ void loop()
       {
         delay_ms=CALIBRATION_SAMPLE_INTERVAL;
         calibration_count++;
-        if(calibration_count<=1) {       
+        if(calibration_count<=1) {
           tgs2602.startCalibrating();
         }
         tgs2602_Ro = tgs2602.calibrateInCleanAir(analogRead(SENSOR_TGS2602));
@@ -239,7 +245,8 @@ void loop()
     default:  
       delay(1);
   }
-  rgbLed.setLedColor(delay_ms, 100, 3000, color);  
+  rgbLed.setLedColor(delay_ms, 100, 3000, color);
+  if(!Particle.connected() && reading_sent) color=rgbLed.RED;
   delay(delay_ms);  
 }
 

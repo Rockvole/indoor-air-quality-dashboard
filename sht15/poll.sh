@@ -11,6 +11,9 @@ do
   echo humidity
   particle get $1 humidity
 
+  echo unix_time
+  particle get $1 unix_time
+
   echo stage
   particle get $1 stage
 
