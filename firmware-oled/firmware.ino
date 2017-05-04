@@ -46,10 +46,11 @@ int stage=0;
 bool acquired_ip=true;
 int uptime_start=0;
 float temp_float;
+bool reading_sent=false;
 int temp_int;
 bool first_sampling_loop=true;
 int display_sewer = 0;
-bool reading_sent=false;
+
 
 // --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
@@ -64,12 +65,6 @@ TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
 float tgs2602_Ro = 340000.0;
 char  tgs2602_display[20];
 
-// --------------------------------------------------------------------- OLED
-#define OLED_RESET D4
-Adafruit_SSD1306 oled(OLED_RESET);
-IntervalTiming oledInterval(2000);
-bool first_display_loop = true;
-
 // --------------------------------------------------------------------- HTTP
 HttpClient http;
 char url[200];
@@ -77,6 +72,12 @@ http_request_t request;
 http_response_t response;
 char hostname[] = "www.foodaversions.com";
 char ip_display[16];
+
+// --------------------------------------------------------------------- OLED
+#define OLED_RESET D4
+Adafruit_SSD1306 oled(OLED_RESET);
+IntervalTiming oledInterval(2000);
+bool first_display_loop = true;
 
 void setup()
 {

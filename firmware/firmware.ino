@@ -8,6 +8,9 @@
 #include "WSP2110.h"
 #include "ShinyeiPPD42NS.h"
 
+SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+
 #define INTERVAL_MINS 10
 #define PRE_HEAT_SECS 100
 #define CALIBRATION_SAMPLE_FREQUENCY 50
@@ -19,7 +22,7 @@
 #define SENSOR_WSP2110          A3
 #define BUZZER_PIN              A4
 #define RED_LED                 A5
-#define GREEN_LED               A6
+#define GREEN_LED               A4
 #define BLUE_LED                A7
 
 #define DUST_PIN                D1
@@ -34,8 +37,8 @@ struct reading_struct {
     int    reading_time = 0;    
     double temperature = 0;
     double humidity = 0;
-    int    wsp2110_hcho = 0;    
     int    tgs2602_sewer = 0; 
+    int    wsp2110_hcho = 0;    
     float  dust_concentration = 0;    
 };
 
@@ -48,6 +51,7 @@ int stage=0;
 bool acquired_ip=true;
 int uptime_start=0;
 float temp_float;
+bool reading_sent=false;
 
 // --------------------------------------------------------------------- RGB LED
 RgbLedControl rgbLed (RED_LED, GREEN_LED, BLUE_LED);
@@ -56,15 +60,6 @@ RgbLedControl::Color color;
 // --------------------------------------------------------------------- DHT22
 void dht_wrapper();
 PietteTech_DHT DHT(DHT_PIN, DHT22, dht_wrapper);
-
-// --------------------------------------------------------------------- Shinyei PPD42NS
-#define DUST_SAMPLE_INTERVAL_MS 30000
-ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
-
-// --------------------------------------------------------------------- WSP2110
-WSP2110 wsp2110(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
-float wsp2110_Ro = 300000.0;
-char  wsp2110_display[20];
 
 // --------------------------------------------------------------------- TGS2602
 TGS2602 tgs2602(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
@@ -78,6 +73,15 @@ http_request_t request;
 http_response_t response;
 char hostname[] = "www.foodaversions.com";
 char ip_display[16];
+
+// --------------------------------------------------------------------- Shinyei PPD42NS
+#define DUST_SAMPLE_INTERVAL_MS 30000
+ShinyeiPPD42NS dust(DUST_SAMPLE_INTERVAL_MS);
+
+// --------------------------------------------------------------------- WSP2110
+WSP2110 wsp2110(SAMPLING_FREQUENCY, SAMPLING_INTERVAL_MS);
+float wsp2110_Ro = 300000.0;
+char  wsp2110_display[20];
 
 void setup()
 {
@@ -94,11 +98,10 @@ void setup()
   pinMode(BUZZER_PIN, OUTPUT); 
   pinMode(DUST_PIN, INPUT);
 
-  request.ip = {0,0,0,0}; // Fill in if you dont want to resolve host
   //request.ip = {192, 168, 1, 110}; // david-mint
   request.hostname = "www.foodaversions.com";
   request.port = 80;
-  
+
   // Register Particle variables
   Particle.variable("ip", ip_display, STRING);  
   Particle.variable("temperature", &reading.temperature, DOUBLE);
@@ -115,9 +118,11 @@ void setup()
   // Register Particle Functions
   Particle.function("calibrate", calibrate);
   Particle.function("sample", sample);
-  Particle.function("setWspCalib", setWspCalib);  
+  Particle.function("setWspCalib", setWspCalib);
   Particle.function("setTgsCalib", setTgsCalib);
+
   //Serial.begin(9600);
+  Particle.connect();
 }
 
 void dht_wrapper() {
@@ -126,6 +131,7 @@ void dht_wrapper() {
 
 void loop()
 {
+  Particle.process();
   if(color!=rgbLed.RED) color=rgbLed.OFF;
   unix_time=Time.now();
   if(uptime_start<1000000000) uptime_start = unix_time;  
@@ -136,9 +142,9 @@ void loop()
     case rs.USER_SAMPLING:
     case rs.SAMPLING:
       {
-        unsigned long current_ms = millis();  
-        if(rs.isFirstSamplingLoop()) {  
-          wsp2110.startSampling(current_ms);            
+        unsigned long current_ms = millis();
+        if(rs.isFirstSamplingLoop()) {
+          wsp2110.startSampling(current_ms);
           tgs2602.startSampling(current_ms);
           dust.startSampling(current_ms);
           reading.reading_time = unix_time;
@@ -164,30 +170,29 @@ void loop()
       break;
     case rs.SEND_READING:
       {
-        reading_struct curr_reading;
-        bool reading_sent;
-        int retry = 3;
-        do {
-          reading_sent=false;
-          curr_reading = q.front();
-          sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=%i&sewer=%i&dust=%.2f&core_id=%s&uptime=%i", 
+		if(Particle.connected()) {
+          reading_struct curr_reading;
+          do {
+            reading_sent=false;
+            curr_reading = q.front();
+            sprintf(url, "/iaq/get_reading.php?unix_time=%i&temp=%.2f&hum=%.2f&hcho=%i&sewer=%i&dust=%.2f&core_id=%s&uptime=%i", 
                        curr_reading.reading_time,
                        curr_reading.temperature, curr_reading.humidity, curr_reading.wsp2110_hcho, 
                        curr_reading.tgs2602_sewer, curr_reading.dust_concentration,
                        Particle.deviceID().c_str(), (unix_time-uptime_start));  
-          request.path = url;
-          response.body = "";
-          http.get(request, response);
-          char read_time_chars[12];
-          sprintf(read_time_chars, "%d", curr_reading.reading_time);
-          String read_time_str(read_time_chars);
-          if(read_time_str.equals(response.body)) {
-            q.pop();
-            reading_sent=true;
-          }
-          retry--;
-        } while(reading_sent && !q.empty() && retry>0);
-        rs.setReadingSent();        
+            request.path = url;
+            response.body = "";
+            http.get(request, response);
+            char read_time_chars[12];
+            sprintf(read_time_chars, "%d", curr_reading.reading_time);
+            String read_time_str(read_time_chars);
+            if(read_time_str.equals(response.body)) {
+              q.pop();
+              reading_sent=true;
+            }
+          } while(reading_sent && !q.empty());
+        }
+        rs.setReadingSent();      
       }
       break;        
     case rs.CALIBRATING:
@@ -229,13 +234,14 @@ void loop()
   }  
 
   if(digitalRead(CALIBRATE_BTN)==LOW) {
-    calibrate(NULL);
+    calibrate("");
   }
   if(digitalRead(USER_SAMPLING_BTN)==LOW) {
-    sample(NULL);
+    sample("");
   }  
 
-  rgbLed.setLedColor(delay_ms, 100, 3000, color);  
+  rgbLed.setLedColor(delay_ms, 100, 3000, color);
+  if(!Particle.connected() && reading_sent) color=rgbLed.RED;
   delay(delay_ms);  
 }
 
@@ -252,12 +258,6 @@ void read_dht22() {
   reading.temperature = DHT.getCelsius(); 
 }
 
-void beep(int delay_ms) {
-    analogWrite(BUZZER_PIN, 255);
-    delay(delay_ms);
-    analogWrite(BUZZER_PIN, 0);
-}
-
 int calibrate(String command) {
   rs.startCalibrating(unix_time);
   return 1;
@@ -266,6 +266,12 @@ int calibrate(String command) {
 int sample(String command) {
   rs.startUserSampling(unix_time);
   return 1;
+}
+
+void beep(int delay_ms) {
+    analogWrite(BUZZER_PIN, 255);
+    delay(delay_ms);
+    analogWrite(BUZZER_PIN, 0);
 }
 
 int setWspCalib(String value) {
