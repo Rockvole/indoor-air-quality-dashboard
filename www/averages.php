@@ -1,7 +1,16 @@
 <head>
   <title>Calendar</title>
   <link rel="stylesheet" href="html/stylesheet.css" type="text/css" >
-  <link rel="stylesheet" href="calendar/calendar.css" type="text/css" />
+  <style>
+	.ave-table {
+		border-collapse: collapse;
+	}
+	.ave-td {
+		vertical-align:top;
+	}
+    th {text-align:right; font-size:18px; color:blueviolet;padding: 4px 14px 4px 14px;}
+    td {text-align:center; font-size:18px; padding: 4px 2px 4px 2px;}
+  </style>
 </head>
   <script>
     function change_year(year) {
@@ -91,8 +100,8 @@ $currentYear = $calendar->year($year);
   
   echo "<table border=0 width='100%'>";
   echo "<tr><td colspan=5>";
-  echo "<table border=0>";
-  echo "<td><h2>Maximum $title_name Calendar</h2></td>"; 
+  echo "<table style='border-spacing: 0;width: 100%;'>";
+  echo "<td><h2>Average $title_name Calendar</h2></td>"; 
   echo "<td>";
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$group_name</span>";
   echo "</td>";
@@ -132,60 +141,54 @@ $currentYear = $calendar->year($year);
   echo "</td>";
   echo "</tr>";
   echo "<tr><td>&nbsp;</td></tr>";
-  echo "</table>";
+  echo "</table>\n";
 
-echo "<section class='year'>\n";
-  
-echo "<ul>\n";
+// ---------------------------------------- NEW
+
+echo "<table border=1 class='ave-table'>\n";
+
+// ---------------------------------------- DOM ROW
+echo "<tr>";
+echo "<td></td>";
+for ($f = 1; $f <= 31; $f++) {
+    echo "<td><img src='images/transparent.gif' width='44' height='1'><br/>".$f."</td>";
+}
+echo "</tr>";
+
 foreach($currentYear->months() as $month): 
-    echo "<li>\n";
-    echo "<h2>".$month->name()."</h2>\n";
-    echo "<table>\n";
-    echo "<tr>\n";
-    foreach($month->weeks()->first()->days() as $weekDay):
-        echo "  <th>". $weekDay->shortname()."</th>\n";
-    endforeach;
-    echo "</tr>\n";
-    foreach($month->weeks(6) as $week):
-        echo"<tr>\n";
-        foreach($week->days() as $day):
-	    if($day->month() != $month) {
-	      echo "  <td class='inactive'>".$day->int();
-	    } else {
-	      $curr_date=Carbon::createFromDate($day->year()->int(),$day->month()->int(),$day->int()); 
-	      $curr_date_start_utc=$curr_date->startOfDay()->format('U');
-	      $curr_date_end_utc=$curr_date->endOfDay()->format('U');
-          $result=mysqli_query($conn,"SELECT MAX($sensor_column) as mx from readings WHERE group_id=$id and ts>=$curr_date_start_utc and ts<=$curr_date_end_utc");
-          
-	      if(mysql_errno()) {
-	        exit('Error: '.mysqli_error($conn));
-          }
-	      $row = mysqli_fetch_array($result);
-	      $max=$row['mx'];  
-          if(strlen($max)<=0) {
-	        error_log("no rows found");
-		    echo "  <td style='color:white;background:lightgrey;'>";
-          }	else {    
-            if($max>=$min_red) echo "  <td style='background:#FDB9A9;'>";
-		  else if($max>=$min_orange) echo "  <td style='background:#FDDAA9;'>";
-		    else echo "  <td style='background:#A9FEB6;'>";
-		  echo "<a href='dashboard.php?id=$id&start_date=".$curr_date->format($param_date_format)."' style='color:black;'>";
+	echo "<tr>";
+	echo "<th>".$month->name()."<img src='images/transparent.gif' width='1' height='40'></th>";
+	for ($dom = 1; $dom <= 31; $dom++) {
+		echo "<td class='ave-td'>";
+		if(checkdate($month->int(),$dom,$currentYear->int())) {
+		    $curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
+		    $curr_date_start_utc=$curr_date->startOfDay()->format('U');
+	        $curr_date_end_utc=$curr_date->endOfDay()->format('U');
+	        
+		    $day_str = $curr_date->formatLocalized('%A');
+		    if($curr_date->isWeekend()) echo "<b>";
+		    echo mb_strimwidth($day_str,0,2);
+		    if($curr_date->isWeekend()) echo "</b>";
+		    echo "<br/>\n".getAverage($curr_date_start_utc, $curr_date_end_utc);
 	    }
-	    echo ($day->isToday()) ? "<strong style='color:red;'>" . $day->int() . "</strong>" : $day->int();
-	    echo "</a>";
+		echo "</td>";
 	}
-	    echo "</td>\n";
-        endforeach;
-        echo "</tr>\n";
-    endforeach;
-    echo "</table>\n";
-    echo "</li>\n";
-    endforeach;
-  echo "</ul>\n";
-echo "</section>\n";
+	echo "</tr>";
+
+endforeach;
+
+// ---------------------------------------- DOM ROW
+echo "<tr>";
+echo "<td></td>";
+for ($f = 1; $f <= 31; $f++) {
+    echo "<td>".$f."</td>";
+}
+echo "</tr>";
+
+echo "</table>\n";
 
 // ------------------------------------------------------------------- Form
-echo "<form action='year_cal.php' method='get' name='cal'>";
+echo "<form action='averages.php' method='get' name='cal'>";
 echo "<input type='hidden' name='id' value='$id'>";
 echo "<input type='hidden' name='year' value='$year'>";
 echo "<input type='hidden' name='sensor' value='$sensor'>";
@@ -193,5 +196,26 @@ echo "</form>";
 
 echo "</body>\n";
 echo "</html>\n";
+
+function getAverage($start_utc, $end_utc) {
+	global $id;
+	global $conn;
+	global $sensor_column;
+	
+	error_log("id=".$id);
+	$result=mysqli_query($conn,"SELECT AVG($sensor_column) as ag from readings WHERE group_id=$id and ts>=$start_utc and ts<=$end_utc");
+          
+	if(mysql_errno()) {
+	    exit('Error: '.mysqli_error($conn));
+    }
+    $row = mysqli_fetch_array($result);
+	$avg=round($row['ag']);
+	if($avg==0) return "";
+	if(strcmp($sensor_column, "humidity")==0) {
+		$avg=$avg."%";
+	}
+	return $avg;
+}
+
 
 ?>

@@ -138,7 +138,7 @@
 	$dt_utc = $dt->endOfDay()->format('U');
 	$result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id and ts < $dt_utc");
     }
-    if(mysql_errno()) {
+    if(mysqli_errno()) {
       exit('Error: '.mysqli_error($conn));
     }
     

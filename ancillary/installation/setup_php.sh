@@ -17,6 +17,11 @@ sudo ln -s jpgraph-3.0.7 jpgraph
 sudo apt-get install ttf-mscorefonts-installer
 
 # download Carbon from git
+sudo cp -r /work/git/web/Carbon/src/Carbon /usr/share/php/
 
 # install php mysql 
 sudo apt-get install php5-mysql
+
+# PHP7
+sudo apt-get remove php7.0-gd
+sudo apt-get install php7.1-gd
