@@ -31,35 +31,35 @@ switch($sensor) {
   case 2: // Dust
     $title_name="Dust";
     $sensor_column="dust";
-    $default_sensor_2="checked='checked'";
+    $default_sensor_2="selected='selected'";
     $min_orange=$DUST_GOOD;
     $min_red=$DUST_OK;
     break;       
   case 3: // Sewer
     $title_name="VOC's / Sewer";
     $sensor_column="sewer";
-    $default_sensor_3="checked='checked'";
+    $default_sensor_3="selected='selected'";
     $min_orange=$SEWER_GOOD;
     $min_red=$SEWER_OK;
     break;  
   case 4: // Formaldehyde
     $title_name="Formaldehyde";
     $sensor_column="hcho";
-    $default_sensor_4="checked='checked'";
+    $default_sensor_4="selected='selected'";
     $min_orange=$HCHO_GOOD;
     $min_red=$HCHO_OK;
     break;   
   case 5: // Carbon Monoxide
     $title_name="Carbon Monoxide";
     $sensor_column="co";
-    $default_sensor_5="checked='checked'";
+    $default_sensor_5="selected='selected'";
     $min_orange=$CO_GOOD;
     $min_red=$CO_OK;
     break;      
   default: // Humidity
     $title_name="Humidity";
     $sensor_column="humidity";
-    $default_sensor_1="checked='checked'";
+    $default_sensor_1="selected='selected'";
     $min_orange=$HUMIDITY_GOOD;
     $min_red=$HUMIDITY_OK;
     break;    
@@ -91,36 +91,31 @@ $currentYear = $calendar->year($year);
   
   echo "<table border=0 width='100%'>";
   echo "<tr><td colspan=5>";
-  echo "<table border=0>";
+  echo "<table border=0 style='border-spacing: 0;width: 100%;'>";
   echo "<td><h2>Maximum $title_name Calendar</h2></td>"; 
   echo "<td>";
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$group_name</span>";
   echo "</td>";
+  echo "<td><img src='images/transparent.gif' width='140' height='1'></td>";
+  echo "<td>";
+  echo "  <select onchange='change_sensor(this.value);'>\n";
   if(isset($sensor_temp)) {
-    echo "<td>";
-    echo "<input type='radio' onclick='change_sensor(1);' $default_sensor_1>Humidity";
-    echo "</td>";
+    echo "    <option value='1' $default_sensor_1>Humidity</option>\n";
   }
   if(isset($sensor_dust)) {
-    echo "<td>";
-    echo "<input type='radio' onclick='change_sensor(2);' $default_sensor_2>Dust";
-    echo "</td>";  
+    echo "    <option value='2' $default_sensor_2>Dust</option>\n";
   }
   if(isset($sensor_sewer)) {
-    echo "<td>";
-    echo "<input type='radio' onclick='change_sensor(3);' $default_sensor_3>VOC's / Sewer";
-    echo "</td>";
+    echo "    <option value='3' $default_sensor_3>VOC's / Sewer</option>\n";
   }
   if(isset($sensor_hcho)) {
-    echo "<td>";
-    echo "<input type='radio' onclick='change_sensor(4);' $default_sensor_4>Formaldehyde";
-    echo "</td>";  
+    echo "    <option value='4' $default_sensor_4>Formaldehyde</option>\n";
   }
   if(isset($sensor_co)) {
-    echo "<td>";
-    echo "<input type='radio' onclick='change_sensor(5);' $default_sensor_5>Carbon Monoxide";
-    echo "</td>";  
+    echo "    <option value='5' $default_sensor_5>Carbon Monoxide</option>\n";
   }
+  echo "  </select>\n"; 
+  echo "</td>";
   echo "<td align=right><img src='images/home.png' onclick='home_button();' height=30 width=30 style='cursor:pointer;'></td>\n";  
   echo "</table>";
   echo "</td><tr>";
@@ -132,7 +127,7 @@ $currentYear = $calendar->year($year);
   echo "</td>";
   echo "</tr>";
   echo "<tr><td>&nbsp;</td></tr>";
-  echo "</table>";
+  echo "</table>\n";
 
 echo "<section class='year'>\n";
   
