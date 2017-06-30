@@ -43,6 +43,7 @@ switch($sensor) {
     $default_sensor_2="checked='checked'";
     $min_orange=$DUST_GOOD;
     $min_red=$DUST_OK;
+    $sensor_gradient=50;
     break;       
   case 3: // Sewer
     $title_name="VOC's / Sewer";
@@ -50,6 +51,7 @@ switch($sensor) {
     $default_sensor_3="checked='checked'";
     $min_orange=$SEWER_GOOD;
     $min_red=$SEWER_OK;
+    $sensor_gradient=300;
     break;  
   case 4: // Formaldehyde
     $title_name="Formaldehyde";
@@ -57,6 +59,7 @@ switch($sensor) {
     $default_sensor_4="checked='checked'";
     $min_orange=$HCHO_GOOD;
     $min_red=$HCHO_OK;
+    $sensor_gradient=10;
     break;   
   case 5: // Carbon Monoxide
     $title_name="Carbon Monoxide";
@@ -64,6 +67,7 @@ switch($sensor) {
     $default_sensor_5="checked='checked'";
     $min_orange=$CO_GOOD;
     $min_red=$CO_OK;
+    $sensor_gradient=10;
     break;      
   default: // Humidity
     $title_name="Humidity";
@@ -71,6 +75,7 @@ switch($sensor) {
     $default_sensor_1="checked='checked'";
     $min_orange=$HUMIDITY_GOOD;
     $min_red=$HUMIDITY_OK;
+    $sensor_gradient=10;
     break;    
 }
 
@@ -159,18 +164,22 @@ foreach($currentYear->months() as $month):
 	echo "<tr>";
 	echo "<th>".$month->name()."<img src='images/transparent.gif' width='1' height='40'></th>";
 	for ($dom = 1; $dom <= 31; $dom++) {
-		echo "<td class='ave-td'>";
+		
 		if(checkdate($month->int(),$dom,$currentYear->int())) {
 		    $curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
 		    $curr_date_start_utc=$curr_date->startOfDay()->format('U');
 	        $curr_date_end_utc=$curr_date->endOfDay()->format('U');
+	        $ave = getAverage($curr_date_start_utc, $curr_date_end_utc);
 	        
 		    $day_str = $curr_date->formatLocalized('%A');
+		    echo "<td class='ave-td' style='background-color:".getColorString($ave,$sensor_gradient).";'>";
 		    if($curr_date->isWeekend()) echo "<b>";
 		    echo mb_strimwidth($day_str,0,2);
 		    if($curr_date->isWeekend()) echo "</b>";
-		    echo "<br/>\n".getAverage($curr_date_start_utc, $curr_date_end_utc);
-	    }
+		    echo "<br/>\n".$ave;
+	    } else {
+			echo "<td class='ave-td'>";
+		}
 		echo "</td>";
 	}
 	echo "</tr>";
@@ -217,5 +226,20 @@ function getAverage($start_utc, $end_utc) {
 	return $avg;
 }
 
-
+function getColorString($value, $gradient) {
+	$remainder = $value / $gradient;
+	
+    if($remainder==0) return "#BEBEBE"; // Grey
+	if($remainder<1)  return "#ffe300"; // Yellow
+	if($remainder<2)  return "#ffda00";
+	if($remainder<3)  return "#ffc800";
+    if($remainder<4)  return "#ffb600";
+    if($remainder<5)  return "#ffad00";
+    if($remainder<6)  return "#ff9a00";
+    if($remainder<7)  return "#ff8800";
+    if($remainder<8)  return "#ff7600";
+    if($remainder<9)  return "#ff6d00";
+    if($remainder<10) return "#ff5b00";
+    return "#ff4800";
+}
 ?>
