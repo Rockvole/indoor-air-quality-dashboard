@@ -21,6 +21,10 @@
       document.cal.sensor.value=sensor;
       document.cal.submit();
     }
+    function change_period(period) {
+      document.cal.period.value=period;
+      document.cal.submit();
+    }
     function home_button() {
       document.cal.action = "index.php";
       document.cal.submit();
@@ -33,9 +37,20 @@ use Carbon\Carbon;
 require('calendar/calendar.php');
 include 'globals.php';
 
+$period = htmlspecialchars($_GET["period"]);
+switch($period) {
+  case 2: // Weekly
+    $default_period_2="checked='checked'";
+    break;
+  default: // Daily
+    $default_period_1="checked='checked'";  
+    break;
+}
+
 if($sensor_type==0) {
   $sensor = htmlspecialchars($_GET["sensor"]);
 } else $sensor=$sensor_type;
+
 switch($sensor) {
   case 2: // Dust
     $title_name="Dust";
@@ -110,7 +125,8 @@ $currentYear = $calendar->year($year);
   echo "<td>";
   echo "<span style='padding:4px 10px 4px 10px;font-size:20px;font-weight:bold;color:#CC6666;vertical-align:top;'>$group_name</span>";
   echo "</td>";
-  echo "<td><img src='images/transparent.gif' width='140' height='1'></td>";
+  echo "<td><input type='radio' onclick='change_period(1);' $default_period_1>Day</td>";
+  echo "<td><input type='radio' onclick='change_period(2);' $default_period_2>Week</td>";
   echo "<td>";
   echo "  <select onchange='change_sensor(this.value);'>\n";
   if(isset($sensor_temp)) {
