@@ -143,7 +143,7 @@ $currentYear = $calendar->year($year);
   echo "<tr><td>&nbsp;</td></tr>";
   echo "</table>\n";
 
-// ---------------------------------------- NEW
+// --------------------------------------------------------------------- CALENDAR
 
 echo "<table border=1 class='ave-table'>\n";
 
@@ -153,46 +153,51 @@ echo "<td></td>";
 for ($f = 1; $f <= 31; $f++) {
     echo "<td><img src='images/transparent.gif' width='44' height='1'><br/>".$f."</td>";
 }
-echo "</tr>";
+echo "</tr>\n";
 
 foreach($currentYear->months() as $month): 
-	$day_row = "";
-	$avg_row = "";
+	$day_array = array();
 	
+	// ----------------------------------------------------------------- FILL STRUCT ARRAY
 	for ($dom = 1; $dom <= 31; $dom++) {
+		$day_array[$dom] = new DayStruct();
 		
 		if(checkdate($month->int(),$dom,$currentYear->int())) {
 		    $curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
 		    $curr_date_start_utc=$curr_date->startOfDay()->format('U');
 	        $curr_date_end_utc=$curr_date->endOfDay()->format('U');
 	        $ave = getAverage($curr_date_start_utc, $curr_date_end_utc);
-		    $day_str = $curr_date->formatLocalized('%A');
-		    
-		    // --------------------------------------------------------- DAY ROW
-		    $day_row .= "<td class='ave-td' style='background-color:".getColorString($ave,$sensor_gradient).";'>";
-		    if($curr_date->isWeekend()) $day_row .= "<b>";
-		    $day_row .= mb_strimwidth($day_str,0,2);
-		    if($curr_date->isWeekend()) $day_row .= "</b>";
-		    $day_row .= "</td>\n";
-		    // --------------------------------------------------------- AVG ROW
-		    $avg_row .= "<td class='ave-td' style='background-color:".getColorString($ave,$sensor_gradient).";'>";
-		    $avg_row .= $ave;
-		    $avg_row .= "</td>\n";
+	        $day_array[$dom]->average = $ave;		    
+		    $day_array[$dom]->color=getColorString($ave,$sensor_gradient);
+		    $day_array[$dom]->dow=$curr_date->dayOfWeek;
 	    } else {
-			$day_row .= "<td class='ave-td'>&nbsp;</td>";
-			$avg_row .= "<td class='ave-td'>&nbsp;</td>";
+			$day_array[$dom]->color="#FFFFFF";
 		}
 	}
-	echo "<tr>";
+    // ----------------------------------------------------------------- DAY ROW
+    echo "<tr>";
 	echo "<th rowspan=2>".$month->name()."</th>";
-	echo $day_row;
+	for ($dom = 1; $dom <= 31; $dom++) {
+		$curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
+		$day_str = $curr_date->formatLocalized('%A');
+	    echo "<td class='ave-td' style='background-color:".$day_array[$dom]->color.";'>";
+	    if(isset($day_array[$dom]->dow)) {
+		    if($curr_date->isWeekend()) echo "<b>";
+		    echo mb_strimwidth($day_str,0,2);
+		    if($curr_date->isWeekend()) echo "</b>";
+	    }
+		echo "</td>\n";
+	}
+    echo "</tr>";
+    // ----------------------------------------------------------------- AVG ROW
+    echo "<tr>";
+    for ($dom = 1; $dom <= 31; $dom++) {
+		$curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
+		echo "<td class='ave-td' style='background-color:".$day_array[$dom]->color.";'>";
+		echo $day_array[$dom]->average;
+		echo "</td>\n";
+	}
 	echo "</tr>";
-	
-	echo "<tr>";
-	//echo "<th></th>";
-	echo $avg_row;
-	echo "</tr>";
-
 endforeach;
 
 // ---------------------------------------- DOM ROW
@@ -221,7 +226,6 @@ function getAverage($start_utc, $end_utc) {
 	global $conn;
 	global $sensor_column;
 	
-	error_log("id=".$id);
 	$result=mysqli_query($conn,"SELECT AVG($sensor_column) as ag from readings WHERE group_id=$id and ts>=$start_utc and ts<=$end_utc");
           
 	if(mysql_errno()) {
@@ -251,5 +255,11 @@ function getColorString($value, $gradient) {
     if($remainder<9)  return "#ff6d00";
     if($remainder<10) return "#ff5b00";
     return "#ff4800"; // Red
+}
+
+class DayStruct {
+	public $color;
+	public $average;
+	public $dow;
 }
 ?>
