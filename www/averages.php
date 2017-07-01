@@ -156,8 +156,9 @@ for ($f = 1; $f <= 31; $f++) {
 echo "</tr>";
 
 foreach($currentYear->months() as $month): 
-	echo "<tr>";
-	echo "<th>".$month->name()."<img src='images/transparent.gif' width='1' height='40'></th>";
+	$day_row = "";
+	$avg_row = "";
+	
 	for ($dom = 1; $dom <= 31; $dom++) {
 		
 		if(checkdate($month->int(),$dom,$currentYear->int())) {
@@ -165,18 +166,31 @@ foreach($currentYear->months() as $month):
 		    $curr_date_start_utc=$curr_date->startOfDay()->format('U');
 	        $curr_date_end_utc=$curr_date->endOfDay()->format('U');
 	        $ave = getAverage($curr_date_start_utc, $curr_date_end_utc);
-	        
 		    $day_str = $curr_date->formatLocalized('%A');
-		    echo "<td class='ave-td' style='background-color:".getColorString($ave,$sensor_gradient).";'>";
-		    if($curr_date->isWeekend()) echo "<b>";
-		    echo mb_strimwidth($day_str,0,2);
-		    if($curr_date->isWeekend()) echo "</b>";
-		    echo "<br/>\n".$ave;
+		    
+		    // --------------------------------------------------------- DAY ROW
+		    $day_row .= "<td class='ave-td' style='background-color:".getColorString($ave,$sensor_gradient).";'>";
+		    if($curr_date->isWeekend()) $day_row .= "<b>";
+		    $day_row .= mb_strimwidth($day_str,0,2);
+		    if($curr_date->isWeekend()) $day_row .= "</b>";
+		    $day_row .= "</td>\n";
+		    // --------------------------------------------------------- AVG ROW
+		    $avg_row .= "<td class='ave-td' style='background-color:".getColorString($ave,$sensor_gradient).";'>";
+		    $avg_row .= $ave;
+		    $avg_row .= "</td>\n";
 	    } else {
-			echo "<td class='ave-td'>";
+			$day_row .= "<td class='ave-td'>&nbsp;</td>";
+			$avg_row .= "<td class='ave-td'>&nbsp;</td>";
 		}
-		echo "</td>";
 	}
+	echo "<tr>";
+	echo "<th rowspan=2>".$month->name()."</th>";
+	echo $day_row;
+	echo "</tr>";
+	
+	echo "<tr>";
+	//echo "<th></th>";
+	echo $avg_row;
 	echo "</tr>";
 
 endforeach;
@@ -215,7 +229,7 @@ function getAverage($start_utc, $end_utc) {
     }
     $row = mysqli_fetch_array($result);
 	$avg=round($row['ag']);
-	if($avg==0) return "";
+	if($avg==0) return "&nbsp;";
 	if(strcmp($sensor_column, "humidity")==0) {
 		$avg=$avg."%";
 	}
