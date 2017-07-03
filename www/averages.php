@@ -44,11 +44,13 @@ switch($period) {
   case 1: // Daily
     $default_period_1="checked='checked'";  
     break;
+  case 3: // Monthly
+    $default_period_3="checked='checked'";  
+    break;
   default: // Weekly
     $default_period_2="checked='checked'";
     $period=2;
     break;
-
 }
 
 if($sensor_type==0) {
@@ -132,6 +134,7 @@ $currentYear = $calendar->year($year);
   echo "</td>";
   echo "<td><input type='radio' onclick='change_period(1);' $default_period_1>Day</td>";
   echo "<td><input type='radio' onclick='change_period(2);' $default_period_2>Week</td>";
+  echo "<td><input type='radio' onclick='change_period(3);' $default_period_3>Month</td>";
   echo "<td>";
   echo "  <select onchange='change_sensor(this.value);'>\n";
   if(isset($sensor_temp)) {
@@ -214,8 +217,7 @@ foreach($currentYear->months() as $month):
 		if($month->int()==1) {
 			error_log("at=".$average_total."||av+1=".$day_array[$dom+1]->average."||nd=".$number_days);
 		}
-		if($dom==$days_in_month || $day_array[$dom]->dow==C_END_DAY || !isset($day_array[$dom+1]->average) || 
-		   ($day_array[$dom+1]->average==0) || ($day_array[$dom]->average==0) || $period==1) {
+		if($dom==$days_in_month || $period==1 || isEndOfPeriod($dom, $day_array)) {
 			$range_array[$range_pos] = new RangeStruct();
 			$range_array[$range_pos]->dom=($dom-$number_days+1);
 			$range_array[$range_pos]->number_days=$number_days;
@@ -325,6 +327,16 @@ function getColorString($value, $gradient) {
     if($remainder<9)  return "#ff6d00";
     if($remainder<10) return "#ff5b00";
     return "#ff4800"; // Red
+}
+
+function isEndOfPeriod($dom, $day_array) {
+	global $period;
+	
+	if($period!=3 && $day_array[$dom]->dow==C_END_DAY) return true;
+	if(!isset($day_array[$dom+1]->average)) return true;
+	if($day_array[$dom+1]->average==0) return true;
+	if($day_array[$dom]->average==0) return true;
+	return false;
 }
 
 class DayStruct {
