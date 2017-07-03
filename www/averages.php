@@ -41,13 +41,14 @@ const C_END_DAY = 6;
 
 $period = htmlspecialchars($_GET["period"]);
 switch($period) {
-  case 2: // Weekly
-    $default_period_2="checked='checked'";
-    break;
-  default: // Daily
+  case 1: // Daily
     $default_period_1="checked='checked'";  
-    $period=1;
     break;
+  default: // Weekly
+    $default_period_2="checked='checked'";
+    $period=2;
+    break;
+
 }
 
 if($sensor_type==0) {
