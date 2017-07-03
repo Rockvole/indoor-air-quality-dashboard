@@ -210,13 +210,13 @@ foreach($currentYear->months() as $month):
 		    $average_total += $day_array[$dom]->average;
 	    }
 		$number_days++;
-		if($month->int()==5) {
+		if($month->int()==1) {
 			error_log("at=".$average_total."||av+1=".$day_array[$dom+1]->average."||nd=".$number_days);
 		}
 		if($dom==$days_in_month || $day_array[$dom]->dow==C_END_DAY || !isset($day_array[$dom+1]->average) || 
 		   ($day_array[$dom+1]->average==0) || ($day_array[$dom]->average==0) || $period==1) {
 			$range_array[$range_pos] = new RangeStruct();
-			$range_array[$range_pos]->dom=$dom;
+			$range_array[$range_pos]->dom=($dom-$number_days+1);
 			$range_array[$range_pos]->number_days=$number_days;
 			if(isset($average_total)) {
 			    $range_array[$range_pos]->average=round($average_total / $number_days);
@@ -230,7 +230,7 @@ foreach($currentYear->months() as $month):
 		}
 	}
 	// ----------------------------------------------------------------- TEST
-	if($month->int()==5) {
+	if($month->int()==1) {
 		error_log("-------------------- DA");
 		foreach($day_array as $range) {
 			error_log($range->dow."||col=".$range->color."||ave=".$range->average."||ss=".isset($range->average));
@@ -243,16 +243,19 @@ foreach($currentYear->months() as $month):
     // ----------------------------------------------------------------- DAY ROW
     echo "<tr>";
 	echo "<th rowspan=2>".$month->name()."</th>";
-	for ($dom = 1; $dom <= 31; $dom++) {
-		$curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
-		$day_str = $curr_date->formatLocalized('%A');
-	    echo "<td class='ave-td' style='background-color:".$day_array[$dom]->color.";'>";
-	    if(isset($day_array[$dom]->dow)) {
-		    if($curr_date->isWeekend()) echo "<b>";
-		    echo mb_strimwidth($day_str,0,2);
-		    if($curr_date->isWeekend()) echo "</b>";
-	    }
-		echo "</td>\n";
+	foreach($range_array as $range) {
+		
+		for($dom = $range->dom; $dom < ($range->dom + $range->number_days); $dom++) {
+		    $curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);	
+		    $day_str = $curr_date->formatLocalized('%A');
+	        echo "<td class='ave-td' style='background-color:".getColorString($range->average,$sensor_gradient).";'>";
+	        if(isset($day_array[$dom]->dow)) {
+		        if($curr_date->isWeekend()) echo "<b>";
+		        echo mb_strimwidth($day_str,0,2);
+		        if($curr_date->isWeekend()) echo "</b>";
+	        }
+		    echo "</td>\n";
+		}
 	}
     echo "</tr>";
     // ----------------------------------------------------------------- AVG ROW
