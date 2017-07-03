@@ -214,9 +214,6 @@ foreach($currentYear->months() as $month):
 		    $average_total += $day_array[$dom]->average;
 	    }
 		$number_days++;
-		if($month->int()==1) {
-			error_log("at=".$average_total."||av+1=".$day_array[$dom+1]->average."||nd=".$number_days);
-		}
 		if($dom==$days_in_month || $period==1 || isEndOfPeriod($dom, $day_array)) {
 			$range_array[$range_pos] = new RangeStruct();
 			$range_array[$range_pos]->dom=($dom-$number_days+1);
@@ -224,25 +221,11 @@ foreach($currentYear->months() as $month):
 			if(isset($average_total)) {
 			    $range_array[$range_pos]->average=round($average_total / $number_days);
 		    }
-			if($month->int()==5) {
-			    //error_log("av=".$range_array[$range_pos]->average."||at=".$average_total."||nd=".$number_days);
-		    }
 			$range_pos++;
 			$average_total=0;
 	        $number_days=0;
 		}
 	}
-	// ----------------------------------------------------------------- TEST
-	if($month->int()==1) {
-		error_log("-------------------- DA");
-		foreach($day_array as $range) {
-			error_log($range->dow."||col=".$range->color."||ave=".$range->average."||ss=".isset($range->average));
-		}
-		error_log("-------------------- RA");
-	    foreach($range_array as $range) {
-		    error_log("dom=".$range->dom."||nd=".$range->number_days."||a=".$range->average);
-	    }
-    }
     // ----------------------------------------------------------------- DAY ROW
     echo "<tr>";
 	echo "<th rowspan=2>".$month->name()."</th>";
