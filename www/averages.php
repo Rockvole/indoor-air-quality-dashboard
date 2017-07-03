@@ -251,7 +251,12 @@ foreach($currentYear->months() as $month):
 		for($dom = $range->dom; $dom < ($range->dom + $range->number_days); $dom++) {
 		    $curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);	
 		    $day_str = $curr_date->formatLocalized('%A');
-	        echo "<td class='ave-td' style='background-color:".getColorString($range->average,$sensor_gradient).";'>";
+	        echo "<td class='ave-td' style='background-color:".getColorString($range->average,$sensor_gradient).";";
+	        if(isset($day_array[$dom]->dow) && $range->average!=0) {
+	            echo "cursor:pointer;' onclick=\"window.document.location='dashboard.php?id=$id&start_date=".$curr_date->format($param_date_format)."';\">";
+		    } else {
+	            echo "' >";
+		    }
 	        if(isset($day_array[$dom]->dow)) {
 		        if($curr_date->isWeekend()) echo "<b>";
 		        echo mb_strimwidth($day_str,0,2);
