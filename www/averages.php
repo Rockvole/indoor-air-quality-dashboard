@@ -36,6 +36,8 @@ require_once ("Carbon/Carbon.php");
 use Carbon\Carbon;
 require('calendar/calendar.php');
 include 'globals.php';
+const C_START_DAY = 0;
+const C_END_DAY = 6;
 
 $period = htmlspecialchars($_GET["period"]);
 switch($period) {
@@ -44,6 +46,7 @@ switch($period) {
     break;
   default: // Daily
     $default_period_1="checked='checked'";  
+    $period=1;
     break;
 }
 
@@ -91,6 +94,7 @@ switch($sensor) {
     $min_orange=$HUMIDITY_GOOD;
     $min_red=$HUMIDITY_OK;
     $sensor_gradient=10;
+    $sensor=1;
     break;    
 }
 
@@ -172,9 +176,9 @@ for ($f = 1; $f <= 31; $f++) {
 echo "</tr>\n";
 
 foreach($currentYear->months() as $month): 
+	$days_in_month = cal_days_in_month(CAL_GREGORIAN,$month->int(),$currentYear->int());
+	// ----------------------------------------------------------------- FILL DAY STRUCT ARRAY
 	$day_array = array();
-	
-	// ----------------------------------------------------------------- FILL STRUCT ARRAY
 	for ($dom = 1; $dom <= 31; $dom++) {
 		$day_array[$dom] = new DayStruct();
 		
@@ -190,6 +194,52 @@ foreach($currentYear->months() as $month):
 			$day_array[$dom]->color="#FFFFFF";
 		}
 	}
+	// ----------------------------------------------------------------- FILL RANGE STRUCT ARRAY
+	$range_array = array();
+	
+	$range_pos = 0;
+	$average_total=0;
+	$number_days=0;
+	for ($dom = 1; $dom <= 31; $dom++) {
+		$curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
+		
+		if($dom>$days_in_month) {
+			$number_days=0;
+			unset($average_total);
+		} else {
+		    $average_total += $day_array[$dom]->average;
+	    }
+		$number_days++;
+		if($month->int()==5) {
+			error_log("at=".$average_total."||av+1=".$day_array[$dom+1]->average."||nd=".$number_days);
+		}
+		if($dom==$days_in_month || $day_array[$dom]->dow==C_END_DAY || !isset($day_array[$dom+1]->average) || 
+		   ($day_array[$dom+1]->average==0) || ($day_array[$dom]->average==0) || $period==1) {
+			$range_array[$range_pos] = new RangeStruct();
+			$range_array[$range_pos]->dom=$dom;
+			$range_array[$range_pos]->number_days=$number_days;
+			if(isset($average_total)) {
+			    $range_array[$range_pos]->average=round($average_total / $number_days);
+		    }
+			if($month->int()==5) {
+			    //error_log("av=".$range_array[$range_pos]->average."||at=".$average_total."||nd=".$number_days);
+		    }
+			$range_pos++;
+			$average_total=0;
+	        $number_days=0;
+		}
+	}
+	// ----------------------------------------------------------------- TEST
+	if($month->int()==5) {
+		error_log("-------------------- DA");
+		foreach($day_array as $range) {
+			error_log($range->dow."||col=".$range->color."||ave=".$range->average."||ss=".isset($range->average));
+		}
+		error_log("-------------------- RA");
+	    foreach($range_array as $range) {
+		    error_log("dom=".$range->dom."||nd=".$range->number_days."||a=".$range->average);
+	    }
+    }
     // ----------------------------------------------------------------- DAY ROW
     echo "<tr>";
 	echo "<th rowspan=2>".$month->name()."</th>";
@@ -207,10 +257,13 @@ foreach($currentYear->months() as $month):
     echo "</tr>";
     // ----------------------------------------------------------------- AVG ROW
     echo "<tr>";
-    for ($dom = 1; $dom <= 31; $dom++) {
-		$curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$dom);
-		echo "<td class='ave-td' style='background-color:".$day_array[$dom]->color.";'>";
-		echo $day_array[$dom]->average;
+	foreach($range_array as $range) {
+		$curr_date=Carbon::createFromDate($currentYear->int(),$month->int(),$range->dom);
+		echo "<td class='ave-td' style='background-color:".getColorString($range->average,$sensor_gradient).";' colspan='".$range->number_days."'>";
+		if($range->average!=0) {
+		    echo $range->average;
+		    if($sensor==1) echo "%";
+	    } else echo "&nbsp;";
 		echo "</td>\n";
 	}
 	echo "</tr>";
@@ -249,14 +302,11 @@ function getAverage($start_utc, $end_utc) {
     }
     $row = mysqli_fetch_array($result);
 	$avg=round($row['ag']);
-	if($avg==0) return "&nbsp;";
-	if(strcmp($sensor_column, "humidity")==0) {
-		$avg=$avg."%";
-	}
 	return $avg;
 }
 
 function getColorString($value, $gradient) {
+	if(!isset($value)) return "#FFFFFF";
 	$remainder = $value / $gradient;
 	
     if($remainder==0) return "#BEBEBE"; // Grey
@@ -274,8 +324,14 @@ function getColorString($value, $gradient) {
 }
 
 class DayStruct {
+	public $dow;
 	public $color;
 	public $average;
-	public $dow;
+}
+
+class RangeStruct {
+	public $dom;
+	public $number_days;
+	public $average;
 }
 ?>
