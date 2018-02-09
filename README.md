@@ -28,8 +28,9 @@ LAMP based Indoor Air Quality Web Dashboard for the Particle Photon
 |hardware            |Details about the indoor air quality shield hardware             |
 |firmware-mini       |Particle Photon firmware supporting cut down hardware with TGS2602 & DHT22 only |
 |firmware-oled       |Particle Photon firmware supporting TGS2602, DHT22 & IIC I2C 128X64 OLED LCD Display Module|
-|hardware-oled       |Details of the PCB hardware for the TGS2602, DHT22 & IIC I2C 128X64 OLED LCD Display Module Arduino/STM32 |
 |firmware-oled-co    |Particle Photon firmware supporting TGS2600, DHT22 & IIC I2C 128X64 OLED LCD Display Module Arduino/STM32 |
+|hardware-oled       |Details of the PCB hardware for the TGS2602, DHT22 & IIC I2C 128X64 OLED LCD Display Module Arduino/STM32 |
+|hardware-case       |PCB Schematics and assembley photos of the final hardware in an off-the-shelf enclosure |
 |libs                |firmware libraries for the sensors                               |
 |sht15               |Particle Photon & Core firmware for sht15 temperature / humidity sensor      |
 |www                 |PHP Web pages to view graphs of collected data                   |
