@@ -20,20 +20,24 @@ Website Features
 ### Screenshots
 <p align="center">
   <img src="screenshot.png"/>
-  <br/>
   Graph Page
+   <br/>
 </p>
 
 <p align="center">
   <img src="calendar.png"/>
-  <br/>
   Calendar Page
+  <br/> 
+</p>
+
+<p align="center">
+  <img src="average_year.png"/>
+  Average Page
+  <br/> 
 </p>
 
 <p align="center">
   <img src="histograms.png"/>
-  <br/>
-  Histograms Page
+  Histogram Page
+  <br/> 
 </p>
-
-
