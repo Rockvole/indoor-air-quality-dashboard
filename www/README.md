@@ -21,23 +21,23 @@ Website Features
 <p align="center">
   <img src="screenshot.png"/>
   Graph Page
-   <br/>
+   <br/><br/>
 </p>
 
 <p align="center">
   <img src="calendar.png"/>
   Calendar Page
-  <br/> 
+  <br/><br/>
 </p>
 
 <p align="center">
   <img src="average_year.png"/>
   Average Page
-  <br/> 
+  <br/><br/>
 </p>
 
 <p align="center">
   <img src="histograms.png"/>
   Histogram Page
-  <br/> 
+  <br/><br/>
 </p>
