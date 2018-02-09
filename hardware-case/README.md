@@ -8,7 +8,9 @@ Hardware
 
 Diptrace Schematics
 ===================
-<a href="Dave_proto_pcb_3_1_final_filled.dip" title="Repository">V3.1</a>
+<a href="Dave_proto_pcb_3_1_final_filled.dip" title="V3.1">Diptrace V3.1 schematic</a>
+
+<a href="batch_rename.bat" title="batch file">MS-DOS file to rename diptrace gerber export files to seeed studio Fusion PCB named files</a>
 
 Assembley Photos
 ================
@@ -37,7 +39,7 @@ Assembley Photos
 </p>
 
 <p align="center">
-  <img src="board_3.JPG"/>
+  <img src="enclosure_holes.JPG"/>
   <br/>
   Enclosure with USB and sensor holes cut.
 </p>
