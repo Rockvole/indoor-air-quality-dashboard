@@ -18,9 +18,22 @@ Website Features
 8. Basic information about the particles/gases to tell the user about sources and symptoms  
 
 ### Screenshots
-![Graph Page](screenshot.png)
+<p align="center">
+  <img src="screenshot.png"/>
+  <br/>
+  Graph Page
+</p>
 
-![Histograms Page](histograms.png)
+<p align="center">
+  <img src="calendar.png"/>
+  <br/>
+  Calendar Page
+</p>
 
-![Calendar Page](calendar.png)
+<p align="center">
+  <img src="histograms.png"/>
+  <br/>
+  Histograms Page
+</p>
+
 
