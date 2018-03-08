@@ -74,7 +74,7 @@ if (mysqli_connect_errno()) {
 }
 if(strlen($year)<=0) {
   $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
-  if(mysql_errno()) {
+  if(mysqli_errno()) {
     exit('Error: '.mysqli_error($conn));
   }  
   $row = mysqli_fetch_array($result);
@@ -152,7 +152,7 @@ foreach($currentYear->months() as $month):
 	      $curr_date_end_utc=$curr_date->endOfDay()->format('U');
           $result=mysqli_query($conn,"SELECT MAX($sensor_column) as mx from readings WHERE group_id=$id and ts>=$curr_date_start_utc and ts<=$curr_date_end_utc");
           
-	      if(mysql_errno()) {
+	      if(mysqli_errno()) {
 	        exit('Error: '.mysqli_error($conn));
           }
 	      $row = mysqli_fetch_array($result);

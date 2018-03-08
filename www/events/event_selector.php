@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
   $result=mysqli_query($conn,"SELECT * from events WHERE group_id=$id and name is not null ".
 			    "and ts>=$curr_date_start_utc and ts<$curr_date_end_utc order by ts");
-  if(mysql_errno()) {
+  if(mysqli_errno()) {
     exit('Error: '.mysqli_error($conn));
   }
   $td_style="text-align:left;";

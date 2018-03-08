@@ -22,7 +22,7 @@ if (mysqli_connect_errno()) {
 } else {
   // ------------------------------------------------------------------- RETRIEVE CORE INFO
   $result=mysqli_query($conn,"SELECT * from cores where core_id='".$core_id."'");	
-  if(mysql_errno()) {
+  if(mysqli_errno()) {
     exit('Error: '.mysqli_error($conn));
     $error=true;
   }
@@ -37,7 +37,7 @@ if (mysqli_connect_errno()) {
   // ------------------------------------------------------------------- Temperature / Humidity
   if(strlen($temp)>0 && strlen($hum)>0) { 
     $result=mysqli_query($conn,"SELECT id from groups where temp_hum=".$id);	   
-    if(mysql_errno()) {
+    if(mysqli_errno()) {
       exit('Error: '.mysqli_error($conn));
       $error=true;
     }    
@@ -54,7 +54,7 @@ if (mysqli_connect_errno()) {
   // ------------------------------------------------------------------- Dust
   if(strlen($dust)>0) {
     $result=mysqli_query($conn,"SELECT id from groups where dust=".$id);	   
-    if(mysql_errno()) {
+    if(mysqli_errno()) {
       exit('Error: '.mysqli_error($conn));
       $error=true;
     }    
@@ -71,7 +71,7 @@ if (mysqli_connect_errno()) {
   // ------------------------------------------------------------------- Sewer
   if(strlen($sewer)>0) {
     $result=mysqli_query($conn,"SELECT id from groups where sewer=".$id);	   
-    if(mysql_errno()) {
+    if(mysqli_errno()) {
       exit('Error: '.mysqli_error($conn));
       $error=true;
     }    
@@ -86,7 +86,7 @@ if (mysqli_connect_errno()) {
   // ------------------------------------------------------------------- HCHO
   if(strlen($hcho)>0) {
     $result=mysqli_query($conn,"SELECT id from groups where hcho=".$id);	   
-    if(mysql_errno()) {
+    if(mysqli_errno()) {
       exit('Error: '.mysqli_error($conn));
       $error=true;
     }    
@@ -101,7 +101,7 @@ if (mysqli_connect_errno()) {
   // ------------------------------------------------------------------- CO
   if(strlen($co)>0) {
     $result=mysqli_query($conn,"SELECT id from groups where co=".$id);	   
-    if(mysql_errno()) {
+    if(mysqli_errno()) {
       exit('Error: '.mysqli_error($conn));
       $error=true;
     }    

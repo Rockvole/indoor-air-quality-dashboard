@@ -110,7 +110,7 @@ if (mysqli_connect_errno()) {
 }
 if(strlen($year)<=0) {
   $result=mysqli_query($conn,"SELECT MAX(ts) as ts from readings WHERE group_id=$id");
-  if(mysql_errno()) {
+  if(mysqli_errno()) {
     exit('Error: '.mysqli_error($conn));
   }  
   $row = mysqli_fetch_array($result);
@@ -291,7 +291,7 @@ function getAverage($start_utc, $end_utc) {
 	
 	$result=mysqli_query($conn,"SELECT AVG($sensor_column) as ag from readings WHERE group_id=$id and ts>=$start_utc and ts<=$end_utc");
           
-	if(mysql_errno()) {
+	if(mysqli_errno()) {
 	    exit('Error: '.mysqli_error($conn));
     }
     $row = mysqli_fetch_array($result);
