@@ -1,10 +1,7 @@
 import sys
 import yaml
 import requests
-import calendar
-import time
-from time import gmtime, strftime
-from datetime import datetime
+import pendulum
 from pyfoobot import Foobot
 
 def round_down(num, divisor):
@@ -75,21 +72,15 @@ for datapoints in range_data['datapoints']:
 	print("datapoints=",datapoints)
 	for pos in range(len(range_data['sensors'])):
 		sd[range_data['sensors'][pos]]=datapoints[pos]
-	unixtime = time.gmtime(sd['time'])
-	round_time=datetime(unixtime.tm_year,unixtime.tm_mon,unixtime.tm_mday,unixtime.tm_hour,round_down(unixtime.tm_min,10),0).strftime('%s')
+	unixtime = pendulum.from_timestamp(sd['time'])
+	round_time=pendulum.create(unixtime.year,unixtime.month,unixtime.day,unixtime.hour,round_down(unixtime.minute,10),0).strftime('%s')
 	
-	print(strftime("%a, %d %b %Y %H:%M:%S +0000", unixtime))
 	print("unixtime=",unixtime)
 	print("roundtime=",round_time)
-	#print("roundtime2=",strftime("%a, %d %b %Y %H:%M:%S +0000", datetime.timetuple(round_time)))
 	if round_time not in sensor_data:
 		sensor_data[round_time]=sd
 
-print("------------------------------------------")
-tt = datetime.timetuple(datetime(1970, 1, 1, 0, 0, 0))
-print("tt=",tt)
-print(strftime("%a, %d %b %Y %H:%M:%S +0000", tt))
-print("sensor_data=",sensor_data)	
+print("------------------------------------------")	
 
 # ---------------------------------------------------------------------- REQUESTS
 #for reading in sensor_data:
