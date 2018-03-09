@@ -35,6 +35,7 @@ if (mysqli_connect_errno()) {
   
   for($sensor=0;$sensor<5;$sensor++) {
     $core_id = filter_input(INPUT_GET, "core_id_$sensor", FILTER_SANITIZE_STRING);
+    $core_id = substr($core_id, -24);
     echo "Process Core Id: $core_id<br/>\n";
     if(strlen($core_id)<=0) continue;
     if($temp_hum!=$sensor && $dust!=$sensor && $sewer!=$sensor && $hcho!=$sensor) 
