@@ -7,6 +7,9 @@ from time import gmtime, strftime
 from datetime import datetime
 from pyfoobot import Foobot
 
+def round_down(num, divisor):
+    return num - (num%divisor)
+
 if len(sys.argv) != 2:
 	print "python yesterday.py <config.yaml>"
 	exit()
@@ -60,8 +63,7 @@ print("sensors[0]=",range_data['sensors'][0])
 
 units=dict()
 for pos in range(len(range_data['sensors'])):
-	units[range_data['sensors'][pos]]=range_data['units'][pos]		
-#print("units=",units)
+	units[range_data['sensors'][pos]]=range_data['units'][pos]
 if(units['tmp']!='C'):
 	print("Temperature must be in C to graph")
 	exit()
@@ -69,15 +71,24 @@ if(units['tmp']!='C'):
 sensor_data=dict()
 for datapoints in range_data['datapoints']:
 	sd=dict()
+	print("------------------------------------------")
 	print("datapoints=",datapoints)
 	for pos in range(len(range_data['sensors'])):
 		sd[range_data['sensors'][pos]]=datapoints[pos]
 	unixtime = time.gmtime(sd['time'])
+	round_time=datetime(unixtime.tm_year,unixtime.tm_mon,unixtime.tm_mday,unixtime.tm_hour,round_down(unixtime.tm_min,10),0).strftime('%s')
 	
 	print(strftime("%a, %d %b %Y %H:%M:%S +0000", unixtime))
 	print("unixtime=",unixtime)
-	sensor_data[sd['time']]=sd		
+	print("roundtime=",round_time)
+	#print("roundtime2=",strftime("%a, %d %b %Y %H:%M:%S +0000", datetime.timetuple(round_time)))
+	if round_time not in sensor_data:
+		sensor_data[round_time]=sd
 
+print("------------------------------------------")
+tt = datetime.timetuple(datetime(1970, 1, 1, 0, 0, 0))
+print("tt=",tt)
+print(strftime("%a, %d %b %Y %H:%M:%S +0000", tt))
 print("sensor_data=",sensor_data)	
 
 # ---------------------------------------------------------------------- REQUESTS
