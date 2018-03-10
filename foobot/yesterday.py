@@ -12,15 +12,23 @@ if len(sys.argv) != 2:
 	exit()
 config_file = sys.argv[1]
 
+start_timestamp=pendulum.yesterday()
+end_timestamp=start_timestamp.add(hours=24).subtract(seconds=1)
+print("start_timestamp=",start_timestamp)
+print("end_timestamp=",end_timestamp)
+
 with open(config_file, 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
-apikey=cfg['foobot']['apikey'][-24:]
+apikey=cfg['foobot']['apikey']
+end_apikey=apikey[-24:]
+
 email=cfg['foobot']['email']
 password=cfg['foobot']['password']
 print("apikey=",apikey)
+print("end_apikey=",end_apikey)
 print("email=",email)
 print("password=",password)
-"""
+
 fb = Foobot(apikey, email, password)
 devices = fb.devices()
 print("devices=",devices)
@@ -38,8 +46,8 @@ print("device=",device)
 #print("last_hour_data=",last_hour_data)
 
 # Get data for a data range
-range_data = device.data_range(start='1520208000',
-                               end='1520211600',
+range_data = device.data_range(start=start_timestamp.strftime('%s'),
+                               end=end_timestamp.strftime('%s'),
                                sampling=0)
 """
 range_data= {u'end':1520208549, u'uuid':u'25004664144000A1', u'start':1520208244, 
@@ -47,7 +55,7 @@ u'datapoints': [[1520208244, 10.880005, 18.651, 45.771, 571, 159, 15.737148],
 [1520208549, 10.880005, 18.684, 45.649, 563, 156, 15.308577]], 
 u'units': [u's', u'ugm3', u'C', u'pc', u'ppm', u'ppb', u'%'], 
 u'sensors': [u'time', u'pm', u'tmp', u'hum', u'co2', u'voc', u'allpollu']}
-
+"""
 print("range_data=",range_data)          
 print("start=",range_data['start'])
 print("end=",range_data['end'])
@@ -88,7 +96,7 @@ for unix_time, readings in sensor_data.iteritems():
 	print("unix_time=",unix_time)
 	print("tmp=",readings['tmp'])
 	url = 'http://localhost/iaq/get_reading.php?unix_time={}&temp={}&hum={}&hcho=&sewer={}&dust={}&core_id={}&uptime={}' \
-      .format(unix_time, readings['tmp'], readings['hum'], readings['voc'], readings['pm'], apikey, 0)
+      .format(unix_time, readings['tmp'], readings['hum'], readings['voc'], readings['pm'], end_apikey, 0)
 	print(url)
 
 	r = requests.get(url)
