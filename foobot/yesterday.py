@@ -1,7 +1,10 @@
 import sys
 import yaml
 import requests
-import pendulum
+import calendar
+import time
+from time import gmtime, strftime
+from datetime import datetime, timedelta
 from pyfoobot import Foobot
 
 def round_down(num, divisor):
@@ -12,9 +15,10 @@ if len(sys.argv) != 2:
 	exit()
 config_file = sys.argv[1]
 
-start_timestamp=pendulum.yesterday()
-end_timestamp=start_timestamp.add(hours=24).subtract(seconds=1)
+start_timestamp=datetime.now()-timedelta(hours=24)
+start_timestamp=datetime(start_timestamp.year,start_timestamp.month,start_timestamp.day,0,0,0)
 print("start_timestamp=",start_timestamp)
+end_timestamp=start_timestamp+timedelta(hours=24)-timedelta(seconds=1)
 print("end_timestamp=",end_timestamp)
 
 with open(config_file, 'r') as ymlfile:
@@ -28,7 +32,7 @@ print("apikey=",apikey)
 print("end_apikey=",end_apikey)
 print("email=",email)
 print("password=",password)
-
+"""
 fb = Foobot(apikey, email, password)
 devices = fb.devices()
 print("devices=",devices)
@@ -51,11 +55,11 @@ range_data = device.data_range(start=start_timestamp.strftime('%s'),
                                sampling=0)
 """
 range_data= {u'end':1520208549, u'uuid':u'25004664144000A1', u'start':1520208244, 
-u'datapoints': [[1520208244, 10.880005, 18.651, 45.771, 571, 159, 15.737148], 
+u'datapoints': [[1520668576, 10.880005, 18.651, 45.771, 571, 159, 15.737148], 
 [1520208549, 10.880005, 18.684, 45.649, 563, 156, 15.308577]], 
 u'units': [u's', u'ugm3', u'C', u'pc', u'ppm', u'ppb', u'%'], 
 u'sensors': [u'time', u'pm', u'tmp', u'hum', u'co2', u'voc', u'allpollu']}
-"""
+
 print("range_data=",range_data)          
 print("start=",range_data['start'])
 print("end=",range_data['end'])
@@ -80,13 +84,15 @@ for datapoints in range_data['datapoints']:
 	print("datapoints=",datapoints)
 	for pos in range(len(range_data['sensors'])):
 		sd[range_data['sensors'][pos]]=datapoints[pos]
-	unixtime = pendulum.from_timestamp(sd['time'])
-	round_time=pendulum.create(unixtime.year,unixtime.month,unixtime.day,unixtime.hour,round_down(unixtime.minute,10),0).strftime('%s')
+	unixtime = time.gmtime(sd['time'])
+	round_time=datetime(unixtime.tm_year,unixtime.tm_mon,unixtime.tm_mday,unixtime.tm_hour,round_down(unixtime.tm_min,10),0)
 	
-	print("unixtime=",unixtime)
-	print("roundtime=",round_time)
+	print("unixtime=",strftime("%a, %d %b %Y %H:%M:%S +0000", unixtime),"||",unixtime)
+	print("unixtime:y=",unixtime.tm_year,"||m=",unixtime.tm_mon,"||d=",unixtime.tm_mday,"||h=",unixtime.tm_hour,"||m=",unixtime.tm_min,"||s=",unixtime.tm_sec)
+	print("roundtime=",round_time,"||",round_time)
+	#print("roundtime:y=",round_time.tm_year,"||m=",round_time.tm_mon,"||d=",round_time.tm_mday,"||h=",round_time.tm_hour,"||m=",round_time.tm_min,"||s=",round_time.tm_sec)
 	if round_time not in sensor_data:
-		sensor_data[round_time]=sd
+		sensor_data[round_time.strftime('%s')]=sd
 
 print("------------------------------------------")	
 
