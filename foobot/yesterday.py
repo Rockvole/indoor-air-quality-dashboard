@@ -1,6 +1,6 @@
 import sys
-import requests
 import foobot_tools
+import dashboard_tools
 from datetime import datetime, timedelta
 
 if len(sys.argv) != 2:
@@ -33,17 +33,4 @@ foobot_tools.validate_sensors(range_data)
 
 sensor_data = foobot_tools.get_intervals_shifted(range_data)
 
-# ---------------------------------------------------------------------- REQUESTS
-#for reading in sensor_data:
-for round_time in sorted(sensor_data.iterkeys()):
-	readings=sensor_data[round_time]
-	url = '{}/iaq/get_reading.php?unix_time={}&temp={}&hum={}&hcho=&sewer={}&dust={}&core_id={}&uptime={}' \
-      .format(config['domain'],round_time, readings['tmp'], readings['hum'], readings['voc'], readings['pm'], config['end_apikey'], 0)
-	print("url=",url)
-	print("round_time=",datetime.fromtimestamp(float(round_time),tz=None).strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time, \
-	      "unix_time=",datetime.fromtimestamp(float(readings['time']),tz=None).strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",readings['time'])
-	print("readings=",readings)
-	r = requests.get(url)
-	#print r.status_code
-	#print r.headers
-	print("response=",r.content)
+dashboard_tools.send_requests(sensor_data, config)
