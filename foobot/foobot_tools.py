@@ -1,5 +1,6 @@
 import yaml
 from pyfoobot import Foobot
+from datetime import datetime
 
 def request_foobot_readings(start_timestamp, end_timestamp, config_file):
 	with open(config_file, 'r') as ymlfile:
@@ -36,6 +37,25 @@ def request_foobot_readings(start_timestamp, end_timestamp, config_file):
                                    sampling=0)
 	return (end_apikey, range_data)
 
+def get_intervals_shifted(range_data):
+	# Make hashmap key the unix timestamp rounded down to 10 minutes. Ignore additional readings in the same 10 minutes
+	sensor_data=dict()
+	for datapoints in range_data['datapoints']:
+		sd=dict()
+		print("------------------------------------------")
+		print("datapoints=",datapoints)
+		for pos in range(len(range_data['sensors'])):
+			sd[range_data['sensors'][pos]]=datapoints[pos]
+		unix_time=datetime.fromtimestamp(sd['time'],tz=None)
+		round_time=datetime(unix_time.year,unix_time.month,unix_time.day,unix_time.hour,round_down(unix_time.minute,10),0)
+		#print("unix_time=",unix_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",unix_time,"||",unix_time.strftime('%s'))
+		#print("round_time=",round_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time,"||",round_time.strftime('%s'))
+		if round_time.strftime('%s') not in sensor_data:
+			sensor_data[round_time.strftime('%s')]=sd
+
+	print("------------------------------------------")	
+	return sensor_data
+
 def validate_sensors(range_data):
 	# Move list of sensors into map of sensor names => units
 	units=dict()
@@ -44,3 +64,7 @@ def validate_sensors(range_data):
 	if(units['tmp']!='C'):
 		print("Temperature must be in C to graph")
 		exit()
+
+def round_down(num, divisor):
+    return num - (num%divisor)
+    

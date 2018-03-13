@@ -3,9 +3,6 @@ import requests
 import foobot_tools
 from datetime import datetime, timedelta
 
-def round_down(num, divisor):
-    return num - (num%divisor)
-
 if len(sys.argv) != 2:
 	print "python yesterday.py <config.yaml>"
 	exit()
@@ -34,22 +31,7 @@ print("sensors[0]=",range_data['sensors'][0])
 
 foobot_tools.validate_sensors(range_data)
 
-# Make hashmap key the unix timestamp rounded down to 10 minutes. Ignore additional readings in the same 10 minutes
-sensor_data=dict()
-for datapoints in range_data['datapoints']:
-	sd=dict()
-	print("------------------------------------------")
-	print("datapoints=",datapoints)
-	for pos in range(len(range_data['sensors'])):
-		sd[range_data['sensors'][pos]]=datapoints[pos]
-	unix_time=datetime.fromtimestamp(sd['time'],tz=None)
-	round_time=datetime(unix_time.year,unix_time.month,unix_time.day,unix_time.hour,round_down(unix_time.minute,10),0)
-	#print("unix_time=",unix_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",unix_time,"||",unix_time.strftime('%s'))
-	#print("round_time=",round_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time,"||",round_time.strftime('%s'))
-	if round_time.strftime('%s') not in sensor_data:
-		sensor_data[round_time.strftime('%s')]=sd
-
-print("------------------------------------------")	
+sensor_data = foobot_tools.get_intervals_shifted(range_data)
 
 # ---------------------------------------------------------------------- REQUESTS
 #for reading in sensor_data:
