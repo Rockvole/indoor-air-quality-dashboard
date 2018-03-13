@@ -1,9 +1,6 @@
 import sys
 import yaml
 import requests
-import calendar
-import time
-from time import gmtime, strftime
 from datetime import datetime, timedelta
 from pyfoobot import Foobot
 
@@ -77,6 +74,7 @@ if(units['tmp']!='C'):
 	print("Temperature must be in C to graph")
 	exit()
 
+# Make hashmap key the unix timestamp rounded down to 10 minutes. Ignore additional readings in the same 10 minutes
 sensor_data=dict()
 for datapoints in range_data['datapoints']:
 	sd=dict()
@@ -84,10 +82,10 @@ for datapoints in range_data['datapoints']:
 	print("datapoints=",datapoints)
 	for pos in range(len(range_data['sensors'])):
 		sd[range_data['sensors'][pos]]=datapoints[pos]
-	unixtime = time.gmtime(sd['time'])
-	round_time=datetime(unixtime.tm_year,unixtime.tm_mon,unixtime.tm_mday,unixtime.tm_hour,round_down(unixtime.tm_min,10),0)
-	print("unixtime=",strftime("%a, %d %b %Y %H:%M:%S +0000", unixtime),"||y=",unixtime.tm_year,"||m=",unixtime.tm_mon,"||d=",unixtime.tm_mday,"||h=",unixtime.tm_hour,"||m=",unixtime.tm_min,"||s=",unixtime.tm_sec)
-	print("roundtime=",round_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time)
+	unix_time=datetime.utcfromtimestamp(sd['time'])
+	round_time=datetime(unix_time.year,unix_time.month,unix_time.day,unix_time.hour,round_down(unix_time.minute,10),0)
+	#print("unix_time=",unix_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",unix_time)
+	#print("round_time=",round_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time)
 	if round_time not in sensor_data:
 		sensor_data[round_time.strftime('%s')]=sd
 
@@ -95,11 +93,13 @@ print("------------------------------------------")
 
 # ---------------------------------------------------------------------- REQUESTS
 #for reading in sensor_data:
-for unix_time, readings in sensor_data.iteritems():
+for round_time, readings in sensor_data.iteritems():
 	url = 'http://localhost/iaq/get_reading.php?unix_time={}&temp={}&hum={}&hcho=&sewer={}&dust={}&core_id={}&uptime={}' \
-      .format(unix_time, readings['tmp'], readings['hum'], readings['voc'], readings['pm'], end_apikey, 0)
+      .format(round_time, readings['tmp'], readings['hum'], readings['voc'], readings['pm'], end_apikey, 0)
 	print("url=",url)
-
+	print("round_time=",datetime.utcfromtimestamp(float(round_time)).strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time, \
+	      "unix_time=",datetime.utcfromtimestamp(float(readings['time'])).strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",readings['time'])
+	print("readings=",readings)
 	r = requests.get(url)
 	#print r.status_code
 	#print r.headers
