@@ -2,14 +2,18 @@ import yaml
 from pyfoobot import Foobot
 from datetime import datetime
 
-def request_foobot_readings(start_timestamp, end_timestamp, config_file):
+def read_config_file(config_file):
 	with open(config_file, 'r') as ymlfile:
 		cfg = yaml.load(ymlfile)
-	apikey=cfg['foobot']['apikey']
-	end_apikey=apikey[-24:]
+	cfg['foobot']['end_apikey']=cfg['foobot']['apikey'][-24:]
+	return cfg['foobot']
 
-	email=cfg['foobot']['email']
-	password=cfg['foobot']['password']
+def request_foobot_readings(start_timestamp, end_timestamp, config):
+	
+	apikey=config['apikey']
+	end_apikey=config['end_apikey']
+	email=config['email']
+	password=config['password']
 	print("apikey=",apikey)
 	print("end_apikey=",end_apikey)
 	print("email=",email)
@@ -35,7 +39,7 @@ def request_foobot_readings(start_timestamp, end_timestamp, config_file):
 	range_data = device.data_range(start=start_timestamp.strftime('%s'),
 								   end=end_timestamp.strftime('%s'),
                                    sampling=0)
-	return (end_apikey, range_data)
+	return range_data
 
 def get_intervals_shifted(range_data):
 	# Make hashmap key the unix timestamp rounded down to 10 minutes. Ignore additional readings in the same 10 minutes
