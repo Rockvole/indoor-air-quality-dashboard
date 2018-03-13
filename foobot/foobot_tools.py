@@ -2,8 +2,6 @@ import yaml
 from pyfoobot import Foobot
 
 def request_foobot_readings(start_timestamp, end_timestamp, config_file):
-	global end_apikey
-	
 	with open(config_file, 'r') as ymlfile:
 		cfg = yaml.load(ymlfile)
 	apikey=cfg['foobot']['apikey']
@@ -36,4 +34,13 @@ def request_foobot_readings(start_timestamp, end_timestamp, config_file):
 	range_data = device.data_range(start=start_timestamp.strftime('%s'),
 								   end=end_timestamp.strftime('%s'),
                                    sampling=0)
-	return range_data
+	return (end_apikey, range_data)
+
+def validate_sensors(range_data):
+	# Move list of sensors into map of sensor names => units
+	units=dict()
+	for pos in range(len(range_data['sensors'])):
+		units[range_data['sensors'][pos]]=range_data['units'][pos]
+	if(units['tmp']!='C'):
+		print("Temperature must be in C to graph")
+		exit()
