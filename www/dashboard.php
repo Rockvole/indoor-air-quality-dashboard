@@ -249,7 +249,7 @@ if(!isset($today_ts)) {
     echo "<td>"; 
     //echo "<img src='images/zoom_large.png' onclick='change_zoom(2);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";    
-    echo "<td align=center colspan=2><h3 style='display:inline;'>Dust Particle Concentration (over 1 micron)</h3>&nbsp;";
+    echo "<td align=center colspan=2><h3 style='display:inline;'>Particulate Matter (&mu;G/m<sup>3</sup>)</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/dust.html\"' width=30 height=30 style='cursor:pointer;'>";    
     echo "</td>";
     echo "</tr>";
@@ -292,7 +292,7 @@ if(!isset($today_ts)) {
     $zoom_image=($geo_row['zoom_sewer']==0) ? "zoom_small.png" : "zoom_large.png";
     echo "<img src='images/$zoom_image' onclick='change_zoom(3);' width=30 height=30 style='cursor:pointer;'>";  
     echo "</td>";    
-    echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas</h3>&nbsp;";
+    echo "<td align=center colspan=2><h3 style='display:inline;'>VOC's / Sewer Gas (ppb)</h3>&nbsp;";
     echo "<img src='health/mask.png' onclick='location.href=\"health/tgs2602.html\"' width=30 height=30 style='cursor:pointer;'>";    
     echo "</td>";
     echo "</tr>";

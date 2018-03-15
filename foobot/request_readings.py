@@ -7,11 +7,11 @@ C_MAX_DAYS = 10
 
 def syntax_message():
 	print "Syntax:"
-	print "  python yesterday.py <Start Date> <config.yaml>"
-	print "  python yesterday.py today <config.yaml>"
-	print "  python yesterday.py yesterday <config.yaml>"
+	print "  python request_readings.py <Start Date> <config.yaml>"
+	print "  python request_readings.py today <config.yaml>"
+	print "  python request_readings.py yesterday <config.yaml>"
 	print ""
-	print "  python yesterday.py <Start Date> <End Date> <config.yaml>"
+	print "  python request_readings.py <Start Date> <End Date> <config.yaml>"
 	print "  Note: Date format is yyyy-mm-dd"
 	
 arg_len=len(sys.argv)

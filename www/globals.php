@@ -14,9 +14,9 @@
   $TEMPERATURE_MIN[0] = 10;
   $TEMPERATURE_MIN[1] = 5;
   
-  $DUST_MAX        = 4500;
-  $DUST_OK         = 3000;
-  $DUST_GOOD       = 1500;  
+  $DUST_MAX        = 60;
+  $DUST_OK         = 30;
+  $DUST_GOOD       = 20;  
   $DUST_MIN        = 0;
   
   $SEWER_MAX[0]    = 600;
