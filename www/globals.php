@@ -35,6 +35,11 @@
   $CO_GOOD         = 10;
   $CO_MIN          = 0;
   
+  $CO2_MAX          = 3000;
+  $CO2_OK           = 2000;
+  $CO2_GOOD         = 1000;
+  $CO2_MIN          = 0;
+  
   $param_date_format='Y-m-d';
   $user_date_format='l, F jS Y H:i';
   $db_user = 'php_iaq';
@@ -63,6 +68,7 @@
     global $sensor_sewer;
     global $sensor_hcho;
     global $sensor_co;
+    global $sensor_co2;
     global $sensor_count;
     global $sensor_type;
     
@@ -75,12 +81,14 @@
     $sensor_sewer=$row['sewer'];  
     $sensor_hcho=$row['hcho']; 
     $sensor_co=$row['co']; 
+    $sensor_co2=$row['co2'];
     $sensor_count=0;
     if(isset($sensor_temp)) $sensor_count++;
     if(isset($sensor_dust)) $sensor_count++; 
     if(isset($sensor_sewer)) $sensor_count++;
     if(isset($sensor_hcho)) $sensor_count++;
     if(isset($sensor_co)) $sensor_count++;
+    if(isset($sensor_co2)) $sensor_count++;
    
     if($sensor_count==1) {
       if(isset($sensor_temp)) {

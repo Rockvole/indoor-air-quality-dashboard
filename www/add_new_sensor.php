@@ -48,8 +48,8 @@
   echo "<td colspan=3>";
   echo "<table border=0>";
   echo "<tr><th>Core Id</th><th width=100>Temperature<br/>& Humidity</th><th width=100>Dust</th><th width=100>VOC's /<br/>Sewer</th>";
-  echo "<th width=100>Formaldehyde</th><th width=100>Carbon<br/>Monoxide</th></tr>";
-  for($sensor=0;$sensor<=5;$sensor++) {
+  echo "<th width=100>Formaldehyde</th><th width=100>Carbon<br/>Monoxide</th><th width=100>Carbon<br/>Dioxide</th></tr>";
+  for($sensor=0;$sensor<=6;$sensor++) {
     $check_str="";
     echo "<tr>";
     if($sensor==0) {
@@ -65,10 +65,11 @@
     echo "<td align=center><input type='radio' name='sewer' $check_str value=$sensor></td>";
     echo "<td align=center><input type='radio' name='hcho' $check_str value=$sensor></td>";
     echo "<td align=center><input type='radio' name='co' $check_str value=$sensor></td>";
+    echo "<td align=center><input type='radio' name='co2' $check_str value=$sensor></td>";
     echo "</tr>";
   }
   echo "<tr>";
-  echo "<td style='font-size:110%;font-style:italic;'>e.g. 53ff70065069544807300687</td>"; 
+  echo "<td style='font-size:110%;font-style:italic;' colspan=3>e.g. 53ff70065069544807300687, or Foobot apikey</td>"; 
   echo "</tr>";  
   echo "</table>";
   echo "</td>";
