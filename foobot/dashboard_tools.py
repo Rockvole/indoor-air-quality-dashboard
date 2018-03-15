@@ -5,8 +5,8 @@ def send_requests(sensor_data, config):
 	# ---------------------------------------------------------------------- REQUESTS
 	for round_time in sorted(sensor_data.iterkeys()):
 		readings=sensor_data[round_time]
-		url = '{}/iaq/get_reading.php?unix_time={}&temp={}&hum={}&hcho=&sewer={}&dust={}&core_id={}&uptime={}' \
-		.format(config['domain'],round_time, readings['tmp'], readings['hum'], readings['voc'], readings['pm'], config['end_apikey'], 0)
+		url = '{}/iaq/get_reading.php?unix_time={}&temp={}&hum={}&hcho=&sewer={}&dust={}&co2={}&core_id={}&uptime={}' \
+		.format(config['domain'],round_time, readings['tmp'], readings['hum'], readings['voc'], readings['pm'], readings['co2'], config['end_apikey'], 0)
 		print("url=",url)
 		print("round_time=",datetime.fromtimestamp(float(round_time),tz=None).strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time, \
 			  "unix_time=",datetime.fromtimestamp(float(readings['time']),tz=None).strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",readings['time'])

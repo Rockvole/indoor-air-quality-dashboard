@@ -12,6 +12,7 @@ $hum = htmlspecialchars($_GET["hum"]);
 $sewer = htmlspecialchars($_GET["sewer"]);
 $hcho = htmlspecialchars($_GET["hcho"]);
 $co = htmlspecialchars($_GET["co"]);
+$co2 = htmlspecialchars($_GET["co2"]);
 $error=false;
 $conn=mysqli_connect("", $db_user, $db_pass, $db_name);
 
@@ -110,6 +111,21 @@ if (mysqli_connect_errno()) {
       $group_id=$row['id'];
       insert_empty_reading($group_id, $unix_time);
       $sql = "UPDATE readings SET co=$co WHERE group_id=$group_id AND ts=$unix_time";
+      $result=mysqli_query($conn,$sql);
+    }    
+  }
+  // ------------------------------------------------------------------- CO2
+  if(strlen($co2)>0) {
+    $result=mysqli_query($conn,"SELECT id from groups where co2=".$id);	   
+    if(mysqli_errno()) {
+      exit('Error: '.mysqli_error($conn));
+      $error=true;
+    }    
+    if(mysqli_num_rows($result)>0) {
+      $row = mysqli_fetch_array($result);
+      $group_id=$row['id'];
+      insert_empty_reading($group_id, $unix_time);
+      $sql = "UPDATE readings SET co2=$co2 WHERE group_id=$group_id AND ts=$unix_time";
       $result=mysqli_query($conn,$sql);
     }    
   }

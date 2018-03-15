@@ -11,6 +11,7 @@ dust INT DEFAULT NULL, -- id of core in cores table
 sewer INT DEFAULT NULL, -- id of core in cores table
 hcho INT DEFAULT NULL, -- id of core in cores table
 co INT DEFAULT NULL, -- id of core in cores table
+co2 INT DEFAULT NULL,
 tz VARCHAR(40), 
 UNIQUE(name),
 UNIQUE(temp_hum),
@@ -18,6 +19,7 @@ UNIQUE(dust),
 UNIQUE(sewer),
 UNIQUE(hcho),
 UNIQUE(co),
+UNIQUE(co2)
 PRIMARY KEY (id)
 );
 
@@ -36,6 +38,7 @@ dust INT,
 sewer INT, 
 hcho INT, 
 co INT,
+co2 INT,
 group_id INT, 
 ts INT UNSIGNED, 
 PRIMARY KEY (id), 
@@ -106,3 +109,7 @@ PRIMARY KEY (id)
 # +--------------------+---------------------+
 # | +00:00             | +00:00              |
 # +--------------------+---------------------+
+
+# ---------------------------- Alter tables to upgrade
+alter table groups add co2 int default null;
+alter table readings add co2 int;
