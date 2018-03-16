@@ -39,6 +39,8 @@ def request_foobot_readings(start_timestamp, end_timestamp, config):
 	range_data = device.data_range(start=start_timestamp.strftime('%s'),
 								   end=end_timestamp.strftime('%s'),
                                    sampling=0)
+	if len(range_data['datapoints'])==0:
+		raise ImportError("No data found for ",start_timestamp.strftime("%a, %d %b %Y"))
 	return range_data
 
 def get_intervals_shifted(range_data):
