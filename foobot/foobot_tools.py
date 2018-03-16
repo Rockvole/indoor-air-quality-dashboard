@@ -9,7 +9,7 @@ def read_config_file(config_file):
 	return cfg['foobot']
 
 def request_foobot_readings(start_timestamp, end_timestamp, config):
-	
+	index=config.get('index', 0)
 	apikey=config['apikey']
 	end_apikey=config['end_apikey']
 	email=config['email']
@@ -24,7 +24,7 @@ def request_foobot_readings(start_timestamp, end_timestamp, config):
 	print("devices=",devices)
 
 	# Devices is a list, in case you have more than one foobot
-	device = devices[0]
+	device = devices[index]
 	print("device=",device)
 
 	# Get the most recent sample
