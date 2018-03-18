@@ -1,7 +1,9 @@
 indoor-air-quality-dashboard
 ==============================
 
-LAMP based Indoor Air Quality Web Dashboard for the Particle Photon
+LAMP based Indoor Air Quality Web Dashboard for the foobot.
+
+Dashboard was originally designed for the Particle Photon - hardware and firmware for recording sensor data and sending to the dashboard can be seen at [indoor-air-quality-particle](https://github.com/Rockvole/indoor-air-quality-particle)
 
 ### Directories
 |Directory           |Description                                                      |
