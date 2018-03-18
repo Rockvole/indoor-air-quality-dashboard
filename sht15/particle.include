@@ -1,7 +1,0 @@
-firmware.ino
-../libs/HttpClient/HttpClient.cpp
-../libs/HttpClient/HttpClient.h
-../libs/ReadingSync/ReadingSync.cpp
-../libs/ReadingSync/ReadingSync.h
-../libs/SHT1x/SHT1x.cpp
-../libs/SHT1x/SHT1x.h

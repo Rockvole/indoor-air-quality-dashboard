@@ -1,8 +1,0 @@
-firmware.ino
-../libs/HttpClient/HttpClient.cpp
-../libs/HttpClient/HttpClient.h
-../libs/ReadingSync/ReadingSync.cpp
-../libs/ReadingSync/ReadingSync.h
-../libs/DHT22/PietteTech_DHT.cpp
-../libs/DHT22/PietteTech_DHT.h
-
