@@ -7,6 +7,7 @@ LAMP based Indoor Air Quality Web Dashboard for the Particle Photon
 |Directory           |Description                                                      |
 |--------------------|-----------------------------------------------------------------|
 |ancillary           |Installation and setup instructions                              |
+|foobot              |Python code to read foobot data and send to the dashboard        |
 |www                 |PHP Web pages to view graphs of collected data                   |
 
 Website Features
@@ -30,25 +31,25 @@ Website Features
 
 ### Screenshots
 <p align="center">
-  <img src="screenshot.png"/>
+  <img src="ancillary/images/screenshot.png"/>
   Graph Page
    <br/><br/>
 </p>
 
 <p align="center">
-  <img src="calendar.png"/>
+  <img src="ancillary/images/calendar.png"/>
   Calendar Page
   <br/><br/>
 </p>
 
 <p align="center">
-  <img src="average_year.png"/>
+  <img src="ancillary/images/average_year.png"/>
   Average Page
   <br/><br/>
 </p>
 
 <p align="center">
-  <img src="histograms.png"/>
+  <img src="ancillary/images/histograms.png"/>
   Histogram Page
   <br/><br/>
 </p>
