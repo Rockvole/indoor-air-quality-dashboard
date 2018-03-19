@@ -1,5 +1,11 @@
 foobot:
+    # index - with multiple foobots in one account, you can specify which foobot in the list this refers to
+    index : 0
+    # apikey - 300 digit foobot apikey (request from https://api.foobot.io/apidoc/index.html )
     apikey : 
+    # email - email address of your account
     email : 
+    # password - password on your account (in the app)
     password : 
-
+    # domain - location where you have installed yous indoor air quality dashboard website
+    domain : http://localhost
