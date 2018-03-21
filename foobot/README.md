@@ -19,7 +19,7 @@ Getting Started
 
 2. To fill in the graphs you can run the request_readings.py file
 
-3. Create ascript to run each day and collect readings automatically.
+3. Create a script to run each day and collect readings automatically.
 
 # Examples
 
