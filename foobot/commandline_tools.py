@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-C_MAX_DAYS = 10
-
 def syntax_message():
 	print "Syntax:"
 	print "  python request_readings.py <Start Date> <config.yaml>"

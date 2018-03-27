@@ -7,6 +7,8 @@ sys.path.append(os.path.abspath("../../pyawair/"))
 import awair_tools
 from awair import awair
 
+C_MAX_DAYS = 10
+
 (start_timestamp, end_timestamp) = commandline_tools.parse_args(sys.argv)
 
 print("start_timestamp=",start_timestamp.isoformat())
