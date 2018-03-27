@@ -33,10 +33,10 @@ while True:
 		print("sensors[0]=",range_data['sensors'][0])
 
 		foobot_tools.validate_sensors(range_data)
-
-		sensor_data = foobot_tools.get_intervals_shifted(range_data)
-
-		dashboard_tools.send_requests(sensor_data, config)
+		normalized_data = foobot_tools.normalize_readings(range_data)
+		
+		shifted_data = foobot_tools.get_intervals_shifted(normalized_data)
+		dashboard_tools.send_requests(shifted_data, config)
 	except ImportError as e:
 		print(e)
 

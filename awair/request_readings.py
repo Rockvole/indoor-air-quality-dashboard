@@ -3,9 +3,7 @@ import sys
 sys.path.append(os.path.abspath("../foobot/"))
 import commandline_tools
 from datetime import datetime, timedelta
-sys.path.append(os.path.abspath("../../pyawair/"))
 import awair_tools
-from awair import awair
 
 C_MAX_DAYS = 10
 

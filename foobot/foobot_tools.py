@@ -43,24 +43,38 @@ def request_foobot_readings(start_timestamp, end_timestamp, config):
 		raise ImportError("No data found for ",start_timestamp.strftime("%a, %d %b %Y"))
 	return range_data
 
-def get_intervals_shifted(range_data):
-	# Make hashmap key the unix timestamp rounded down to 10 minutes. Ignore additional readings in the same 10 minutes
-	sensor_data=dict()
+def normalize_readings(range_data):
+	# Make hashmap of the data
+	normalized_data=[]
 	for datapoints in range_data['datapoints']:
-		sd=dict()
+		nd=dict()
 		print("------------------------------------------")
 		print("datapoints=",datapoints)
 		for pos in range(len(range_data['sensors'])):
-			sd[range_data['sensors'][pos]]=datapoints[pos]
-		unix_time=datetime.fromtimestamp(sd['time'],tz=None)
+			nd[range_data['sensors'][pos]]=datapoints[pos]
+		normalized_data.append(nd)	
+
+	print("------------------------------------------")	
+	return normalized_data
+
+def get_intervals_shifted(normalized_data):
+	# Make hashmap key the unix timestamp rounded down to 10 minutes. Ignore additional readings in the same 10 minutes
+	shifted_data=dict()
+	for readings in normalized_data:
+		#sd=dict()
+		print("------------------------------------------")
+		print("readings=",readings)
+		#for pos in range(len(range_data['sensors'])):
+		#	sd[range_data['sensors'][pos]]=datapoints[pos]
+		unix_time=datetime.fromtimestamp(readings['time'],tz=None)
 		round_time=datetime(unix_time.year,unix_time.month,unix_time.day,unix_time.hour,round_down(unix_time.minute,10),0)
 		#print("unix_time=",unix_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",unix_time,"||",unix_time.strftime('%s'))
 		#print("round_time=",round_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time,"||",round_time.strftime('%s'))
-		if round_time.strftime('%s') not in sensor_data:
-			sensor_data[round_time.strftime('%s')]=sd
+		if round_time.strftime('%s') not in shifted_data:
+			shifted_data[round_time.strftime('%s')]=readings
 
 	print("------------------------------------------")	
-	return sensor_data
+	return shifted_data
 
 def validate_sensors(range_data):
 	# Move list of sensors into map of sensor names => units
