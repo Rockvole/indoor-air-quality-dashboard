@@ -2,11 +2,11 @@ import yaml
 from pyfoobot import Foobot
 from datetime import datetime
 
-def read_config_file(config_file):
+def read_config_file(config_file, device_type):
 	with open(config_file, 'r') as ymlfile:
 		cfg = yaml.load(ymlfile)
-	cfg['foobot']['end_apikey']=cfg['foobot']['apikey'][-24:]
-	return cfg['foobot']
+	cfg[device_type]['end_apikey']=cfg[device_type]['apikey'][-24:]
+	return cfg[device_type]
 
 def request_foobot_readings(start_timestamp, end_timestamp, config):
 	index=config.get('index', 0)
@@ -66,7 +66,7 @@ def get_intervals_shifted(normalized_data):
 		print("readings=",readings)
 		#for pos in range(len(range_data['sensors'])):
 		#	sd[range_data['sensors'][pos]]=datapoints[pos]
-		unix_time=datetime.fromtimestamp(readings['time'],tz=None)
+		unix_time=datetime.fromtimestamp(float(readings['time']),tz=None)
 		round_time=datetime(unix_time.year,unix_time.month,unix_time.day,unix_time.hour,round_down(unix_time.minute,10),0)
 		#print("unix_time=",unix_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",unix_time,"||",unix_time.strftime('%s'))
 		#print("round_time=",round_time.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",round_time,"||",round_time.strftime('%s'))

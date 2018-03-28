@@ -5,11 +5,6 @@ from datetime import datetime
 import dateutil.parser
 sys.path.append(os.path.abspath("../../pyawair/"))
 from awair import awair
-
-def read_config_file(config_file):
-	with open(config_file, 'r') as ymlfile:
-		cfg = yaml.load(ymlfile)
-	return cfg['awair']
 	
 def request_awair_readings(start_timestamp, end_timestamp, config):
 	api =  awair(config['email'], config['password'])

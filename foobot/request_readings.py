@@ -9,8 +9,7 @@ C_MAX_DAYS = 10
 (start_timestamp, end_timestamp) = commandline_tools.parse_args(sys.argv)
 
 file_name=sys.argv[len(sys.argv)-1]
-config = foobot_tools.read_config_file(file_name)		
-print("||sd=",start_timestamp,"||et=",end_timestamp,"||cfg=",file_name)
+config = foobot_tools.read_config_file(file_name, "foobot")		
 
 day_count=0
 while True:	
