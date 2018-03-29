@@ -1,7 +1,8 @@
 import os
 import sys
 import yaml
-from datetime import datetime
+import pytz
+from datetime import datetime, timedelta
 import dateutil.parser
 sys.path.append(os.path.abspath("../../pyawair/"))
 from awair import awair
@@ -19,7 +20,11 @@ def normalize_readings(range_data):
 	normalized_data=[]
 	for datapoints in range_data['data']:
 		nd=dict()
-		nd['time']=dateutil.parser.parse(datapoints['timestamp']).strftime('%s')
+		ts=dateutil.parser.parse(datapoints['timestamp'])
+		#print("ts=",ts.isoformat(),"||",ts.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",ts.strftime('%s'))
+		ts2=ts-timedelta(hours=8)
+		#print("ts2=",ts2.isoformat(),"||",ts2.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",ts2.strftime('%s'))
+		nd['time']=ts2.strftime('%s')
 		nd['allpollu']=datapoints['score']
 		nd['pm']=datapoints['sensor']['dust']
 		nd['co2']=datapoints['sensor']['co2']
