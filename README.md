@@ -1,7 +1,7 @@
 indoor-air-quality-dashboard
 ==============================
 
-LAMP based Indoor Air Quality Web Dashboard for the foobot.
+LAMP based Indoor Air Quality Web Dashboard for the foobot and the awair.
 
 Dashboard was originally designed for the Particle Photon - hardware and firmware for recording sensor data and sending to the dashboard can be seen at [indoor-air-quality-particle](https://github.com/Rockvole/indoor-air-quality-particle)
 
@@ -9,6 +9,7 @@ Dashboard was originally designed for the Particle Photon - hardware and firmwar
 |Directory           |Description                                                      |
 |--------------------|-----------------------------------------------------------------|
 |ancillary           |Installation and setup instructions                              |
+|awair               |Python code to read awair data and send to the dashboard        |
 |foobot              |Python code to read foobot data and send to the dashboard        |
 |www                 |PHP Web pages to view graphs of collected data                   |
 
