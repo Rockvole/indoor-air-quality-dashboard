@@ -13,11 +13,11 @@ C_MAX_DAYS = 10
 (start_timestamp, end_timestamp) = commandline_tools.parse_args(sys.argv)
 
 print("start_timestamp.begin=",start_timestamp.isoformat(),"||",start_timestamp.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",start_timestamp.strftime('%s'))
-timezone = pytz.timezone("America/Los_Angeles")
-start_timestamp = timezone.localize(start_timestamp)
 
 file_name=sys.argv[len(sys.argv)-1]
 config = foobot_tools.read_config_file(file_name, "awair")
+timezone = pytz.timezone(config['timezone'])
+start_timestamp = timezone.localize(start_timestamp)
 
 day_count=0
 while True:	
@@ -32,8 +32,7 @@ while True:
 		"""
 		print("range_data=",range_data)
 
-		#foobot_tools.validate_sensors(range_data)
-		normalized_data = awair_tools.normalize_readings(range_data)
+		normalized_data = awair_tools.normalize_readings(range_data, config)
 		
 		shifted_data = foobot_tools.get_intervals_shifted(normalized_data)
 		dashboard_tools.send_requests(shifted_data, config)

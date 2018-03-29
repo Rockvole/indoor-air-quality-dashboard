@@ -15,14 +15,17 @@ def request_awair_readings(start_timestamp, end_timestamp, config):
 	range_data = api.timeline(device['id'], start_timestamp.isoformat(), end_timestamp.isoformat())
 	return range_data
 
-def normalize_readings(range_data):
+def normalize_readings(range_data, config):
 	# Make hashmap of the data
 	normalized_data=[]
 	for datapoints in range_data['data']:
 		nd=dict()
 		ts=dateutil.parser.parse(datapoints['timestamp'])
 		#print("ts=",ts.isoformat(),"||",ts.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",ts.strftime('%s'))
-		ts2=ts-timedelta(hours=8)
+		if(config['timeshift']<0):
+			ts2=ts-timedelta(hours=abs(config['timeshift']))
+		else:
+			ts2=ts+timedelta(hours=abs(config['timeshift']))
 		#print("ts2=",ts2.isoformat(),"||",ts2.strftime("%a, %d %b %Y %H:%M:%S +0000"),"||",ts2.strftime('%s'))
 		nd['time']=ts2.strftime('%s')
 		nd['allpollu']=datapoints['score']

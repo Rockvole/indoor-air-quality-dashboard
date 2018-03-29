@@ -7,5 +7,5 @@ foobot:
     email : 
     # password - password on your account (in the app)
     password : 
-    # domain - location where you have installed yous indoor air quality dashboard website
+    # domain - location where you have installed your indoor air quality dashboard website
     domain : http://localhost
