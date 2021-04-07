@@ -5,6 +5,7 @@ sudo adduser <your user> staff
 reboot machine to ensure group takes effect
 
 # pip install (dont install as sudo)
+pip install requests
 pip install pyfoobot
 
 sudo apt-get install python-yaml
